@@ -21,8 +21,7 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 
 import com.semagia.cassa.jaxrs.providers.GraphNotExistsExceptionMapper;
-import com.semagia.cassa.jaxrs.providers.IllegalArgumentExceptionMapper;
-import com.semagia.cassa.jaxrs.providers.NullpointerExceptionMapper;
+import com.semagia.cassa.jaxrs.providers.RuntimeExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.StorageExceptionMapper;
 
 /**
@@ -46,8 +45,7 @@ public class CassaApplication extends Application {
     @Override
     public Set<Object> getSingletons() {
         Set<Object> singletons = new HashSet<Object>();
-        singletons.add(new NullpointerExceptionMapper());
-        singletons.add(new IllegalArgumentExceptionMapper());
+        singletons.add(new RuntimeExceptionMapper());
         singletons.add(new StorageExceptionMapper());
         singletons.add(new GraphNotExistsExceptionMapper());
         return singletons;

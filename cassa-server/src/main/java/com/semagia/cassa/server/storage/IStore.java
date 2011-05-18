@@ -15,6 +15,7 @@
  */
 package com.semagia.cassa.server.storage;
 
+import java.io.InputStream;
 import java.net.URI;
 
 import com.semagia.cassa.common.MediaType;
@@ -27,6 +28,11 @@ import com.semagia.cassa.common.dm.IWritableRepresentation;
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 public interface IStore {
+
+    /**
+     * Constant for the default graph.
+     */
+    public static final URI DEFAULT_GRAPH = URI.create("");
 
     /**
      * Returns all available graphs.
@@ -55,7 +61,7 @@ public interface IStore {
      * @return {@code true} if the graph exists, otherwise {@code false}.
      * @throws StorageException In case of an error.
      */
-    public boolean containsGraph(final URI graphURI) throws StorageException;
+    public boolean containsGraph(URI graphURI) throws StorageException;
 
     /**
      * Returns the metadata about the graph.
@@ -77,5 +83,31 @@ public interface IStore {
      * @throws StorageException In case of an error.
      */
     public RemovalStatus deleteGraph(URI graphURI) throws GraphNotExistsException, StorageException;
+
+    /**
+     * Creates or updates the graph.
+     * 
+     * In case the graph URI is {@code null}, the store must create a graph with a unique address.
+     *
+     * @param graphURI The graph URI or {@code null}.
+     * @param in
+     * @param mediaType The media type of the input stream.
+     * @return
+     * @throws UnsupportedMediaTypeException
+     * @throws StorageException In case of an error.
+     */
+    public IGraphInfo createOrUpdateGraph(URI graphURI, InputStream in, MediaType mediaType) throws UnsupportedMediaTypeException, StorageException;
+
+    /**
+     * Creates or updates the graph with the specified URI.
+     *
+     * @param graphURI The graph URI.
+     * @param in
+     * @param mediaType The media type of the input stream.
+     * @return
+     * @throws UnsupportedMediaTypeException
+     * @throws StorageException In case of an error.
+     */
+    public IGraphInfo createOrReplaceGraph(URI graphURI, InputStream in, MediaType mediaType) throws UnsupportedMediaTypeException, StorageException;
 
 }

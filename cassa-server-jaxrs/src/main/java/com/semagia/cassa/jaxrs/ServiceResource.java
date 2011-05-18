@@ -22,6 +22,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
+import com.semagia.cassa.server.storage.IStore;
 import com.semagia.cassa.server.storage.StorageException;
 
 /**
@@ -46,7 +47,7 @@ public class ServiceResource extends AbstractGraphResource {
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
         _wantServiceDescription = !isDefaultGraph && graph == null;
-        _graph = graph;
+        _graph = isDefaultGraph ? IStore.DEFAULT_GRAPH : graph;
     }
 
     /* (non-Javadoc)

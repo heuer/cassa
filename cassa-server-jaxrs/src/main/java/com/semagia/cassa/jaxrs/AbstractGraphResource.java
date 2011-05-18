@@ -55,8 +55,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * 
      * 
      * @return A graph serialization.
-     * @throws StorageException
-     *             In case of an error.
+     * @throws StorageException In case of an error.
      */
     @GET
     public Response getGraph() throws StorageException {

@@ -16,13 +16,21 @@
 package com.semagia.cassa.server.storage;
 
 /**
- * 
+ * The removal status indicates if a graph removal was done immediately or
+ * if the removal will be sheduled.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 public enum RemovalStatus {
 
+    /**
+     * Indicates that the graph deletion was performed.
+     */
     IMMEDIATELY,
+    
+    /**
+     * Indicates that the graph deletion will be done later.
+     */
     DELAYED;
 
 }

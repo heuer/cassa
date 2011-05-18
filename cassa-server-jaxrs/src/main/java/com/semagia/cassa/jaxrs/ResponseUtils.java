@@ -83,7 +83,7 @@ final class ResponseUtils {
      *
      * @return A Created response.
      */
-    public static Response created(URI uri) {
+    public static Response created(final URI uri) {
         return Response.created(uri).build();
     }
 

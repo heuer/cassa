@@ -34,7 +34,7 @@ final class MediaTypeUtils {
     }
 
     /**
-     * Returns the JAX-RS equivalent of the provided Atomico media type.
+     * Returns the JAX-RS equivalent of the provided media type.
      *
      * @param mt The media type.
      * @return The JAX-RS media type or {@code null} if the provided media type is null.

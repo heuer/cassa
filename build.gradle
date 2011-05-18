@@ -1,0 +1,73 @@
+
+def javaProjects() {
+    subprojects.findAll { project -> project.name != 'docs' }
+}
+
+defaultTasks 'clean', 'build'
+
+configure(javaProjects()) {
+
+  apply plugin: 'java'
+  apply plugin: 'osgi'
+  apply plugin: 'maven'
+  apply plugin: 'eclipse'
+  apply from: 'https://github.com/breskeby/gradleplugins/raw/master/emmaPlugin/emma.gradle'
+  
+  //TODO: Remove me once <http://jira.codehaus.org/browse/GRADLE-1079> is fixed
+  eclipseClasspath.variables = [:]
+
+  eclipseClasspath.downloadSources = false
+
+  sourceCompatibility = '1.6'
+
+  vendorName = 'Semagia'
+  vendorURL = 'http://www.semagia.com/'
+  licenseName = 'Apache Software License, Version 2.0'
+  licenseURL = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+
+  group = 'com.semagia.cassa'
+
+  defaultTasks 'clean', 'build'
+
+  gradle.taskGraph.whenReady {taskGraph ->
+      if (!taskGraph.hasTask(':release')) {
+          version += '-SNAPSHOT'
+      }
+  }
+
+  repositories {
+    mavenCentral()
+    mavenRepo urls: 'http://download.java.net/maven/2/'
+  }
+
+  dependencies {
+      emma 'emma:emma:2.0.5312', 'emma:emma_ant:2.0.5312'
+      testCompile 'junit:junit:4.8.2'
+  }
+
+  javadoc {
+      project.configure(options) {
+          charSet = 'UTF-8'
+          author = true
+          version = true
+          use = true
+      }
+  }
+
+  task javadocJar(type: Jar, dependsOn:javadoc) {
+      classifier = 'javadoc'
+      from javadoc.destinationDir
+  }
+
+  task sourcesJar(type: Jar) {
+      classifier = 'sources'
+      from sourceSets.main.allSource
+  }
+
+  artifacts {
+      archives jar
+      archives sourcesJar
+      archives javadocJar
+  }
+
+}

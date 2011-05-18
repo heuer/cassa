@@ -59,20 +59,6 @@ abstract class AbstractResource {
      * @return A response builder.
      * @throws WebApplicationException In case the resource wasn't modified.
      */
-    protected final ResponseBuilder makeResponseBuilder() throws WebApplicationException {
-        return makeResponseBuilder(-1);
-    }
-
-    /**
-     * Creates a {@link ResponseBuilder} with a last-modified header.
-     * 
-     * If the request contains a <tt>If-Modified-Since</tt> header and the
-     * resource wasn't modified, a {@link WebApplicationException} with
-     * the status <tt>Not modified (304)</tt> is thrown.
-     *
-     * @return A response builder.
-     * @throws WebApplicationException In case the resource wasn't modified.
-     */
     protected final ResponseBuilder makeResponseBuilder(final long lastModification) throws WebApplicationException {
         final Date lastModificationDate = new Date(lastModification);
         ResponseBuilder builder = lastModification != -1 ? _request.evaluatePreconditions(lastModificationDate) : null;

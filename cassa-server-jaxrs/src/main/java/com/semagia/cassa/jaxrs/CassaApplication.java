@@ -25,7 +25,7 @@ import com.semagia.cassa.jaxrs.providers.RuntimeExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.StorageExceptionMapper;
 
 /**
- * 
+ * The Cassa application.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
@@ -42,6 +42,9 @@ public class CassaApplication extends Application {
         return classes;
     }
 
+    /* (non-Javadoc)
+     * @see javax.ws.rs.core.Application#getSingletons()
+     */
     @Override
     public Set<Object> getSingletons() {
         Set<Object> singletons = new HashSet<Object>();

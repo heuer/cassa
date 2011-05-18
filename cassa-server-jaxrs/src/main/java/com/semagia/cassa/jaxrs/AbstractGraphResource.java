@@ -83,7 +83,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
         final IStore store = getStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
         final boolean wasKnown = store.containsGraph(graphURI);
-        final IGraphInfo info = store.createOrReplaceGraph(graphURI, in, getBaseURI(graphURI) mt);
+        final IGraphInfo info = store.createOrReplaceGraph(graphURI, in, getBaseURI(graphURI), mt);
         //TODO: Is it a good idea to return the IRI here? It may refer to an external server...
         return wasKnown ? noContent() : created(info.getURI());
     }

@@ -17,6 +17,7 @@ package com.semagia.cassa.jaxrs;
 
 import java.net.URI;
 
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
@@ -69,7 +70,14 @@ public class ServiceResource extends AbstractGraphResource {
         return _wantServiceDescription ? getServiceDescription() : super.getGraph();
     }
 
-    private Response getServiceDescription() throws StoreException {
+    /**
+     * Returns the service description.
+     *
+     * @return The service description document.
+     * @throws StoreException In case of an error.
+     */
+    @OPTIONS
+    public Response getServiceDescription() throws StoreException {
         // Not supported yet.
         return Response.status(Response.Status.BAD_REQUEST).build();
     }

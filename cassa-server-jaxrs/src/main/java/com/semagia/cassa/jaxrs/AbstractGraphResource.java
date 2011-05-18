@@ -113,7 +113,8 @@ public abstract class AbstractGraphResource extends AbstractResource {
      *          otherwise a URI which represents the path to this resource. 
      */
     private URI getBaseURI(URI graphURI) {
-        return graphURI == IStore.DEFAULT_GRAPH ? _uriInfo.getAbsolutePath() : graphURI;
+        return graphURI == IStore.DEFAULT_GRAPH ? _uriInfo.getAbsolutePath() 
+                                                : graphURI;
     }
 
     /**

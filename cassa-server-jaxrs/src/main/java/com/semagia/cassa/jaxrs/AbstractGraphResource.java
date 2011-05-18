@@ -33,9 +33,9 @@ import javax.ws.rs.core.Response;
 
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IGraphInfo;
-import com.semagia.cassa.server.storage.IStore;
-import com.semagia.cassa.server.storage.RemovalStatus;
-import com.semagia.cassa.server.storage.StorageException;
+import com.semagia.cassa.server.store.IStore;
+import com.semagia.cassa.server.store.RemovalStatus;
+import com.semagia.cassa.server.store.StoreException;
 
 /**
  * Common graph resource which implements all operations above graphs.
@@ -58,7 +58,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * @throws StorageException In case of an error.
      */
     @GET
-    public Response getGraph() throws StorageException {
+    public Response getGraph() throws StoreException {
         final URI graphURI = getGraphURI();
         final IStore store = getStore();
         final IGraphInfo graph = store.getGraphInfo(graphURI);
@@ -73,7 +73,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * @return
      */
     @PUT
-    public Response createGraph(InputStream in, @Context HttpHeaders header) throws StorageException {
+    public Response createGraph(InputStream in, @Context HttpHeaders header) throws StoreException {
         final URI graphURI = getGraphURI();
         final IStore store = getStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
@@ -89,7 +89,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * @return
      */
     @POST
-    public Response mergeGraph(InputStream in, @Context HttpHeaders header) throws StorageException {
+    public Response mergeGraph(InputStream in, @Context HttpHeaders header) throws StoreException {
         //TODO: Ensure that the location points to this server.
         final URI graphURI = getGraphURI();
         final IStore store = getStore();
@@ -105,7 +105,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * @return
      */
     @DELETE
-    public Response deleteGraph() throws StorageException {
+    public Response deleteGraph() throws StoreException {
         return getStore().deleteGraph(getGraphURI()) == RemovalStatus.DELAYED ? accepted() : noContent();
     }
 

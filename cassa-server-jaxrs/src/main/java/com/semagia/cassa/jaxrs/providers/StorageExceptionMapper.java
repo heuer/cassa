@@ -19,7 +19,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import com.semagia.cassa.server.storage.StorageException;
+import com.semagia.cassa.server.store.StoreException;
 
 /**
  * 
@@ -27,10 +27,10 @@ import com.semagia.cassa.server.storage.StorageException;
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 @Provider
-public class StorageExceptionMapper implements ExceptionMapper<StorageException> {
+public class StorageExceptionMapper implements ExceptionMapper<StoreException> {
 
     @Override
-    public Response toResponse(StorageException arg0) {
+    public Response toResponse(StoreException arg0) {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 

@@ -22,8 +22,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
-import com.semagia.cassa.server.storage.IStore;
-import com.semagia.cassa.server.storage.StorageException;
+import com.semagia.cassa.server.store.IStore;
+import com.semagia.cassa.server.store.StoreException;
 
 /**
  * Represents the /service resource.
@@ -62,11 +62,11 @@ public class ServiceResource extends AbstractGraphResource {
      * @see com.semagia.cassa.jaxrs.AbstractGraphResource#getGraph()
      */
     @Override
-    public Response getGraph() throws StorageException {
+    public Response getGraph() throws StoreException {
         return _wantServiceDescription ? getServiceDescription() : super.getGraph();
     }
 
-    private Response getServiceDescription() throws StorageException {
+    private Response getServiceDescription() throws StoreException {
         // Not supported yet.
         return Response.status(Response.Status.BAD_REQUEST).build();
     }

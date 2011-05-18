@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.semagia.cassa.server.storage;
+package com.semagia.cassa.server.store;
 
 import java.io.IOException;
 
@@ -23,14 +23,14 @@ import java.io.IOException;
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 @SuppressWarnings("serial")
-public class StorageException extends IOException {
+public class StoreException extends IOException {
 
     /**
      * Constructs a <tt>StorageException</tt> with the specified detail message.
      *
      * @param msg The detail message.
      */
-    public StorageException(String msg) {
+    public StoreException(String msg) {
         super(msg);
     }
 
@@ -39,7 +39,7 @@ public class StorageException extends IOException {
      *
      * @param cause The cause of the exception.
      */
-    public StorageException(Throwable cause) {
+    public StoreException(Throwable cause) {
         super();
         initCause(cause);
     }
@@ -51,7 +51,7 @@ public class StorageException extends IOException {
      * @param msg The detail message.
      * @param cause The cause of the exception.
      */
-    public StorageException(String msg, Throwable cause) {
+    public StoreException(String msg, Throwable cause) {
         this(msg);
         initCause(cause);
     }

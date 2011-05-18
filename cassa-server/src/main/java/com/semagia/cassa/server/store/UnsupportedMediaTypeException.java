@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.semagia.cassa.server.storage;
+package com.semagia.cassa.server.store;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +26,7 @@ import com.semagia.cassa.common.MediaType;
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 @SuppressWarnings("serial")
-public class UnsupportedMediaTypeException extends StorageException {
+public class UnsupportedMediaTypeException extends StoreException {
 
     /**
      * List of supported media types, never null.

@@ -26,7 +26,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Variant;
 
 import com.semagia.cassa.common.MediaType;
-import com.semagia.cassa.server.storage.IStore;
+import com.semagia.cassa.server.store.IStore;
 
 /**
  * Common resource which provides some utility functions.

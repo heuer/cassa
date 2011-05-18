@@ -13,42 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.semagia.cassa.server.storage;
+package com.semagia.cassa.server.store;
 
 /**
- * 
+ * The removal status indicates if a graph removal was done immediately or
+ * if the removal will be sheduled.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-@SuppressWarnings("serial")
-public class GraphNotExistsException extends StorageException {
+public enum RemovalStatus {
 
     /**
-     * 
-     *
-     * @param msg The detail message.
+     * Indicates that the graph deletion was performed.
      */
-    public GraphNotExistsException(String msg) {
-        super(msg);
-    }
-
+    IMMEDIATELY,
+    
     /**
-     * 
-     *
-     * @param msg The detail message.
-     * @param cause The cause of the exception.
+     * Indicates that the graph deletion will be done later.
      */
-    public GraphNotExistsException(String msg, Throwable cause) {
-        super(msg, cause);
-    }
-
-    /**
-     * 
-     *
-     * @param cause The cause of the exception.
-     */
-    public GraphNotExistsException(Throwable cause) {
-        super(cause);
-    }
+    DELAYED;
 
 }

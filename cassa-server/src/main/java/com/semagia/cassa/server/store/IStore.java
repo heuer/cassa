@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.semagia.cassa.server.storage;
+package com.semagia.cassa.server.store;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -38,9 +38,9 @@ public interface IStore {
      * Returns all available graphs.
      *
      * @return A (maybe empty) iterable of graphs.
-     * @throws StorageException In case of an error.
+     * @throws StoreException In case of an error.
      */
-    public Iterable<IGraphInfo> getGraphInfos() throws StorageException;
+    public Iterable<IGraphInfo> getGraphInfos() throws StoreException;
 
     /**
      * Returns a serialization of the graph.
@@ -50,18 +50,18 @@ public interface IStore {
      * @return A {@link IWritableRepresentation} that serializes the graph into the provided media type.
      * @throws GraphNotExistsException In case the graph does not exist.
      * @throws UnsupportedMediaTypeException In case the media type is not available.
-     * @throws StorageException In case of an error.
+     * @throws StoreException In case of an error.
      */
-    public IWritableRepresentation getGraph(URI graphURI, MediaType mediaType) throws GraphNotExistsException, UnsupportedMediaTypeException, StorageException;
+    public IWritableRepresentation getGraph(URI graphURI, MediaType mediaType) throws GraphNotExistsException, UnsupportedMediaTypeException, StoreException;
 
     /**
      * Returns if the graph is part of this store.
      *
      * @param graphURI The graph URI.
      * @return {@code true} if the graph exists, otherwise {@code false}.
-     * @throws StorageException In case of an error.
+     * @throws StoreException In case of an error.
      */
-    public boolean containsGraph(URI graphURI) throws StorageException;
+    public boolean containsGraph(URI graphURI) throws StoreException;
 
     /**
      * Returns the metadata about the graph.
@@ -69,9 +69,9 @@ public interface IStore {
      * @param graphURI The graph URI.
      * @return The metadata.
      * @throws GraphNotExistsException In case the graph does not exist.
-     * @throws StorageException In case of an error.
+     * @throws StoreException In case of an error.
      */
-    public IGraphInfo getGraphInfo(URI graphURI) throws GraphNotExistsException, StorageException;
+    public IGraphInfo getGraphInfo(URI graphURI) throws GraphNotExistsException, StoreException;
 
     /**
      * Deletes a graph.
@@ -80,9 +80,9 @@ public interface IStore {
      * @return {@link RemovalStatus#IMMEDIATELY} if the graph was deleted, {@link RemovalStatus#DELAYED}
      *          if graph removal is sheduled.
      * @throws GraphNotExistsException In case the graph does not exist.
-     * @throws StorageException In case of an error.
+     * @throws StoreException In case of an error.
      */
-    public RemovalStatus deleteGraph(URI graphURI) throws GraphNotExistsException, StorageException;
+    public RemovalStatus deleteGraph(URI graphURI) throws GraphNotExistsException, StoreException;
 
     /**
      * Creates or updates the graph.
@@ -94,9 +94,9 @@ public interface IStore {
      * @param mediaType The media type of the input stream.
      * @return
      * @throws UnsupportedMediaTypeException
-     * @throws StorageException In case of an error.
+     * @throws StoreException In case of an error.
      */
-    public IGraphInfo createOrUpdateGraph(URI graphURI, InputStream in, MediaType mediaType) throws UnsupportedMediaTypeException, StorageException;
+    public IGraphInfo createOrUpdateGraph(URI graphURI, InputStream in, MediaType mediaType) throws UnsupportedMediaTypeException, StoreException;
 
     /**
      * Creates or updates the graph with the specified URI.
@@ -106,8 +106,8 @@ public interface IStore {
      * @param mediaType The media type of the input stream.
      * @return
      * @throws UnsupportedMediaTypeException
-     * @throws StorageException In case of an error.
+     * @throws StoreException In case of an error.
      */
-    public IGraphInfo createOrReplaceGraph(URI graphURI, InputStream in, MediaType mediaType) throws UnsupportedMediaTypeException, StorageException;
+    public IGraphInfo createOrReplaceGraph(URI graphURI, InputStream in, MediaType mediaType) throws UnsupportedMediaTypeException, StoreException;
 
 }

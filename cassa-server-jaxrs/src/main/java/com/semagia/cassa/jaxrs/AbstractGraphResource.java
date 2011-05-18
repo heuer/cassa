@@ -83,7 +83,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
         final IStore store = getStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
         final boolean wasKnown = store.containsGraph(graphURI);
-        final IGraphInfo info = store.createOrReplaceGraph(graphURI, in, _uriInfo.getBaseUri(), mt);
+        final IGraphInfo info = store.createOrReplaceGraph(graphURI, in, getBaseURI(graphURI) mt);
         //TODO: Is it a good idea to return the IRI here? It may refer to an external server...
         return wasKnown ? noContent() : created(info.getURI());
     }
@@ -101,8 +101,19 @@ public abstract class AbstractGraphResource extends AbstractResource {
         final IStore store = getStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
         final boolean wasKnown = store.containsGraph(graphURI);
-        final IGraphInfo info = store.createOrUpdateGraph(graphURI, in, _uriInfo.getBaseUri(), mt);
+        final IGraphInfo info = store.createOrUpdateGraph(graphURI, in, getBaseURI(graphURI), mt);
         return wasKnown ? noContent() : created(info.getURI());
+    }
+
+    /**
+     * Returns the base URI.
+     *
+     * @param graphURI The graph URI.
+     * @return The {@code graphURI} if it does not represent the default graph, 
+     *          otherwise a URI which represents the path to this resource. 
+     */
+    private URI getBaseURI(URI graphURI) {
+        return graphURI == IStore.DEFAULT_GRAPH ? _uriInfo.getAbsolutePath() : graphURI;
     }
 
     /**

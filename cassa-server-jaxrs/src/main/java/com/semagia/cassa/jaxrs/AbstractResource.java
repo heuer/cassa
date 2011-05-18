@@ -61,14 +61,27 @@ abstract class AbstractResource {
      */
     protected final ResponseBuilder makeResponseBuilder(final long lastModification) throws WebApplicationException {
         final Date lastModificationDate = new Date(lastModification);
-        ResponseBuilder builder = lastModification != -1 ? _request.evaluatePreconditions(lastModificationDate) : null;
+        final ResponseBuilder builder = lastModification != -1 ? _request.evaluatePreconditions(lastModificationDate) : null;
         if (builder != null) {
             // Preconditions are met, report the status to the client
             throw new WebApplicationException(builder.build());
         }
-        builder = Response.ok();
-        builder.lastModified(lastModificationDate);
-        return builder;
+        return Response.ok().lastModified(lastModificationDate);
+    }
+
+    /**
+     * Creates a {@link ResponseBuilder} with a last-modified header.
+     * 
+     * If the request contains a <tt>If-Modified-Since</tt> header and the
+     * resource wasn't modified, a {@link WebApplicationException} with
+     * the status <tt>Not modified (304)</tt> is thrown.
+     *
+     * @return A response builder.
+     * @throws WebApplicationException In case the resource wasn't modified.
+     */
+    protected final ResponseBuilder makeResponseBuilder(final long lastModification, List<MediaType> mediaTypes) throws WebApplicationException {
+        return makeResponseBuilder(lastModification)
+                .variants(MediaTypeUtils.asVariants(mediaTypes));
     }
 
     /**

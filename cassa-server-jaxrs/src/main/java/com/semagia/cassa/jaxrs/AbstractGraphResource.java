@@ -25,6 +25,7 @@ import java.net.URI;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.core.Context;
@@ -68,7 +69,24 @@ public abstract class AbstractGraphResource extends AbstractResource {
         final IGraphInfo graph = store.getGraphInfo(graphURI);
         final MediaType mt = getMediaType(graph.getSupportedMediaTypes());
         return buildStreamingEntity(
-                makeResponseBuilder(graph.getLastModification()), store.getGraph(graphURI, mt));
+                makeResponseBuilder(graph.getLastModification(),
+                        graph.getSupportedMediaTypes()),
+                        store.getGraph(graphURI, mt));
+    }
+
+    /**
+     * 
+     *
+     * @return
+     * @throws StoreException
+     */
+    @HEAD
+    public Response getGraphInfo() throws StoreException {
+        final URI graphURI = getGraphURI();
+        final IStore store = getStore();
+        final IGraphInfo graph = store.getGraphInfo(graphURI);
+        return makeResponseBuilder(graph.getLastModification(), 
+                graph.getSupportedMediaTypes()).build();
     }
 
     /**

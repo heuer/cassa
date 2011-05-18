@@ -1,0 +1,14 @@
+/*
+ * Gradle build file.
+ * 
+ * - Download Gradle from <http://www.gradle.org/>
+ * - Execute gradle build
+ */
+version = '0.0.1'
+
+projectName = 'Semagia Cassa Server'
+projectDescription = projectName
+
+dependencies {
+    compile project(':cassa-common')
+}

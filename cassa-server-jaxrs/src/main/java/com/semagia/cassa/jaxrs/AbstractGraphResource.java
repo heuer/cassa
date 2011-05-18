@@ -53,18 +53,19 @@ public abstract class AbstractGraphResource extends AbstractResource {
 
     /**
      * 
-     *
+     * 
      * @return A graph serialization.
-     * @throws StorageException In case of an error.
+     * @throws StorageException
+     *             In case of an error.
      */
     @GET
     public Response getGraph() throws StorageException {
+        final URI graphURI = getGraphURI();
         final IStore store = getStore();
-        final IGraphInfo graph = store.getGraphInfo(getGraphURI());
+        final IGraphInfo graph = store.getGraphInfo(graphURI);
         final MediaType mt = getMediaType(graph.getSupportedMediaTypes());
-        System.out.println(mt);
-        final ResponseBuilder builder = makeResponseBuilder(graph.getLastModification());
-        return buildStreamingEntity(builder, store.getGraph(getGraphURI(), mt));
+        return buildStreamingEntity(
+                makeResponseBuilder(graph.getLastModification()), store.getGraph(graphURI, mt));
     }
 
     /**

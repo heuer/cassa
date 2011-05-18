@@ -1,0 +1,22 @@
+/*
+ * Gradle build file.
+ * 
+ * - Download Gradle from <http://www.gradle.org/>
+ * - Execute gradle build
+ */
+apply plugin: 'war'
+
+version = '0.0.1'
+
+projectName = 'Semagia Cassa Server Implementation'
+projectDescription = projectName
+
+
+dependencies {
+    compile project(':cassa-server')
+    compile 'com.sun.jersey:jersey-server:1.6',
+            'com.sun.jersey:jersey-core:1.6',
+            'javax.servlet:servlet-api:2.5'
+    testCompile 'com.sun.jersey.contribs:jersey-simple-server:1.6'
+}
+

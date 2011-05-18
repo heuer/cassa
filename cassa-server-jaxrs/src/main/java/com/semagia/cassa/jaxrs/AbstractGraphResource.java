@@ -30,6 +30,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IGraphInfo;
@@ -43,6 +44,9 @@ import com.semagia.cassa.server.store.StoreException;
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 public abstract class AbstractGraphResource extends AbstractResource {
+
+    @Context
+    protected UriInfo _uriInfo;
 
     /**
      * Returns the graph IRI.
@@ -71,6 +75,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * 
      *
      * @return
+     * @throws StorageException In case of an error.
      */
     @PUT
     public Response createGraph(InputStream in, @Context HttpHeaders header) throws StoreException {
@@ -78,7 +83,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
         final IStore store = getStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
         final boolean wasKnown = store.containsGraph(graphURI);
-        final IGraphInfo info = store.createOrReplaceGraph(graphURI, in, mt);
+        final IGraphInfo info = store.createOrReplaceGraph(graphURI, in, _uriInfo.getBaseUri(), mt);
         //TODO: Is it a good idea to return the IRI here? It may refer to an external server...
         return wasKnown ? noContent() : created(info.getURI());
     }
@@ -87,6 +92,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * 
      *
      * @return
+     * @throws StorageException In case of an error.
      */
     @POST
     public Response mergeGraph(InputStream in, @Context HttpHeaders header) throws StoreException {
@@ -95,7 +101,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
         final IStore store = getStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
         final boolean wasKnown = store.containsGraph(graphURI);
-        final IGraphInfo info = store.createOrUpdateGraph(graphURI, in, mt);
+        final IGraphInfo info = store.createOrUpdateGraph(graphURI, in, _uriInfo.getBaseUri(), mt);
         return wasKnown ? noContent() : created(info.getURI());
     }
 
@@ -103,6 +109,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * 
      *
      * @return
+     * @throws StorageException In case of an error.
      */
     @DELETE
     public Response deleteGraph() throws StoreException {

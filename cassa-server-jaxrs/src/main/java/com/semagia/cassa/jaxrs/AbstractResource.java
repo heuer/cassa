@@ -37,7 +37,7 @@ abstract class AbstractResource {
 
     @Context 
     private Request _request;
-    
+
     private IStore _store;
 
     /**
@@ -86,7 +86,8 @@ abstract class AbstractResource {
     }
 
     /**
-     * 
+     * Returns the most appropriate media type which is supported by the server
+     * and accepted by the client. 
      *
      * @param supportedMediaTypes The available/supported media types.
      * @return The preferred media type.

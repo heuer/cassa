@@ -18,8 +18,6 @@ package com.semagia.cassa.jaxrs;
 import java.net.URI;
 
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
 
 /**
  * Represents a local graph resource.
@@ -28,9 +26,6 @@ import javax.ws.rs.core.UriInfo;
  */
 @Path("/{graph}")
 public class LocalGraphResource extends AbstractGraphResource {
-
-    @Context
-    UriInfo _uriInfo;
 
     /* (non-Javadoc)
      * @see com.semagia.cassa.jaxrs.AbstractGraphResource#getGraphURI()

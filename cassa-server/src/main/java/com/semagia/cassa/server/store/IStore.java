@@ -91,23 +91,25 @@ public interface IStore {
      *
      * @param graphURI The graph URI or {@code null}.
      * @param in
+     * @param baseURI The base URI to resolve relative URIs against (in most cases identical to the graph IRI).
      * @param mediaType The media type of the input stream.
      * @return
      * @throws UnsupportedMediaTypeException
      * @throws StoreException In case of an error.
      */
-    public IGraphInfo createOrUpdateGraph(URI graphURI, InputStream in, MediaType mediaType) throws UnsupportedMediaTypeException, StoreException;
+    public IGraphInfo createOrUpdateGraph(URI graphURI, InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, StoreException;
 
     /**
      * Creates or updates the graph with the specified URI.
      *
      * @param graphURI The graph URI.
      * @param in
+     * @param baseURI The base URI to resolve relative URIs against (in most cases identical to the graph IRI).
      * @param mediaType The media type of the input stream.
      * @return
      * @throws UnsupportedMediaTypeException
      * @throws StoreException In case of an error.
      */
-    public IGraphInfo createOrReplaceGraph(URI graphURI, InputStream in, MediaType mediaType) throws UnsupportedMediaTypeException, StoreException;
+    public IGraphInfo createOrReplaceGraph(URI graphURI, InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, StoreException;
 
 }

@@ -15,6 +15,7 @@
  */
 package com.semagia.cassa.jaxrs;
 
+import java.net.URI;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
@@ -75,6 +76,15 @@ final class ResponseUtils {
      */
     public static Response noContent() {
         return Response.noContent().build();
+    }
+
+    /**
+     * Returns a HTTP Created response.
+     *
+     * @return A Created response.
+     */
+    public static Response created(URI uri) {
+        return Response.created(uri).build();
     }
 
     /**

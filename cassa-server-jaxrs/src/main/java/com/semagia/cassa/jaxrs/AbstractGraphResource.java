@@ -17,6 +17,7 @@ package com.semagia.cassa.jaxrs;
 
 import static com.semagia.cassa.jaxrs.ResponseUtils.accepted;
 import static com.semagia.cassa.jaxrs.ResponseUtils.buildStreamingEntity;
+import static com.semagia.cassa.jaxrs.ResponseUtils.created;
 import static com.semagia.cassa.jaxrs.ResponseUtils.noContent;
 
 import java.io.InputStream;
@@ -29,7 +30,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IGraphInfo;
@@ -77,11 +77,10 @@ public abstract class AbstractGraphResource extends AbstractResource {
         final URI graphURI = getGraphURI();
         final IStore store = getStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
-        final boolean exists = store.containsGraph(graphURI);
-//        final IGraphInfo info = !exists ? store.createGraph(graphURI, null, mt)
-//                                        : store.replaceGraph(graphURI, null, mt);
-        final ResponseBuilder builder = makeResponseBuilder();
-        return builder.build();
+        final boolean wasKnown = store.containsGraph(graphURI);
+        final IGraphInfo info = store.createOrReplaceGraph(graphURI, in, mt);
+        //TODO: Is it a good idea to return the IRI here? It may refer to an external server...
+        return wasKnown ? noContent() : created(info.getURI());
     }
 
     /**
@@ -91,12 +90,13 @@ public abstract class AbstractGraphResource extends AbstractResource {
      */
     @POST
     public Response mergeGraph(InputStream in, @Context HttpHeaders header) throws StorageException {
+        //TODO: Ensure that the location points to this server.
         final URI graphURI = getGraphURI();
         final IStore store = getStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
-        final boolean exists = store.containsGraph(graphURI);
-        final ResponseBuilder builder = makeResponseBuilder();
-        return builder.build();
+        final boolean wasKnown = store.containsGraph(graphURI);
+        final IGraphInfo info = store.createOrUpdateGraph(graphURI, in, mt);
+        return wasKnown ? noContent() : created(info.getURI());
     }
 
     /**

@@ -69,23 +69,22 @@ final class ResponseUtils {
         return Response.status(405).header("Allow", "GET, HEAD").build();
     }
 
+    /**
+     * Returns a HTTP No Content response.
+     *
+     * @return A No Content response.
+     */
     public static Response noContent() {
         return Response.noContent().build();
     }
 
+    /**
+     * Returns a HTTP Accepted response.
+     *
+     * @return A Accepted response.
+     */
     public static Response accepted() {
         return Response.status(Response.Status.ACCEPTED).build();
     }
 
-    /**
-     * Throws a 404 error iff {@code obj} is {@code null}.
-     *
-     * @param obj The object to check.
-     * @throws WebApplicationException If obj is null.
-     */
-    public static void ensureExists(final Object obj) throws WebApplicationException {
-        if (obj == null) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
-    }
 }

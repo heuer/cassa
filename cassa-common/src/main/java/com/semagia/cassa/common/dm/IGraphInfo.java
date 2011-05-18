@@ -21,7 +21,7 @@ import java.util.List;
 import com.semagia.cassa.common.MediaType;
 
 /**
- * Immutable meta data about a graph.
+ * Immutable metadata about a graph.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */

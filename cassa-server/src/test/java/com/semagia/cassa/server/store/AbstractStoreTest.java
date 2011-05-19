@@ -140,9 +140,8 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
     public void testGet() throws StoreException {
         createDefaultGraph();
         IWritableRepresentation writable = null;
-        MediaType mt = null;
+        MediaType mt = MediaType.RDF_XML;
         try {
-            mt = MediaType.RDF_XML;
             writable = _store.getGraph(_VALID_GRAPH, mt);
         }
         catch (UnsupportedMediaTypeException ex) {

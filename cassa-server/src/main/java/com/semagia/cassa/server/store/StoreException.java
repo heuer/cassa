@@ -15,15 +15,13 @@
  */
 package com.semagia.cassa.server.store;
 
-import java.io.IOException;
-
 /**
  * Exception thrown if an error happens within a {@link IStore} instance. 
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 @SuppressWarnings("serial")
-public class StoreException extends IOException {
+public class StoreException extends Exception {
 
     /**
      * Constructs a <tt>StorageException</tt> with the specified detail message.

@@ -23,7 +23,7 @@ import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IGraphInfo;
 
 /**
- * Default implementation of {@link IGraphInfo}.
+ * Default immutable implementation of {@link IGraphInfo}.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */

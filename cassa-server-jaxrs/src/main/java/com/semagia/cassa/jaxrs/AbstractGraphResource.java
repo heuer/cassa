@@ -20,6 +20,7 @@ import static com.semagia.cassa.jaxrs.ResponseUtils.buildStreamingEntity;
 import static com.semagia.cassa.jaxrs.ResponseUtils.created;
 import static com.semagia.cassa.jaxrs.ResponseUtils.noContent;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
@@ -93,10 +94,11 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * 
      *
      * @return
+     * @throws IOException In case of an I/O error. 
      * @throws StorageException In case of an error.
      */
     @PUT
-    public Response createGraph(InputStream in, @Context HttpHeaders header) throws StoreException {
+    public Response createGraph(InputStream in, @Context HttpHeaders header) throws IOException, StoreException {
         final URI graphURI = getGraphURI();
         final IStore store = getStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
@@ -110,10 +112,11 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * 
      *
      * @return
+     * @throws IOException In case of an I/O error.
      * @throws StorageException In case of an error.
      */
     @POST
-    public Response mergeGraph(InputStream in, @Context HttpHeaders header) throws StoreException {
+    public Response mergeGraph(InputStream in, @Context HttpHeaders header) throws IOException, StoreException {
         //TODO: Ensure that the location points to this server.
         final URI graphURI = getGraphURI();
         final IStore store = getStore();

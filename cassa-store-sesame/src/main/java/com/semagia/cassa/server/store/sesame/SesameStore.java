@@ -81,7 +81,7 @@ public final class SesameStore implements IStore {
     public IWritableRepresentation getGraph(URI graphURI, MediaType mediaType)
             throws GraphNotExistsException, UnsupportedMediaTypeException,
             StoreException {
-        checkGraphAvailable(graphURI);
+        ensureGraphAvailable(graphURI);
         return new WritableRepresentation(SesameUtils.asWritableRDFFormat(mediaType),
                 mediaType, getContext(graphURI));
     }
@@ -108,7 +108,7 @@ public final class SesameStore implements IStore {
     @Override
     public IGraphInfo getGraphInfo(URI graphURI)
             throws GraphNotExistsException, StoreException {
-        checkGraphAvailable(graphURI);
+        ensureGraphAvailable(graphURI);
         return new GraphInfo(graphURI);
     }
 
@@ -118,7 +118,7 @@ public final class SesameStore implements IStore {
     @Override
     public RemovalStatus deleteGraph(URI graphURI)
             throws GraphNotExistsException, StoreException {
-        checkGraphAvailable(graphURI);
+        ensureGraphAvailable(graphURI);
         try {
             _conn.clear(getContext(graphURI));
         }
@@ -134,8 +134,13 @@ public final class SesameStore implements IStore {
     @Override
     public IGraphInfo createOrUpdateGraph(URI graphURI, InputStream in,
             URI baseURI, MediaType mediaType)
-            throws UnsupportedMediaTypeException, StoreException {
-        // TODO Auto-generated method stub
+            throws UnsupportedMediaTypeException, IOException, StoreException {
+        try {
+            _conn.add(in, baseURI.toString(), SesameUtils.asReadableRDFFormat(mediaType), getContext(graphURI));
+        } 
+        catch (OpenRDFException ex) {
+            throw new StoreException(ex);
+        } 
         return null;
     }
 
@@ -145,8 +150,13 @@ public final class SesameStore implements IStore {
     @Override
     public IGraphInfo createOrReplaceGraph(URI graphURI, InputStream in,
             URI baseURI, MediaType mediaType)
-            throws UnsupportedMediaTypeException, StoreException {
-        // TODO Auto-generated method stub
+            throws UnsupportedMediaTypeException, IOException, StoreException {
+        try {
+            _conn.add(in, baseURI.toString(), SesameUtils.asReadableRDFFormat(mediaType), getContext(graphURI));
+        } 
+        catch (OpenRDFException ex) {
+            throw new StoreException(ex);
+        } 
         return null;
     }
 
@@ -157,7 +167,7 @@ public final class SesameStore implements IStore {
      * @throws GraphNotExistsException In case the graph URI does not exist.
      * @throws StoreException In case of an error.
      */
-    private void checkGraphAvailable(final URI graphURI) throws GraphNotExistsException, StoreException {
+    private void ensureGraphAvailable(final URI graphURI) throws GraphNotExistsException, StoreException {
         try {
             if (_conn.isEmpty() || !containsGraph(graphURI)) {
                 final String graph = graphURI == IStore.DEFAULT_GRAPH ? "'default'" : "<" + graphURI.toString() + ">";

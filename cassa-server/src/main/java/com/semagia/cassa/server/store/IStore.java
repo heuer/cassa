@@ -15,6 +15,7 @@
  */
 package com.semagia.cassa.server.store;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
@@ -95,9 +96,10 @@ public interface IStore {
      * @param mediaType The media type of the input stream.
      * @return
      * @throws UnsupportedMediaTypeException
+     * @throws IOException In case of an I/O error.
      * @throws StoreException In case of an error.
      */
-    public IGraphInfo createOrUpdateGraph(URI graphURI, InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, StoreException;
+    public IGraphInfo createOrUpdateGraph(URI graphURI, InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, IOException, StoreException;
 
     /**
      * Creates or updates the graph with the specified URI.
@@ -108,8 +110,9 @@ public interface IStore {
      * @param mediaType The media type of the input stream.
      * @return
      * @throws UnsupportedMediaTypeException
+     * @throws IOException In case of an I/O error.
      * @throws StoreException In case of an error.
      */
-    public IGraphInfo createOrReplaceGraph(URI graphURI, InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, StoreException;
+    public IGraphInfo createOrReplaceGraph(URI graphURI, InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, IOException, StoreException;
 
 }

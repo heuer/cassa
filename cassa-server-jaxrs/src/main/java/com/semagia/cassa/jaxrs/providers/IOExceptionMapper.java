@@ -15,20 +15,20 @@
  */
 package com.semagia.cassa.jaxrs.providers;
 
+import java.io.IOException;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
-
-import com.semagia.cassa.server.store.StoreException;
 
 /**
  * 
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public class StorageExceptionMapper implements ExceptionMapper<StoreException> {
+public class IOExceptionMapper implements ExceptionMapper<IOException> {
 
     @Override
-    public Response toResponse(StoreException arg0) {
+    public Response toResponse(IOException arg0) {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 

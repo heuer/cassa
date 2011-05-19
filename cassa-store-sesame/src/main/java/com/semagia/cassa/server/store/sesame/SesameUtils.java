@@ -28,7 +28,7 @@ import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
 
 /**
- * 
+ * Internal utility functions.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
@@ -51,18 +51,45 @@ final class SesameUtils {
         _WRITABLE_MEDIATYPES = Collections.unmodifiableList(_WRITABLE_MEDIATYPES);
     }
 
+    private SesameUtils() {
+        // noop.
+    }
+
+    /**
+     * Returns all supported readable media types.
+     *
+     * @return An unordered list of readable media types.
+     */
     public static List<MediaType> getReadableMediaTypes() {
         return _READABLE_MEDIATYPES;
     }
 
+    /**
+     * Returns all supported writable media types.
+     *
+     * @return An unordered list of writable media types.
+     */
     public static List<MediaType> getWritableMediaTypes() {
         return _WRITABLE_MEDIATYPES;
     }
 
+    /**
+     * Converts the RDFFormat instance into a media type.
+     *
+     * @param format The RDFFormat to convert.
+     * @return The RDFFormat equivalent.
+     */
     public static MediaType asMediaType(final RDFFormat format) {
         return MediaType.valueOf(format.getDefaultMIMEType());
     }
 
+    /**
+     * Returns a readable RDFFormat.
+     *
+     * @param mediaType The requested media type.
+     * @return The supported RDFFormat.
+     * @throws UnsupportedMediaTypeException In case no reader for the media type can be found.
+     */
     public static RDFFormat asReadableRDFFormat(final MediaType mediaType) throws UnsupportedMediaTypeException {
         final RDFFormat format = Rio.getParserFormatForMIMEType(mediaType.toString());
         if (format == null) {
@@ -71,6 +98,13 @@ final class SesameUtils {
         return format; 
     }
 
+    /**
+     * Returns a writable RDFFormat.
+     *
+     * @param mediaType The requested media type.
+     * @return The supported RDFFormat.
+     * @throws UnsupportedMediaTypeException In case no writer for the media type can be found.
+     */
     public static RDFFormat asWritableRDFFormat(final MediaType mediaType) throws UnsupportedMediaTypeException {
         final RDFFormat format = Rio.getWriterFormatForMIMEType(mediaType.toString());
         if (format == null) {

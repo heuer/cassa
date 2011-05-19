@@ -140,15 +140,19 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
     public void testGet() throws StoreException {
         createDefaultGraph();
         IWritableRepresentation writable = null;
+        MediaType mt = null;
         try {
-            writable = _store.getGraph(_VALID_GRAPH, MediaType.RDF_XML);
+            mt = MediaType.RDF_XML;
+            writable = _store.getGraph(_VALID_GRAPH, mt);
         }
         catch (UnsupportedMediaTypeException ex) {
-            writable = _store.getGraph(_VALID_GRAPH, MediaType.XTM);
+            mt = MediaType.XTM;
+            writable = _store.getGraph(_VALID_GRAPH, mt);
         }
         if (writable == null) {
             fail("The store should support RDF/XML or XTM");
         }
+        assertEquals(mt, writable.getMediaType());
     }
 
     public void testGetInvalidMediaType() throws StoreException {

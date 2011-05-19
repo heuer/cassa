@@ -156,6 +156,15 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         assertEquals(0, graphCount());
     }
 
+    //TODO: Unsure about this test since the "default" graph may not be equivalent with "all graphs"
+    public void testDeleteValid2() throws StoreException {
+        assertEquals(0, graphCount());
+        createDefaultGraph();
+        assertEquals(1, graphCount());
+        _store.deleteGraph(IStore.DEFAULT_GRAPH);
+        assertEquals(0, graphCount());
+    }
+
     public void testGetGraphInfoNotExisting() throws StoreException {
         try {
             _store.getGraphInfo(_INVALID_GRAPH);
@@ -234,6 +243,17 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         }
         createDefaultGraph();
         final IWritableRepresentation writer = _store.getGraph(_VALID_GRAPH, MediaType.RDF_XML);
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        writer.write(out);
+        assertTrue(out.size() > 0);
+    }
+
+    public void testWritingTMSimple() throws StoreException, IOException {
+        if (!isTMStore()) {
+            return;
+        }
+        createDefaultGraph();
+        final IWritableRepresentation writer = _store.getGraph(_VALID_GRAPH, MediaType.XTM);
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         writer.write(out);
         assertTrue(out.size() > 0);

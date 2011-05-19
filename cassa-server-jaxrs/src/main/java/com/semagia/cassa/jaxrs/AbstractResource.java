@@ -38,7 +38,7 @@ abstract class AbstractResource {
     @Context 
     private Request _request;
 
-    private IStore _store;
+    private IStore _store = new MockStore();
 
     /**
      * Returns the store.
@@ -61,12 +61,13 @@ abstract class AbstractResource {
      */
     protected final ResponseBuilder makeResponseBuilder(final long lastModification) throws WebApplicationException {
         final Date lastModificationDate = new Date(lastModification);
-        final ResponseBuilder builder = lastModification != -1 ? _request.evaluatePreconditions(lastModificationDate) : null;
+        ResponseBuilder builder = lastModification != -1 ? _request.evaluatePreconditions(lastModificationDate) : null;
         if (builder != null) {
             // Preconditions are met, report the status to the client
             throw new WebApplicationException(builder.build());
         }
-        return Response.ok().lastModified(lastModificationDate);
+        builder = Response.ok();
+        return lastModification != -1 ? builder.lastModified(lastModificationDate) : builder;
     }
 
     /**

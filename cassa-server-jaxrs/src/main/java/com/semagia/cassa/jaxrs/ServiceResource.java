@@ -47,7 +47,7 @@ public class ServiceResource extends AbstractGraphResource {
         if (isDefaultGraph && (!defaultGraph.isEmpty() || graph != null)) {
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
-        if (!isDefaultGraph && (graph != null && !graph.isAbsolute())) {
+        if (graph != null && (!isDefaultGraph && !graph.isAbsolute())) {
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
         _wantServiceDescription = !isDefaultGraph && graph == null;

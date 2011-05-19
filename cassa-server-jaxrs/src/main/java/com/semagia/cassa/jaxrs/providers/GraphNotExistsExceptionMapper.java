@@ -17,8 +17,6 @@ package com.semagia.cassa.jaxrs.providers;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
-
 import com.semagia.cassa.server.store.GraphNotExistsException;
 
 /**
@@ -26,7 +24,6 @@ import com.semagia.cassa.server.store.GraphNotExistsException;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-@Provider
 public class GraphNotExistsExceptionMapper implements ExceptionMapper<GraphNotExistsException> {
 
     @Override

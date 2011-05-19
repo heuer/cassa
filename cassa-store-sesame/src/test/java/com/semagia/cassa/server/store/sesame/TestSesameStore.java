@@ -34,6 +34,22 @@ import com.semagia.cassa.server.store.StoreException;
 public class TestSesameStore extends AbstractStoreTest<SesameStore> {
 
     /* (non-Javadoc)
+     * @see com.semagia.cassa.server.store.AbstractStoreTest#isRDFStore()
+     */
+    @Override
+    protected boolean isRDFStore() {
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see com.semagia.cassa.server.store.AbstractStoreTest#isTMStore()
+     */
+    @Override
+    protected boolean isTMStore() {
+        return false;
+    }
+
+    /* (non-Javadoc)
      * @see com.semagia.cassa.server.store.AbstractStoreTest#createStore()
      */
     @Override

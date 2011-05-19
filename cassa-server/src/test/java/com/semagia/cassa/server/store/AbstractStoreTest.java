@@ -21,7 +21,6 @@ import java.util.List;
 
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IGraphInfo;
-import com.semagia.cassa.common.dm.IWritableRepresentation;
 
 import junit.framework.TestCase;
 
@@ -47,6 +46,10 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
 
     protected abstract void createGraph(T store, URI graphURI) throws StoreException;
 
+    protected abstract boolean isRDFStore();
+
+    protected abstract boolean isTMStore();
+
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
@@ -54,6 +57,9 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         _store = createStore();
+        if (!isRDFStore() && !isTMStore()) {
+            throw new Exception("The store must support RDF and/or Topic Maps");
+        }
     }
 
     /* (non-Javadoc)
@@ -139,19 +145,14 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
 
     public void testGet() throws StoreException {
         createDefaultGraph();
-        IWritableRepresentation writable = null;
-        MediaType mt = MediaType.RDF_XML;
-        try {
-            writable = _store.getGraph(_VALID_GRAPH, mt);
+        if (isRDFStore()) {
+            assertEquals("An RDF store should support RDF/XML as serialization format",
+                    MediaType.RDF_XML, _store.getGraph(_VALID_GRAPH, MediaType.RDF_XML).getMediaType());
         }
-        catch (UnsupportedMediaTypeException ex) {
-            mt = MediaType.XTM;
-            writable = _store.getGraph(_VALID_GRAPH, mt);
+        if (isTMStore()) {
+            assertEquals("A Topic Maps store should support XTM as serialization format",
+                    MediaType.XTM, _store.getGraph(_VALID_GRAPH, MediaType.XTM).getMediaType());
         }
-        if (writable == null) {
-            fail("The store should support RDF/XML or XTM");
-        }
-        assertEquals(mt, writable.getMediaType());
     }
 
     public void testGetInvalidMediaType() throws StoreException {

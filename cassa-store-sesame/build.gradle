@@ -1,0 +1,18 @@
+/*
+ * Gradle build file.
+ * 
+ * - Download Gradle from <http://www.gradle.org/>
+ * - Execute gradle build
+ */
+version = '0.0.1'
+
+projectName = 'Semagia Cassa Store Sesame'
+projectDescription = projectName
+
+libs = ['lib/openrdf-sesame-2.4.0-alpha1-onejar.jar']
+
+dependencies {
+    compile files(libs)
+    compile project(':cassa-server')
+    runtime 'org.slf4j:slf4j-api:(1.5.8,)'
+}

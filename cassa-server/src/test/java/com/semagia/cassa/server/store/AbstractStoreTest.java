@@ -145,14 +145,41 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         }
     }
 
+    public void testGetGraphInfoNotExisting2() throws StoreException {
+        try {
+            _store.getGraphInfo(IStore.DEFAULT_GRAPH);
+            fail("Expected an exception for a non-existing graph");
+        }
+        catch (GraphNotExistsException ex) {
+            // noop.
+        }
+    }
+
     public void testGetGraphInfo() throws StoreException {
         createDefaultGraph();
-        assertEquals(_VALID_GRAPH, _store.getGraphInfo(_VALID_GRAPH).getURI());
+        final IGraphInfo info = _store.getGraphInfo(_VALID_GRAPH);
+        assertEquals(_VALID_GRAPH, info.getURI());
+        if (isRDFStore()) {
+            assertTrue("An RDF store should support RDF/XML", info.getSupportedMediaTypes().contains(MediaType.RDF_XML));
+        }
+        if (isTMStore()) {
+            assertTrue("A TM store should support XTM", info.getSupportedMediaTypes().contains(MediaType.XTM));
+        }
     }
 
     public void testGetNotExisting() throws StoreException {
         try {
             _store.getGraph(_INVALID_GRAPH, MediaType.RDF_XML);
+            fail("Expected an exception for a non-existing graph");
+        }
+        catch (GraphNotExistsException ex) {
+            // noop.
+        }
+    }
+
+    public void testGetNotExisting2() throws StoreException {
+        try {
+            _store.getGraph(IStore.DEFAULT_GRAPH, MediaType.RDF_XML);
             fail("Expected an exception for a non-existing graph");
         }
         catch (GraphNotExistsException ex) {

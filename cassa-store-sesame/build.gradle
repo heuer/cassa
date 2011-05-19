@@ -15,4 +15,5 @@ dependencies {
     compile files(libs)
     compile project(':cassa-server')
     runtime 'org.slf4j:slf4j-api:(1.5.8,)'
+    testCompile project(path: ':cassa-server', configuration: 'testsuite')
 }

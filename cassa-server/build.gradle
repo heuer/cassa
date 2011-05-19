@@ -9,6 +9,20 @@ version = '0.0.1'
 projectName = 'Semagia Cassa Server'
 projectDescription = projectName
 
+configurations {
+    testsuite
+}
+
+task testJar(type: Jar, dependsOn: compileTestJava) {
+    from sourceSets.test.classesDir
+    baseName = jar.baseName + '-tests'
+}
+
+artifacts {
+    archives jar
+    testsuite testJar
+}
+
 dependencies {
     compile project(':cassa-common')
 }

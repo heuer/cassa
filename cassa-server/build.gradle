@@ -9,8 +9,18 @@ version = '0.0.1'
 projectName = 'Semagia Cassa Server'
 projectDescription = projectName
 
+libs = ['lib/mrg-0.7.jar']
+
 configurations {
     testsuite
+}
+
+dependencies {
+    compile project(':cassa-common')
+    testCompile files(libs)
+    testRuntime 'com.hp.hpl.jena:iri:0.8',
+                'xerces:xercesImpl:2.7.1',
+                'joda-time:joda-time:1.6.2'
 }
 
 task testJar(type: Jar, dependsOn: compileTestJava) {
@@ -21,8 +31,4 @@ task testJar(type: Jar, dependsOn: compileTestJava) {
 artifacts {
     archives jar
     testsuite testJar
-}
-
-dependencies {
-    compile project(':cassa-common')
 }

@@ -94,7 +94,7 @@ public interface IStore {
      * @param in
      * @param baseURI The base URI to resolve relative URIs against (in most cases identical to the graph IRI).
      * @param mediaType The media type of the input stream.
-     * @return
+     * @return Metadata of the created/updated graph.
      * @throws UnsupportedMediaTypeException
      * @throws IOException In case of an I/O error.
      * @throws StoreException In case of an error.
@@ -108,7 +108,7 @@ public interface IStore {
      * @param in
      * @param baseURI The base URI to resolve relative URIs against (in most cases identical to the graph IRI).
      * @param mediaType The media type of the input stream.
-     * @return
+     * @return Metadata of the created/replaced graph.
      * @throws UnsupportedMediaTypeException
      * @throws IOException In case of an I/O error.
      * @throws StoreException In case of an error.

@@ -20,8 +20,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.mulgara.mrg.Graph;
+import org.mulgara.mrg.parser.ParseException;
+import org.mulgara.mrg.parser.XMLGraphParser;
+import org.mulgara.mrg.vocab.RDF;
+import org.mulgara.mrg.vocab.uri.FOAF;
 
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IGraphInfo;
@@ -288,6 +295,82 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         catch (UnsupportedMediaTypeException ex) {
             assertTrue(ex.getMediaTypes().size() > 0);
         }
+    }
+
+    public void testCreateAndReplaceRDFGraph() throws ParseException, IOException, StoreException, URISyntaxException {
+        if (!isRDFStore()) {
+            return;
+        }
+        final String p1 = "http://psi.example.org/P1";
+        final String name1 = "Name";
+        final String p2 = "http://psi.example.org/P2";
+        final String name2 = "Name2";
+        assertEquals(0, graphCount());
+        InputStream in = AbstractStoreTest.class.getResourceAsStream("/test.rdf");
+        IGraphInfo info = _store.createOrReplaceGraph(_VALID_GRAPH, in, _VALID_GRAPH, MediaType.RDF_XML);
+        assertEquals(1, graphCount());
+        assertEquals(_VALID_GRAPH, info.getURI());
+        assertTrue(info.getSupportedMediaTypes().contains(MediaType.RDF_XML));
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        _store.getGraph(_VALID_GRAPH, MediaType.RDF_XML).write(out);
+        ByteArrayInputStream input = new ByteArrayInputStream(out.toByteArray());
+        Graph graph = new XMLGraphParser(input).getGraph();
+        assertEquals(2, graph.size());
+        assertTrue(graph.isAsserted(p1, RDF.TYPE, FOAF.PERSON));
+        assertTrue(graph.isAsserted(p1, FOAF.NAME, name1));
+        
+        in = AbstractStoreTest.class.getResourceAsStream("/test2.rdf");
+        info = _store.createOrReplaceGraph(_VALID_GRAPH, in, _VALID_GRAPH, MediaType.RDF_XML);
+        assertEquals(1, graphCount());
+        assertEquals(_VALID_GRAPH, info.getURI());
+        assertTrue(info.getSupportedMediaTypes().contains(MediaType.RDF_XML));
+        out = new ByteArrayOutputStream();
+        _store.getGraph(_VALID_GRAPH, MediaType.RDF_XML).write(out);
+        input = new ByteArrayInputStream(out.toByteArray());
+        graph = new XMLGraphParser(input).getGraph();
+        assertEquals(2, graph.size());
+        assertFalse(graph.isAsserted(p1, RDF.TYPE, FOAF.PERSON));
+        assertFalse(graph.isAsserted(p1, FOAF.NAME, name1));
+        assertTrue(graph.isAsserted(p2, RDF.TYPE, FOAF.PERSON));
+        assertTrue(graph.isAsserted(p2, FOAF.NAME, name2));
+    }
+
+    public void testCreateAndUpdateRDFGraph() throws ParseException, IOException, StoreException, URISyntaxException {
+        if (!isRDFStore()) {
+            return;
+        }
+        final String p1 = "http://psi.example.org/P1";
+        final String name1 = "Name";
+        final String p2 = "http://psi.example.org/P2";
+        final String name2 = "Name2";
+        assertEquals(0, graphCount());
+        InputStream in = AbstractStoreTest.class.getResourceAsStream("/test.rdf");
+        IGraphInfo info = _store.createOrUpdateGraph(_VALID_GRAPH, in, _VALID_GRAPH, MediaType.RDF_XML);
+        assertEquals(1, graphCount());
+        assertEquals(_VALID_GRAPH, info.getURI());
+        assertTrue(info.getSupportedMediaTypes().contains(MediaType.RDF_XML));
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        _store.getGraph(_VALID_GRAPH, MediaType.RDF_XML).write(out);
+        ByteArrayInputStream input = new ByteArrayInputStream(out.toByteArray());
+        Graph graph = new XMLGraphParser(input).getGraph();
+        assertEquals(2, graph.size());
+        assertTrue(graph.isAsserted(p1, RDF.TYPE, FOAF.PERSON));
+        assertTrue(graph.isAsserted(p1, FOAF.NAME, name1));
+        
+        in = AbstractStoreTest.class.getResourceAsStream("/test2.rdf");
+        info = _store.createOrUpdateGraph(_VALID_GRAPH, in, _VALID_GRAPH, MediaType.RDF_XML);
+        assertEquals(1, graphCount());
+        assertEquals(_VALID_GRAPH, info.getURI());
+        assertTrue(info.getSupportedMediaTypes().contains(MediaType.RDF_XML));
+        out = new ByteArrayOutputStream();
+        _store.getGraph(_VALID_GRAPH, MediaType.RDF_XML).write(out);
+        input = new ByteArrayInputStream(out.toByteArray());
+        graph = new XMLGraphParser(input).getGraph();
+        assertEquals(4, graph.size());
+        assertTrue(graph.isAsserted(p1, RDF.TYPE, FOAF.PERSON));
+        assertTrue(graph.isAsserted(p1, FOAF.NAME, name1));
+        assertTrue(graph.isAsserted(p2, RDF.TYPE, FOAF.PERSON));
+        assertTrue(graph.isAsserted(p2, FOAF.NAME, name2));
     }
 
 }

@@ -60,7 +60,7 @@ final class MediaTypeUtils {
      * @return A list of variants representing the provided media types.
      */
     public static List<Variant> asVariants(final List<MediaType> mediaTypes) {
-        Variant.VariantListBuilder builder = Variant.VariantListBuilder.newInstance();
+        final Variant.VariantListBuilder builder = Variant.VariantListBuilder.newInstance();
         for (MediaType mt: mediaTypes) {
             builder.mediaTypes(toJaxRSMediaType(mt));
             builder.add();

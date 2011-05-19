@@ -194,7 +194,15 @@ public final class SesameStore implements IStore {
     private static class GraphInfo extends DefaultGraphInfo {
        
         public GraphInfo(URI uri) {
-            super(uri, SesameUtils.getReadableMediaTypes());
+            super(uri);
+        }
+
+        /* (non-Javadoc)
+         * @see com.semagia.cassa.common.dm.impl.DefaultGraphInfo#getSupportedMediaTypes()
+         */
+        @Override
+        public List<MediaType> getSupportedMediaTypes() {
+            return SesameUtils.getReadableMediaTypes();
         }
     }
 

@@ -15,12 +15,15 @@
  */
 package com.semagia.cassa.server.store;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IGraphInfo;
+import com.semagia.cassa.common.dm.IWritableRepresentation;
 
 import junit.framework.TestCase;
 
@@ -205,6 +208,17 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
                 fail("A Topic Maps store should support XTM as serialization format");
             }
         }
+    }
+
+    public void testWritingRDFSimple() throws StoreException, IOException {
+        if (!isRDFStore()) {
+            return;
+        }
+        createDefaultGraph();
+        final IWritableRepresentation writer = _store.getGraph(_VALID_GRAPH, MediaType.RDF_XML);
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        writer.write(out);
+        assertTrue(out.size() > 0);
     }
 
     public void testGetInvalidMediaType() throws StoreException {

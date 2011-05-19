@@ -246,6 +246,9 @@ public final class SesameStore implements IStore {
                 _conn.export(writer, _resources);
             }
             catch (OpenRDFException ex) {
+                if (ex.getCause() instanceof IOException) {
+                    throw (IOException) ex.getCause();
+                }
                 throw new IOException(ex);
             }
         }

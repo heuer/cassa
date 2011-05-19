@@ -33,6 +33,7 @@ import org.openrdf.rio.Rio;
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IGraphInfo;
 import com.semagia.cassa.common.dm.IWritableRepresentation;
+import com.semagia.cassa.common.dm.impl.DefaultGraphInfo;
 import com.semagia.cassa.server.store.GraphNotExistsException;
 import com.semagia.cassa.server.store.IStore;
 import com.semagia.cassa.server.store.RemovalStatus;
@@ -190,36 +191,10 @@ public final class SesameStore implements IStore {
     }
 
 
-    private static class GraphInfo implements IGraphInfo {
-        
-        private final URI _uri;
-
-        public GraphInfo(final URI uri) {
-            _uri = uri;
-        }
-
-        /* (non-Javadoc)
-         * @see com.semagia.cassa.common.dm.IGraphInfo#getLastModification()
-         */
-        @Override
-        public long getLastModification() {
-            return -1;
-        }
-
-        /* (non-Javadoc)
-         * @see com.semagia.cassa.common.dm.IGraphInfo#getSupportedMediaTypes()
-         */
-        @Override
-        public List<MediaType> getSupportedMediaTypes() {
-            return SesameUtils.getReadableMediaTypes();
-        }
-
-        /* (non-Javadoc)
-         * @see com.semagia.cassa.common.dm.IGraphInfo#getURI()
-         */
-        @Override
-        public URI getURI() {
-            return _uri;
+    private static class GraphInfo extends DefaultGraphInfo {
+       
+        public GraphInfo(URI uri) {
+            super(uri, SesameUtils.getReadableMediaTypes());
         }
     }
 

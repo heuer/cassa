@@ -44,10 +44,27 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
      */
     protected abstract T createStore() throws Exception;
 
+    /**
+     * Creates a graph under the provided URI.
+     *
+     * @param store The store.
+     * @param graphURI
+     * @throws StoreException
+     */
     protected abstract void createGraph(T store, URI graphURI) throws StoreException;
 
+    /**
+     * Returns {@code true} iff this store understands RDF.
+     *
+     * @return {@code true} if this store understands RDF, {@code false} otherwise.
+     */
     protected abstract boolean isRDFStore();
 
+    /**
+     * Returns {@code true} iff this store understands Topic Maps.
+     *
+     * @return {@code true} if this store understands Topic Maps, {@code false} otherwise.
+     */
     protected abstract boolean isTMStore();
 
     /* (non-Javadoc)
@@ -146,12 +163,20 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
     public void testGet() throws StoreException {
         createDefaultGraph();
         if (isRDFStore()) {
-            assertEquals("An RDF store should support RDF/XML as serialization format",
-                    MediaType.RDF_XML, _store.getGraph(_VALID_GRAPH, MediaType.RDF_XML).getMediaType());
+            try {
+                assertEquals(MediaType.RDF_XML, _store.getGraph(_VALID_GRAPH, MediaType.RDF_XML).getMediaType());
+            }
+            catch (UnsupportedMediaTypeException ex) {
+                fail("A RDF store should support RDF/XML as serialization format");
+            }
         }
         if (isTMStore()) {
-            assertEquals("A Topic Maps store should support XTM as serialization format",
-                    MediaType.XTM, _store.getGraph(_VALID_GRAPH, MediaType.XTM).getMediaType());
+            try {
+                assertEquals(MediaType.XTM, _store.getGraph(_VALID_GRAPH, MediaType.XTM).getMediaType());
+            }
+            catch (UnsupportedMediaTypeException ex) {
+                fail("A Topic Maps store should support XTM as serialization format");
+            }
         }
     }
 

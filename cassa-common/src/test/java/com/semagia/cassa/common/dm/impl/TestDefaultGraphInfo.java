@@ -18,6 +18,7 @@ package com.semagia.cassa.common.dm.impl;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import com.semagia.cassa.common.MediaType;
@@ -67,6 +68,22 @@ public class TestDefaultGraphInfo extends TestCase {
         assertEquals(_DEFAULT_URI, info.getURI());
         assertEquals(-1, info.getLastModification());
         assertEquals(0, info.getSupportedMediaTypes().size());
+    }
+
+    public void testMediaTypeNull() {
+        final MediaType mediaType = null;
+        final IGraphInfo info = new DefaultGraphInfo(_DEFAULT_URI, mediaType);
+        assertEquals(_DEFAULT_URI, info.getURI());
+        assertEquals(-1, info.getLastModification());
+        assertEquals(0, info.getSupportedMediaTypes().size());
+    }
+
+    public void testDate() {
+        final long date = new Date().getTime();
+        final IGraphInfo info = new DefaultGraphInfo(_DEFAULT_URI, MediaType.XTM, date);
+        assertEquals(_DEFAULT_URI, info.getURI());
+        assertEquals(date, info.getLastModification());
+        assertEquals(1, info.getSupportedMediaTypes().size());
     }
 
     public void testURIIllegal() {

@@ -34,11 +34,19 @@ public class DefaultGraphInfo implements IGraphInfo {
     private final long _lastModification;
 
     public DefaultGraphInfo(final URI uri) {
-        this(uri, null, -1);
+        this(uri, (List<MediaType>)null, -1);
     }
 
     public DefaultGraphInfo(final URI uri, List<MediaType> mediaTypes) {
         this(uri, mediaTypes, -1);
+    }
+
+    public DefaultGraphInfo(final URI uri, final MediaType mediaType) {
+        this(uri, Collections.singletonList(mediaType), -1);
+    }
+
+    public DefaultGraphInfo(final URI uri, final MediaType mediaType, final long lastModification) {
+        this(uri, Collections.singletonList(mediaType), lastModification);
     }
 
     public DefaultGraphInfo(final URI uri, final List<MediaType> mediaTypes, final long lastModification) {

@@ -141,8 +141,7 @@ public final class SesameStore implements IStore {
         catch (OpenRDFException ex) {
             throw new StoreException(ex);
         }
-        //TODO
-        return null;
+        return new GraphInfo(graphURI);
     }
 
     /* (non-Javadoc)
@@ -161,8 +160,7 @@ public final class SesameStore implements IStore {
         catch (OpenRDFException ex) {
             throw new StoreException(ex);
         }
-        //TODO
-        return null;
+        return new GraphInfo(graphURI);
     }
 
     /**

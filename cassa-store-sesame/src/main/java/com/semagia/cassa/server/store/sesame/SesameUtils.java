@@ -40,13 +40,13 @@ final class SesameUtils {
     static {
         _READABLE_MEDIATYPES = new ArrayList<MediaType>();
         for (RDFFormat format: RDFParserRegistry.getInstance().getKeys()) {
-            _READABLE_MEDIATYPES.add(SesameUtils.asMediaType(format));
+            _READABLE_MEDIATYPES.add(asMediaType(format));
         }
         _READABLE_MEDIATYPES = Collections.unmodifiableList(_READABLE_MEDIATYPES);
 
         _WRITABLE_MEDIATYPES = new ArrayList<MediaType>();
         for (RDFFormat format: RDFWriterRegistry.getInstance().getKeys()) {
-            _WRITABLE_MEDIATYPES.add(SesameUtils.asMediaType(format));
+            _WRITABLE_MEDIATYPES.add(asMediaType(format));
         }
         _WRITABLE_MEDIATYPES = Collections.unmodifiableList(_WRITABLE_MEDIATYPES);
     }
@@ -79,7 +79,7 @@ final class SesameUtils {
      * @param format The RDFFormat to convert.
      * @return The RDFFormat equivalent.
      */
-    public static MediaType asMediaType(final RDFFormat format) {
+    private static MediaType asMediaType(final RDFFormat format) {
         return MediaType.valueOf(format.getDefaultMIMEType());
     }
 

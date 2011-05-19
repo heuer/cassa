@@ -15,8 +15,10 @@
  */
 package com.semagia.cassa.server.store;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,10 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         _INVALID_GRAPH = URI.create("http://www.semagia.com/invalid-graph"),
         _VALID_GRAPH = URI.create("http://www.semagia.com/valid-graph");
 
+    private static final InputStream _INVALID_INPUTSTREAM = new ByteArrayInputStream("hello, i'm invalid".getBytes());
+
+    private static final MediaType _INVALID_MEDIATYPE = MediaType.valueOf("foo/bar");
+    
     protected T _store;
 
     /**
@@ -134,8 +140,23 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
     }
 
     public void testDeleteValid() throws StoreException {
+        final List<IGraphInfo> infos = new ArrayList<IGraphInfo>();
+        for (IGraphInfo info: _store.getGraphInfos()) {
+            infos.add(info);
+        }
+        assertEquals(0, infos.size());
         createDefaultGraph();
+        infos.clear();
+        for (IGraphInfo info: _store.getGraphInfos()) {
+            infos.add(info);
+        }
+        assertEquals(1, infos.size());
         _store.deleteGraph(_VALID_GRAPH);
+        infos.clear();
+        for (IGraphInfo info: _store.getGraphInfos()) {
+            infos.add(info);
+        }
+        assertEquals(0, infos.size());
     }
 
     public void testGetGraphInfoNotExisting() throws StoreException {
@@ -224,11 +245,31 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
     public void testGetInvalidMediaType() throws StoreException {
         createDefaultGraph();
         try {
-            _store.getGraph(_VALID_GRAPH, MediaType.valueOf("foo/bar"));
+            _store.getGraph(_VALID_GRAPH, _INVALID_MEDIATYPE);
             fail("Expected an exception for an unknown media type");
         }
         catch (UnsupportedMediaTypeException ex) {
-            // noop.
+            assertTrue(ex.getMediaTypes().size() > 0);
+        }
+    }
+
+    public void testCreateOrReplaceIllegalMediaType() throws IOException, StoreException {
+        try {
+            _store.createOrReplaceGraph(_VALID_GRAPH, _INVALID_INPUTSTREAM, _VALID_GRAPH, _INVALID_MEDIATYPE);
+            fail("Expected an exception for an unknown media type");
+        }
+        catch (UnsupportedMediaTypeException ex) {
+            assertTrue(ex.getMediaTypes().size() > 0);
+        }
+    }
+
+    public void testCreateOrUpdateIllegalMediaType() throws IOException, StoreException {
+        try {
+            _store.createOrUpdateGraph(_VALID_GRAPH, _INVALID_INPUTSTREAM, _VALID_GRAPH, _INVALID_MEDIATYPE);
+            fail("Expected an exception for an unknown media type");
+        }
+        catch (UnsupportedMediaTypeException ex) {
+            assertTrue(ex.getMediaTypes().size() > 0);
         }
     }
 

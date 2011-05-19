@@ -102,6 +102,15 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
     }
 
     @SuppressWarnings("unused")
+    private int graphCount() throws StoreException {
+        int i = 0;
+        for (IGraphInfo info: _store.getGraphInfos()) {
+            i++;
+        }
+        return i;
+    }
+
+    @SuppressWarnings("unused")
     public void testEmptyStore() throws StoreException {
         for (IGraphInfo info: _store.getGraphInfos()) {
             fail("Expected no graphs");
@@ -140,23 +149,11 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
     }
 
     public void testDeleteValid() throws StoreException {
-        final List<IGraphInfo> infos = new ArrayList<IGraphInfo>();
-        for (IGraphInfo info: _store.getGraphInfos()) {
-            infos.add(info);
-        }
-        assertEquals(0, infos.size());
+        assertEquals(0, graphCount());
         createDefaultGraph();
-        infos.clear();
-        for (IGraphInfo info: _store.getGraphInfos()) {
-            infos.add(info);
-        }
-        assertEquals(1, infos.size());
+        assertEquals(1, graphCount());
         _store.deleteGraph(_VALID_GRAPH);
-        infos.clear();
-        for (IGraphInfo info: _store.getGraphInfos()) {
-            infos.add(info);
-        }
-        assertEquals(0, infos.size());
+        assertEquals(0, graphCount());
     }
 
     public void testGetGraphInfoNotExisting() throws StoreException {

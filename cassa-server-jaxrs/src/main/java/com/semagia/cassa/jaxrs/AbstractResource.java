@@ -38,7 +38,7 @@ abstract class AbstractResource {
     @Context 
     private Request _request;
 
-    private IStore _store = new MockStore();
+    private IStore _store;
 
     /**
      * Returns the store.

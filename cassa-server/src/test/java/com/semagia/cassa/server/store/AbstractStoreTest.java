@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IGraphInfo;
+import com.semagia.cassa.common.dm.IWritableRepresentation;
 
 import junit.framework.TestCase;
 
@@ -75,7 +76,7 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         }
     }
 
-    public void testGetGraphInfo() throws StoreException {
+    public void testGetGraphInfos() throws StoreException {
         createDefaultGraph();
         final List<IGraphInfo> infos = new ArrayList<IGraphInfo>();
         for (IGraphInfo info: _store.getGraphInfos()) {
@@ -106,6 +107,11 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         }
     }
 
+    public void testDeleteValid() throws StoreException {
+        createDefaultGraph();
+        _store.deleteGraph(_VALID_GRAPH);
+    }
+
     public void testGetGraphInfoNotExisting() throws StoreException {
         try {
             _store.getGraphInfo(_INVALID_GRAPH);
@@ -116,6 +122,11 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         }
     }
 
+    public void testGetGraphInfo() throws StoreException {
+        createDefaultGraph();
+        assertEquals(_VALID_GRAPH, _store.getGraphInfo(_VALID_GRAPH).getURI());
+    }
+
     public void testGetNotExisting() throws StoreException {
         try {
             _store.getGraph(_INVALID_GRAPH, MediaType.RDF_XML);
@@ -123,6 +134,20 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         }
         catch (GraphNotExistsException ex) {
             // noop.
+        }
+    }
+
+    public void testGet() throws StoreException {
+        createDefaultGraph();
+        IWritableRepresentation writable = null;
+        try {
+            writable = _store.getGraph(_VALID_GRAPH, MediaType.RDF_XML);
+        }
+        catch (UnsupportedMediaTypeException ex) {
+            writable = _store.getGraph(_VALID_GRAPH, MediaType.XTM);
+        }
+        if (writable == null) {
+            fail("The store should support RDF/XML or XTM");
         }
     }
 

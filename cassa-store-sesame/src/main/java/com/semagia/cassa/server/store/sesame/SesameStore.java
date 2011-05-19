@@ -140,7 +140,8 @@ public final class SesameStore implements IStore {
         } 
         catch (OpenRDFException ex) {
             throw new StoreException(ex);
-        } 
+        }
+        //TODO
         return null;
     }
 
@@ -151,12 +152,16 @@ public final class SesameStore implements IStore {
     public IGraphInfo createOrReplaceGraph(URI graphURI, InputStream in,
             URI baseURI, MediaType mediaType)
             throws UnsupportedMediaTypeException, IOException, StoreException {
+        final RDFFormat format = SesameUtils.asReadableRDFFormat(mediaType);
+        final Resource[] contexts = getContext(graphURI);
         try {
-            _conn.add(in, baseURI.toString(), SesameUtils.asReadableRDFFormat(mediaType), getContext(graphURI));
+            _conn.clear(contexts);
+            _conn.add(in, baseURI.toString(), format, contexts);
         } 
         catch (OpenRDFException ex) {
             throw new StoreException(ex);
-        } 
+        }
+        //TODO
         return null;
     }
 

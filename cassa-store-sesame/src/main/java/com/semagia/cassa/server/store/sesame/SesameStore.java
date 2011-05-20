@@ -50,6 +50,7 @@ public final class SesameStore implements IStore {
 
     private static Resource[] _ALL_CONTEXTS = new Resource[0];
 
+    // Package visibility for running TestSesameStore tests
     final RepositoryConnection _conn;
 
     public SesameStore(final RepositoryConnection conn) {
@@ -234,7 +235,7 @@ public final class SesameStore implements IStore {
          */
         @Override
         public List<MediaType> getSupportedMediaTypes() {
-            return SesameUtils.getReadableMediaTypes();
+            return SesameUtils.getWritableMediaTypes();
         }
     }
 

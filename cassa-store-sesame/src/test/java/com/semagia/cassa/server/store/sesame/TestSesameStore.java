@@ -17,14 +17,12 @@ package com.semagia.cassa.server.store.sesame;
 
 import java.net.URI;
 
-import org.openrdf.OpenRDFException;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 
 import com.semagia.cassa.server.store.AbstractStoreTest;
-import com.semagia.cassa.server.store.StoreException;
 
 /**
  * Tests against the {@link SesameStore}.
@@ -64,17 +62,12 @@ public class TestSesameStore extends AbstractStoreTest<SesameStore> {
      */
     @Override
     protected void createGraph(SesameStore store, URI graphURI)
-            throws StoreException {
+            throws Exception {
         final ValueFactory factory = store._conn.getValueFactory();
-        try {
-            store._conn.add(factory.createBNode(), 
+        store._conn.add(factory.createBNode(), 
                     factory.createURI("http://psi.example.org/foo"), 
                     factory.createBNode(), 
                     factory.createURI(graphURI.toString()));
-        }
-        catch (OpenRDFException ex) {
-            throw new StoreException(ex);
-        }
     }
 
 }

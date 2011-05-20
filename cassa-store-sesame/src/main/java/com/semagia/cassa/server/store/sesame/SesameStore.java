@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Resource;
@@ -129,12 +130,30 @@ public final class SesameStore implements IStore {
     }
 
     /* (non-Javadoc)
-     * @see com.semagia.cassa.server.store.IStore#createOrUpdateGraph(java.net.URI, java.io.InputStream, java.net.URI, com.semagia.cassa.common.MediaType)
+     * @see com.semagia.cassa.server.store.IStore#updateGraph(java.net.URI, java.io.InputStream, java.net.URI, com.semagia.cassa.common.MediaType)
      */
     @Override
-    public IGraphInfo createOrUpdateGraph(URI graphURI, InputStream in,
-            URI baseURI, MediaType mediaType)
-            throws UnsupportedMediaTypeException, IOException, StoreException {
+    public IGraphInfo updateGraph(URI graphURI, InputStream in, URI baseURI,
+            MediaType mediaType) throws UnsupportedMediaTypeException,
+            IOException, StoreException {
+        ensureGraphAvailable(graphURI);
+        try {
+            _conn.add(in, baseURI.toString(), SesameUtils.asReadableRDFFormat(mediaType), getContext(graphURI));
+        } 
+        catch (OpenRDFException ex) {
+            throw new StoreException(ex);
+        }
+        return new GraphInfo(graphURI);
+    }
+
+    /* (non-Javadoc)
+     * @see com.semagia.cassa.server.store.IStore#createGraph(java.io.InputStream, java.net.URI, com.semagia.cassa.common.MediaType)
+     */
+    @Override
+    public IGraphInfo createGraph(InputStream in, URI baseURI,
+            MediaType mediaType) throws UnsupportedMediaTypeException,
+            IOException, StoreException {
+        final URI graphURI = baseURI.resolve(UUID.randomUUID().toString());
         try {
             _conn.add(in, baseURI.toString(), SesameUtils.asReadableRDFFormat(mediaType), getContext(graphURI));
         } 

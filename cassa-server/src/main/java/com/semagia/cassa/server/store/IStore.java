@@ -86,11 +86,9 @@ public interface IStore {
     public RemovalStatus deleteGraph(URI graphURI) throws GraphNotExistsException, StoreException;
 
     /**
-     * Creates or updates the graph.
+     * Updates a graph.
      * 
-     * In case the graph URI is {@code null}, the store must create a graph with a unique address.
-     *
-     * @param graphURI The graph URI or {@code null}.
+     * @param graphURI The graph URI.
      * @param in
      * @param baseURI The base URI to resolve relative URIs against (in most cases identical to the graph IRI).
      * @param mediaType The media type of the input stream.
@@ -99,7 +97,20 @@ public interface IStore {
      * @throws IOException In case of an I/O error.
      * @throws StoreException In case of an error.
      */
-    public IGraphInfo createOrUpdateGraph(URI graphURI, InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, IOException, StoreException;
+    public IGraphInfo updateGraph(URI graphURI, InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, IOException, StoreException;
+
+    /**
+     * Creates a graph.
+     * 
+     * @param in
+     * @param baseURI The base URI to resolve relative URIs against.
+     * @param mediaType The media type of the input stream.
+     * @return Metadata of the created/updated graph.
+     * @throws UnsupportedMediaTypeException
+     * @throws IOException In case of an I/O error.
+     * @throws StoreException In case of an error.
+     */
+    public IGraphInfo createGraph(InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, IOException, StoreException;
 
     /**
      * Creates or updates the graph with the specified URI.

@@ -117,25 +117,27 @@ public abstract class AbstractGraphResource extends AbstractResource {
      */
     @POST
     public Response mergeGraph(InputStream in, @Context HttpHeaders header) throws IOException, StoreException {
-        //TODO: Ensure that the location points to this server.
         final URI graphURI = getGraphURI();
         final IStore store = getStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
-        final boolean wasKnown = store.containsGraph(graphURI);
-        final IGraphInfo info = store.createOrUpdateGraph(graphURI, in, getBaseURI(graphURI), mt);
-        return wasKnown ? noContent() : created(info.getURI());
+        final URI base = getBaseURI(graphURI);
+        final IGraphInfo info = graphURI == null ? store.createGraph(in, base, mt)
+                                                 : store.updateGraph(graphURI, in, base, mt);
+        return graphURI == null ? created(info.getURI()) : noContent();
     }
 
     /**
      * Returns the base URI.
      *
-     * @param graphURI The graph URI.
+     * @param graphURI The graph URI or {@code null}.
      * @return The {@code graphURI} if it does not represent the default graph, 
      *          otherwise a URI which represents the path to this resource. 
      */
     private URI getBaseURI(URI graphURI) {
-        return graphURI == IStore.DEFAULT_GRAPH ? _uriInfo.getAbsolutePath() 
-                                                : graphURI;
+        if (graphURI == null || graphURI == IStore.DEFAULT_GRAPH) {
+            return _uriInfo.getAbsolutePath();
+        }
+        return graphURI;
     }
 
     /**

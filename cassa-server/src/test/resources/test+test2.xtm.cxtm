@@ -1,0 +1,25 @@
+<topicMap>
+<topic number="1">
+<itemIdentifiers>
+<locator>test test2.xtm#p1</locator>
+</itemIdentifiers>
+<name number="1">
+<value>Name</value>
+<type topicref="3"></type>
+</name>
+</topic>
+<topic number="2">
+<itemIdentifiers>
+<locator>test test2.xtm#p2</locator>
+</itemIdentifiers>
+<name number="1">
+<value>Name2</value>
+<type topicref="3"></type>
+</name>
+</topic>
+<topic number="3">
+<subjectIdentifiers>
+<locator>http://psi.topicmaps.org/iso13250/model/topic-name</locator>
+</subjectIdentifiers>
+</topic>
+</topicMap>

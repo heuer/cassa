@@ -21,7 +21,8 @@ import java.util.List;
 import com.semagia.cassa.common.MediaType;
 
 /**
- * Exception thrown if a {@link IStore} cannot accept the provided media type. 
+ * Exception thrown if a {@link IStore} cannot accept (reading) or support (writing)
+ * the provided media type. 
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */

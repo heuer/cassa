@@ -16,7 +16,7 @@
 package com.semagia.cassa.server.store;
 
 /**
- * 
+ * Exception thrown if a client tries to access a non-existing graph.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */

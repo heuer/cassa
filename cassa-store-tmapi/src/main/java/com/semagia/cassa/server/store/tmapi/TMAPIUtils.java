@@ -84,7 +84,7 @@ final class TMAPIUtils {
     public static void write(final TopicMap tm, final MediaType mediaType,
             final OutputStream out) throws IOException {
         assert(MediaType.XTM.equals(mediaType));
-        final TopicMapWriter writer = new XTM2TopicMapWriter(out, tm.getLocator().toExternalForm(), XTMVersion.XTM_2_0);
+        final TopicMapWriter writer = new XTM2TopicMapWriter(out, tm.getLocator().toExternalForm(), XTMVersion.XTM_2_1);
         writer.write(tm);
     }
 

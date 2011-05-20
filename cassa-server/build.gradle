@@ -12,7 +12,9 @@ projectDescription = projectName
 libs = ['lib/mrg-0.7.jar']
 
 configurations {
-    testsuite
+    testsuite {
+      extendsFrom testRuntime
+    }
 }
 
 dependencies {
@@ -25,6 +27,7 @@ dependencies {
 
 task testJar(type: Jar, dependsOn: compileTestJava) {
     from sourceSets.test.classesDir
+    from sourceSets.test.resources.srcDirs
     baseName = jar.baseName + '-tests'
 }
 

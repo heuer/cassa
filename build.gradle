@@ -38,6 +38,10 @@ configure(javaProjects()) {
   repositories {
       mavenCentral()
       mavenRepo urls: 'http://download.java.net/maven/2/'
+      mavenRepo urls: 'http://www.tmapi.org/maven-repository/'
+      mavenRepo urls: 'http://tinytim.sourceforge.net/maven-repository/snapshots/'
+      mavenRepo urls: 'http://repository.semagia.com/snapshots/'
+      mavenRepo urls: 'http://repository.semagia.com/releases/'
   }
 
   dependencies {

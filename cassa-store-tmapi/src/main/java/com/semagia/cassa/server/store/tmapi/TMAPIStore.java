@@ -155,7 +155,7 @@ public final class TMAPIStore implements IStore {
      * @throws StoreException In case of an error.
      */
     private void ensureGraphExists(final URI graphURI) throws GraphNotExistsException, StoreException {
-        if (!containsGraph(graphURI)) {
+        if (graphURI == IStore.DEFAULT_GRAPH || !containsGraph(graphURI)) {
             throw new GraphNotExistsException("The graph " + graphURI + " does not exist");
         }
     }

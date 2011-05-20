@@ -116,7 +116,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * @throws StorageException In case of an error.
      */
     @POST
-    public Response mergeGraph(InputStream in, @Context HttpHeaders header) throws IOException, StoreException {
+    public Response createOrUpdateGraph(InputStream in, @Context HttpHeaders header) throws IOException, StoreException {
         final URI graphURI = getGraphURI();
         final IStore store = getStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());

@@ -17,12 +17,14 @@ package com.semagia.cassa.jaxrs.providers;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
 /**
  * 
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
+@Provider
 public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException> {
 
     @Override

@@ -19,12 +19,14 @@ import java.io.IOException;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
 /**
  * 
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
+@Provider
 public class IOExceptionMapper implements ExceptionMapper<IOException> {
 
     @Override

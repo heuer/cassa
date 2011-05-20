@@ -82,7 +82,7 @@ public final class SesameStore implements IStore {
     public IWritableRepresentation getGraph(URI graphURI, MediaType mediaType)
             throws GraphNotExistsException, UnsupportedMediaTypeException,
             StoreException {
-        ensureGraphAvailable(graphURI);
+        ensureGraphExists(graphURI);
         return new WritableRepresentation(SesameUtils.asWritableRDFFormat(mediaType),
                 mediaType, getContext(graphURI));
     }
@@ -109,7 +109,7 @@ public final class SesameStore implements IStore {
     @Override
     public IGraphInfo getGraphInfo(URI graphURI)
             throws GraphNotExistsException, StoreException {
-        ensureGraphAvailable(graphURI);
+        ensureGraphExists(graphURI);
         return new GraphInfo(graphURI);
     }
 
@@ -119,7 +119,7 @@ public final class SesameStore implements IStore {
     @Override
     public RemovalStatus deleteGraph(URI graphURI)
             throws GraphNotExistsException, StoreException {
-        ensureGraphAvailable(graphURI);
+        ensureGraphExists(graphURI);
         try {
             _conn.clear(getContext(graphURI));
         }
@@ -136,7 +136,7 @@ public final class SesameStore implements IStore {
     public IGraphInfo updateGraph(URI graphURI, InputStream in, URI baseURI,
             MediaType mediaType) throws UnsupportedMediaTypeException,
             IOException, StoreException {
-        ensureGraphAvailable(graphURI);
+        ensureGraphExists(graphURI);
         try {
             _conn.add(in, baseURI.toString(), SesameUtils.asReadableRDFFormat(mediaType), getContext(graphURI));
         } 
@@ -189,7 +189,7 @@ public final class SesameStore implements IStore {
      * @throws GraphNotExistsException In case the graph URI does not exist.
      * @throws StoreException In case of an error.
      */
-    private void ensureGraphAvailable(final URI graphURI) throws GraphNotExistsException, StoreException {
+    private void ensureGraphExists(final URI graphURI) throws GraphNotExistsException, StoreException {
         try {
             if (_conn.isEmpty() || !containsGraph(graphURI)) {
                 final String graph = graphURI == IStore.DEFAULT_GRAPH ? "'default'" : "<" + graphURI.toString() + ">";

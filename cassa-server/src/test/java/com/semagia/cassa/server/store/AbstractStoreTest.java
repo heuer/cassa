@@ -134,12 +134,12 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         assertEquals(_VALID_GRAPH, infos.get(0).getURI());
     }
 
-    public void testHasGraphInvalid() throws StoreException {
+    public void testContainsGraphInvalid() throws StoreException {
         assertFalse(_store.containsGraph(_INVALID_GRAPH));
         assertFalse(_store.containsGraph(_VALID_GRAPH));
     }
 
-    public void testHasGraphValid() throws StoreException {
+    public void testContainsGraphValid() throws StoreException {
         createDefaultGraph();
         assertFalse(_store.containsGraph(_INVALID_GRAPH));
         assertTrue(_store.containsGraph(_VALID_GRAPH));

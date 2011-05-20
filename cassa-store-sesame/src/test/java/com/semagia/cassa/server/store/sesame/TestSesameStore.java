@@ -27,7 +27,7 @@ import com.semagia.cassa.server.store.AbstractStoreTest;
 import com.semagia.cassa.server.store.StoreException;
 
 /**
- * 
+ * Tests against the {@link SesameStore}.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */

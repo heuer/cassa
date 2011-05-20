@@ -17,11 +17,10 @@ package com.semagia.cassa.server.store;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.mulgara.mrg.Bnode;
@@ -30,12 +29,19 @@ import org.mulgara.mrg.ObjectNode;
 import org.mulgara.mrg.PredicateNode;
 import org.mulgara.mrg.SubjectNode;
 import org.mulgara.mrg.Triple;
-import org.mulgara.mrg.parser.ParseException;
 import org.mulgara.mrg.parser.XMLGraphParser;
+import org.tinytim.mio.CXTMTopicMapWriter;
+import org.tinytim.mio.TinyTimMapInputHandler;
+import org.tmapi.core.TopicMap;
+import org.tmapi.core.TopicMapSystemFactory;
 
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IGraphInfo;
 import com.semagia.cassa.common.dm.IWritableRepresentation;
+import com.semagia.mio.DeserializerRegistry;
+import com.semagia.mio.IDeserializer;
+import com.semagia.mio.Source;
+import com.semagia.mio.Syntax;
 
 import junit.framework.TestCase;
 
@@ -70,7 +76,7 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
      * @param graphURI
      * @throws StoreException
      */
-    protected abstract void createGraph(T store, URI graphURI) throws StoreException;
+    protected abstract void createGraph(T store, URI graphURI) throws Exception;
 
     /**
      * Returns {@code true} iff this store understands RDF.
@@ -107,7 +113,7 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         _store = null;
     }
 
-    private void createDefaultGraph() throws StoreException {
+    private void createDefaultGraph() throws Exception {
         createGraph(_store, _VALID_GRAPH);
     }
 
@@ -124,15 +130,15 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         return AbstractStoreTest.class.getResourceAsStream(testFile);
     }
 
-    private Graph getRDFXMLGraph(final String testFile) throws ParseException, IOException {
+    private Graph getRDFXMLGraph(final String testFile) throws Exception {
         return getRDFXMLGraph(getInputStream(testFile));
     }
 
-    private Graph getRDFXMLGraph(final InputStream in) throws ParseException, IOException {
+    private Graph getRDFXMLGraph(final InputStream in) throws Exception {
         return new XMLGraphParser(in).getGraph();
     }
 
-    private Graph getRDFXMLGraph(final ByteArrayOutputStream out) throws ParseException, IOException {
+    private Graph getRDFXMLGraph(final ByteArrayOutputStream out) throws Exception {
         return getRDFXMLGraph(new ByteArrayInputStream(out.toByteArray()));
     }
 
@@ -148,14 +154,40 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
           }
     }
 
+    private TopicMap getXTMGraph(final ByteArrayOutputStream out, final URI base) throws Exception {
+        final TopicMap tm = TopicMapSystemFactory.newInstance().newTopicMapSystem().createTopicMap(base.toString());
+        final IDeserializer deser = DeserializerRegistry.getInstance().createDeserializer(Syntax.XTM);
+        deser.setMapHandler(new TinyTimMapInputHandler(tm));
+        deser.parse(new Source(new ByteArrayInputStream(out.toByteArray()), base.toString()));
+        return tm;
+    }
+
+    private void assertGraphEquality(final String cxtmReferenceFile, final TopicMap g2, URI base) throws Exception {
+        final InputStream in = this.getInputStream(cxtmReferenceFile);
+        final ByteArrayOutputStream expected = new ByteArrayOutputStream();
+        int b;
+        while ((b = in.read()) != -1) {
+            expected.write(b);
+        }
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final CXTMTopicMapWriter writer = new CXTMTopicMapWriter(out, base.toString());
+        writer.write(g2);
+        final byte[] reference = expected.toByteArray();
+        final byte[] result = out.toByteArray();
+        if (!Arrays.equals(reference, result)) {
+            fail("Expected:\n" + expected.toString("utf-8") + "\n\ngot:\n" + out.toString("utf-8"));
+        }
+        //assertEquals(reference, result);
+    }
+
     @SuppressWarnings("unused")
-    public void testEmptyStore() throws StoreException {
+    public void testEmptyStore() throws Exception {
         for (IGraphInfo info: _store.getGraphInfos()) {
             fail("Expected no graphs");
         }
     }
 
-    public void testGetGraphInfos() throws StoreException {
+    public void testGetGraphInfos() throws Exception {
         createDefaultGraph();
         final List<IGraphInfo> infos = new ArrayList<IGraphInfo>();
         for (IGraphInfo info: _store.getGraphInfos()) {
@@ -165,12 +197,12 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         assertEquals(_VALID_GRAPH, infos.get(0).getURI());
     }
 
-    public void testContainsGraphInvalid() throws StoreException {
+    public void testContainsGraphInvalid() throws Exception {
         assertFalse(_store.containsGraph(_INVALID_GRAPH));
         assertFalse(_store.containsGraph(_VALID_GRAPH));
     }
 
-    public void testContainsGraphValid() throws StoreException {
+    public void testContainsGraphValid() throws Exception {
         createDefaultGraph();
         assertFalse(_store.containsGraph(_INVALID_GRAPH));
         assertTrue(_store.containsGraph(_VALID_GRAPH));
@@ -186,7 +218,7 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         }
     }
 
-    public void testDeleteValid() throws StoreException {
+    public void testDeleteValid() throws Exception {
         assertEquals(0, graphCount());
         createDefaultGraph();
         assertEquals(1, graphCount());
@@ -195,15 +227,15 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
     }
 
     //TODO: Unsure about this test since the "default" graph may not be equivalent with "all graphs"
-    public void testDeleteValid2() throws StoreException {
-        assertEquals(0, graphCount());
-        createDefaultGraph();
-        assertEquals(1, graphCount());
-        _store.deleteGraph(IStore.DEFAULT_GRAPH);
-        assertEquals(0, graphCount());
-    }
+//    public void testDeleteValid2() throws Exception {
+//        assertEquals(0, graphCount());
+//        createDefaultGraph();
+//        assertEquals(1, graphCount());
+//        _store.deleteGraph(IStore.DEFAULT_GRAPH);
+//        assertEquals(0, graphCount());
+//    }
 
-    public void testGetGraphInfoNotExisting() throws StoreException {
+    public void testGetGraphInfoNotExisting() throws Exception {
         try {
             _store.getGraphInfo(_INVALID_GRAPH);
             fail("Expected an exception for a non-existing graph");
@@ -213,7 +245,7 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         }
     }
 
-    public void testGetGraphInfoNotExisting2() throws StoreException {
+    public void testGetGraphInfoNotExisting2() throws Exception {
         try {
             _store.getGraphInfo(IStore.DEFAULT_GRAPH);
             fail("Expected an exception for a non-existing graph");
@@ -223,7 +255,7 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         }
     }
 
-    public void testGetGraphInfo() throws StoreException {
+    public void testGetGraphInfo() throws Exception {
         createDefaultGraph();
         final IGraphInfo info = _store.getGraphInfo(_VALID_GRAPH);
         assertEquals(_VALID_GRAPH, info.getURI());
@@ -235,7 +267,7 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         }
     }
 
-    public void testGetNotExisting() throws StoreException {
+    public void testGetNotExisting() throws Exception {
         try {
             _store.getGraph(_INVALID_GRAPH, MediaType.RDF_XML);
             fail("Expected an exception for a non-existing graph");
@@ -245,7 +277,7 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         }
     }
 
-    public void testGetNotExisting2() throws StoreException {
+    public void testGetNotExisting2() throws Exception {
         try {
             _store.getGraph(IStore.DEFAULT_GRAPH, MediaType.RDF_XML);
             fail("Expected an exception for a non-existing graph");
@@ -255,7 +287,7 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         }
     }
 
-    public void testGet() throws StoreException {
+    public void testGet() throws Exception {
         createDefaultGraph();
         if (isRDFStore()) {
             try {
@@ -275,29 +307,31 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         }
     }
 
-    public void testWritingRDFSimple() throws StoreException, IOException {
+    public void testWritingRDFSimple() throws Exception {
         if (!isRDFStore()) {
             return;
         }
         createDefaultGraph();
         final IWritableRepresentation writer = _store.getGraph(_VALID_GRAPH, MediaType.RDF_XML);
+        assertNotNull(writer);
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         writer.write(out);
         assertTrue(out.size() > 0);
     }
 
-    public void testWritingTMSimple() throws StoreException, IOException {
+    public void testWritingTMSimple() throws Exception {
         if (!isTMStore()) {
             return;
         }
         createDefaultGraph();
         final IWritableRepresentation writer = _store.getGraph(_VALID_GRAPH, MediaType.XTM);
+        assertNotNull(writer);
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         writer.write(out);
         assertTrue(out.size() > 0);
     }
 
-    public void testGetInvalidMediaType() throws StoreException {
+    public void testGetInvalidMediaType() throws Exception {
         createDefaultGraph();
         try {
             _store.getGraph(_VALID_GRAPH, _INVALID_MEDIATYPE);
@@ -308,7 +342,7 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         }
     }
 
-    public void testCreateOrReplaceIllegalMediaType() throws IOException, StoreException {
+    public void testCreateOrReplaceIllegalMediaType() throws Exception {
         try {
             _store.createOrReplaceGraph(_VALID_GRAPH, _INVALID_INPUTSTREAM, _VALID_GRAPH, _INVALID_MEDIATYPE);
             fail("Expected an exception for an unknown media type");
@@ -318,7 +352,7 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         }
     }
 
-    public void testUpdateIllegalMediaType() throws IOException, StoreException {
+    public void testUpdateIllegalMediaType() throws Exception {
         createDefaultGraph();
         try {
             _store.updateGraph(_VALID_GRAPH, _INVALID_INPUTSTREAM, _VALID_GRAPH, _INVALID_MEDIATYPE);
@@ -329,28 +363,29 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         }
     }
 
-    public void testCreateAndReplaceRDFGraph() throws ParseException, IOException, StoreException, URISyntaxException {
+    public void testCreateAndReplaceRDFGraph() throws Exception {
         if (!isRDFStore()) {
             return;
         }
+        final MediaType mediaType = MediaType.RDF_XML;
         final String testFile1 = "/test.rdf";
         final String testFile2 = "/test2.rdf";
         assertEquals(0, graphCount());
-        final IGraphInfo info = _store.createOrReplaceGraph(_VALID_GRAPH, getInputStream(testFile1), _VALID_GRAPH, MediaType.RDF_XML);
+        final IGraphInfo info = _store.createOrReplaceGraph(_VALID_GRAPH, getInputStream(testFile1), _VALID_GRAPH, mediaType);
         assertEquals(1, graphCount());
         assertEquals(_VALID_GRAPH, info.getURI());
-        assertTrue(info.getSupportedMediaTypes().contains(MediaType.RDF_XML));
+        assertTrue(info.getSupportedMediaTypes().contains(mediaType));
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        _store.getGraph(_VALID_GRAPH, MediaType.RDF_XML).write(out);
+        _store.getGraph(_VALID_GRAPH, mediaType).write(out);
 
         assertGraphEquality(getRDFXMLGraph(testFile1), getRDFXMLGraph(out));
         
-        final IGraphInfo info2 = _store.createOrReplaceGraph(_VALID_GRAPH, getInputStream(testFile2), _VALID_GRAPH, MediaType.RDF_XML);
+        final IGraphInfo info2 = _store.createOrReplaceGraph(_VALID_GRAPH, getInputStream(testFile2), _VALID_GRAPH, mediaType);
         assertEquals(1, graphCount());
         assertEquals(info.getURI(), info2.getURI());
-        assertTrue(info2.getSupportedMediaTypes().contains(MediaType.RDF_XML));
+        assertTrue(info2.getSupportedMediaTypes().contains(mediaType));
         out = new ByteArrayOutputStream();
-        _store.getGraph(_VALID_GRAPH, MediaType.RDF_XML).write(out);
+        _store.getGraph(_VALID_GRAPH, mediaType).write(out);
 
         assertGraphEquality(getRDFXMLGraph(testFile2), getRDFXMLGraph(out));
         
@@ -358,30 +393,31 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         assertEquals(0, graphCount());
     }
 
-    public void testCreateAndUpdateRDFGraph() throws ParseException, IOException, StoreException, URISyntaxException {
+    public void testCreateAndUpdateRDFGraph() throws Exception {
         if (!isRDFStore()) {
             return;
         }
+        final MediaType mediaType = MediaType.RDF_XML;
         final String testFile1 = "/test.rdf";
         final String testFile2 = "/test2.rdf";
         final String testFilesMerged = "/test+test2.rdf";
         final URI base = URI.create("http://www.semagia.com/g/");
         assertEquals(0, graphCount());
-        final IGraphInfo info = _store.createGraph(getInputStream(testFile1), base, MediaType.RDF_XML);
+        final IGraphInfo info = _store.createGraph(getInputStream(testFile1), base, mediaType);
         assertEquals(1, graphCount());
         assertFalse(base.relativize(info.getURI()).isAbsolute());
-        assertTrue(info.getSupportedMediaTypes().contains(MediaType.RDF_XML));
+        assertTrue(info.getSupportedMediaTypes().contains(mediaType));
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        _store.getGraph(info.getURI(), MediaType.RDF_XML).write(out);
+        _store.getGraph(info.getURI(), mediaType).write(out);
         
         assertGraphEquality(getRDFXMLGraph(testFile1), getRDFXMLGraph(out));
         
-        final IGraphInfo info2 = _store.updateGraph(info.getURI(), getInputStream(testFile2), info.getURI(), MediaType.RDF_XML);
+        final IGraphInfo info2 = _store.updateGraph(info.getURI(), getInputStream(testFile2), info.getURI(), mediaType);
         assertEquals(1, graphCount());
         assertEquals(info.getURI(), info2.getURI());
-        assertTrue(info.getSupportedMediaTypes().contains(MediaType.RDF_XML));
+        assertTrue(info.getSupportedMediaTypes().contains(mediaType));
         out = new ByteArrayOutputStream();
-        _store.getGraph(info.getURI(), MediaType.RDF_XML).write(out);
+        _store.getGraph(info.getURI(), mediaType).write(out);
         
         assertGraphEquality(getRDFXMLGraph(testFilesMerged), getRDFXMLGraph(out));
 
@@ -389,4 +425,66 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         assertEquals(0, graphCount());
     }
 
+    public void testCreateAndReplaceTMGraph() throws Exception {
+        if (!isTMStore()) {
+            return;
+        }
+        final String testFile1 = "/test.xtm";
+        final String testFile2 = "/test2.xtm";
+        final MediaType mediaType = MediaType.XTM;
+        final URI base = _VALID_GRAPH;
+        assertEquals(0, graphCount());
+        final IGraphInfo info = _store.createOrReplaceGraph(_VALID_GRAPH, getInputStream(testFile1), _VALID_GRAPH, mediaType);
+        assertEquals(1, graphCount());
+        assertEquals(_VALID_GRAPH, info.getURI());
+        assertTrue(info.getSupportedMediaTypes().contains(mediaType));
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        _store.getGraph(_VALID_GRAPH, mediaType).write(out);
+
+        assertGraphEquality(testFile1 + ".cxtm", getXTMGraph(out, base), base);
+        
+        final IGraphInfo info2 = _store.createOrReplaceGraph(_VALID_GRAPH, getInputStream(testFile2), _VALID_GRAPH, mediaType);
+        assertEquals(1, graphCount());
+        assertEquals(info.getURI(), info2.getURI());
+        assertTrue(info2.getSupportedMediaTypes().contains(mediaType));
+        out = new ByteArrayOutputStream();
+        _store.getGraph(_VALID_GRAPH, mediaType).write(out);
+
+        assertGraphEquality(testFile2 + ".cxtm", getXTMGraph(out, base), base);
+        
+        _store.deleteGraph(_VALID_GRAPH);
+        assertEquals(0, graphCount());
+    }
+
+    public void testCreateAndUpdateTMGraph() throws Exception {
+        if (!isTMStore()) {
+            return;
+        }
+        final String testFile1 = "/test.xtm";
+        final String testFile2 = "/test2.xtm";
+        final String testFilesMerged = "/test+test2.xtm";
+        final URI base = URI.create("http://www.semagia.com/g/");
+        final MediaType mediaType = MediaType.XTM;
+        assertEquals(0, graphCount());
+        final IGraphInfo info = _store.createGraph(getInputStream(testFile1), base, mediaType);
+        assertEquals(1, graphCount());
+        assertFalse(base.relativize(info.getURI()).isAbsolute());
+        assertTrue(info.getSupportedMediaTypes().contains(mediaType));
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        _store.getGraph(info.getURI(), mediaType).write(out);
+        
+        assertGraphEquality(testFile1 + ".cxtm", getXTMGraph(out, base), base);
+        
+        final IGraphInfo info2 = _store.updateGraph(info.getURI(), getInputStream(testFile2), info.getURI(), mediaType);
+        assertEquals(1, graphCount());
+        assertEquals(info.getURI(), info2.getURI());
+        assertTrue(info.getSupportedMediaTypes().contains(mediaType));
+        out = new ByteArrayOutputStream();
+        _store.getGraph(info.getURI(), mediaType).write(out);
+        
+        assertGraphEquality(testFilesMerged + ".cxtm", getXTMGraph(out, base), base);
+
+        _store.deleteGraph(info.getURI());
+        assertEquals(0, graphCount());
+    }
 }

@@ -162,6 +162,14 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         return tm;
     }
 
+    private TopicMap getCTMGraph(final ByteArrayOutputStream out, final URI base) throws Exception {
+        final TopicMap tm = TopicMapSystemFactory.newInstance().newTopicMapSystem().createTopicMap(base.toString());
+        final IDeserializer deser = DeserializerRegistry.getInstance().createDeserializer(Syntax.CTM);
+        deser.setMapHandler(new TinyTimMapInputHandler(tm));
+        deser.parse(new Source(new ByteArrayInputStream(out.toByteArray()), base.toString()));
+        return tm;
+    }
+
     private void assertGraphEquality(final String cxtmReferenceFile, final TopicMap g2, URI base) throws Exception {
         final InputStream in = this.getInputStream(cxtmReferenceFile);
         final ByteArrayOutputStream expected = new ByteArrayOutputStream();
@@ -177,7 +185,6 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         if (!Arrays.equals(reference, result)) {
             fail("Expected:\n" + expected.toString("utf-8") + "\n\ngot:\n" + out.toString("utf-8"));
         }
-        //assertEquals(reference, result);
     }
 
     @SuppressWarnings("unused")
@@ -485,6 +492,77 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         assertGraphEquality(testFilesMerged + ".cxtm", getXTMGraph(out, base), base);
 
         _store.deleteGraph(info.getURI());
+        assertEquals(0, graphCount());
+    }
+
+    public void testCreateAndUpdateTMGraphCTM() throws Exception {
+        if (!isTMStore()) {
+            return;
+        }
+        final String testFile1 = "/test.xtm";
+        final String testFile2 = "/test2.xtm";
+        final String testFilesMerged = "/test+test2.xtm";
+        final URI base = URI.create("http://www.semagia.com/g/");
+        final MediaType mediaType = MediaType.XTM;
+        final MediaType readMediaType = MediaType.CTM;
+        assertEquals(0, graphCount());
+        final IGraphInfo info = _store.createGraph(getInputStream(testFile1), base, mediaType);
+        assertEquals(1, graphCount());
+        assertFalse(base.relativize(info.getURI()).isAbsolute());
+        assertTrue(info.getSupportedMediaTypes().contains(mediaType));
+        if (!info.getSupportedMediaTypes().contains(readMediaType)) {
+            return;
+        }
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        _store.getGraph(info.getURI(), readMediaType).write(out);
+        
+        assertGraphEquality(testFile1 + ".cxtm", getCTMGraph(out, base), base);
+        
+        final IGraphInfo info2 = _store.updateGraph(info.getURI(), getInputStream(testFile2), info.getURI(), mediaType);
+        assertEquals(1, graphCount());
+        assertEquals(info.getURI(), info2.getURI());
+        assertTrue(info.getSupportedMediaTypes().contains(mediaType));
+        out = new ByteArrayOutputStream();
+        _store.getGraph(info.getURI(), readMediaType).write(out);
+        
+        assertGraphEquality(testFilesMerged + ".cxtm", getCTMGraph(out, base), base);
+
+        _store.deleteGraph(info.getURI());
+        assertEquals(0, graphCount());
+    }
+
+    public void testCreateAndReplaceTMGraphCTM() throws Exception {
+        if (!isTMStore()) {
+            return;
+        }
+        final String testFile1 = "/test.xtm";
+        final String testFile2 = "/test2.xtm";
+        final MediaType mediaType = MediaType.XTM;
+        final MediaType readMediaType = MediaType.CTM;
+        final URI base = _VALID_GRAPH;
+        assertEquals(0, graphCount());
+        final IGraphInfo info = _store.createOrReplaceGraph(_VALID_GRAPH, getInputStream(testFile1), _VALID_GRAPH, mediaType);
+        assertEquals(1, graphCount());
+        assertEquals(_VALID_GRAPH, info.getURI());
+        assertTrue(info.getSupportedMediaTypes().contains(mediaType));
+        if (!info.getSupportedMediaTypes().contains(readMediaType)) {
+            return;
+        }
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        _store.getGraph(_VALID_GRAPH, readMediaType).write(out);
+
+        assertGraphEquality(testFile1 + ".cxtm", getCTMGraph(out, base), base);
+        
+        final IGraphInfo info2 = _store.createOrReplaceGraph(_VALID_GRAPH, getInputStream(testFile2), _VALID_GRAPH, mediaType);
+        assertEquals(1, graphCount());
+        assertEquals(info.getURI(), info2.getURI());
+        assertTrue(info2.getSupportedMediaTypes().contains(mediaType));
+        out = new ByteArrayOutputStream();
+        _store.getGraph(_VALID_GRAPH, readMediaType).write(out);
+
+        assertGraphEquality(testFile2 + ".cxtm", getCTMGraph(out, base), base);
+        
+        _store.deleteGraph(_VALID_GRAPH);
         assertEquals(0, graphCount());
     }
 }

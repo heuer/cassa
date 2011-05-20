@@ -19,10 +19,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.tmapi.core.TopicMap;
+import org.tmapix.io.CTMTopicMapWriter;
 import org.tmapix.io.MapHandlerFactory;
 import org.tmapix.io.TopicMapWriter;
 import org.tmapix.io.XTM2TopicMapWriter;
@@ -43,9 +45,9 @@ import com.semagia.mio.Syntax;
  */
 final class TMAPIUtils {
 
-    private static final  List<MediaType> _READABLE_MEDIATYPES = Collections.singletonList(MediaType.XTM);
+    private static final  List<MediaType> _READABLE_MEDIATYPES = Collections.unmodifiableList(Arrays.asList(MediaType.XTM, MediaType.CTM));
 
-    private static final  List<MediaType> _WRITABLE_MEDIATYPES = Collections.singletonList(MediaType.XTM);
+    private static final  List<MediaType> _WRITABLE_MEDIATYPES = _READABLE_MEDIATYPES;
 
     private TMAPIUtils() {
         // noop.
@@ -83,15 +85,19 @@ final class TMAPIUtils {
 
     public static void write(final TopicMap tm, final MediaType mediaType,
             final OutputStream out) throws IOException {
-        assert(MediaType.XTM.equals(mediaType));
-        final TopicMapWriter writer = new XTM2TopicMapWriter(out, tm.getLocator().toExternalForm(), XTMVersion.XTM_2_1);
+        final TopicMapWriter writer = mediaType.equals(MediaType.XTM) ? new XTM2TopicMapWriter(
+                out, tm.getLocator().toExternalForm(), XTMVersion.XTM_2_1)
+                : new CTMTopicMapWriter(out, tm.getLocator().toExternalForm());
         writer.write(tm);
+    }
+
+    private static String toMIMEType(MediaType mediaType) {
+        return mediaType.toString();
     }
 
     public static void read(final TopicMap tm, final URI baseURI, 
             final InputStream in, final MediaType mediaType) throws IOException {
-        assert(MediaType.XTM.equals(mediaType));
-        final IDeserializer deser = DeserializerRegistry.getInstance().createDeserializer(Syntax.XTM);
+        final IDeserializer deser = DeserializerRegistry.getInstance().createDeserializer(Syntax.forMIMEType(toMIMEType(mediaType)));
         deser.setMapHandler(MapHandlerFactory.createMapHandler(tm));
         try {
             deser.parse(new Source(in, baseURI.toString()));

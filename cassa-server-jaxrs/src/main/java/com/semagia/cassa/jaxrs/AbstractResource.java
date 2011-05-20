@@ -38,7 +38,7 @@ abstract class AbstractResource {
     @Context 
     private Request _request;
 
-    private IStore _store;
+    private IStore _store = ToyStore.getStore();
 
     /**
      * Returns the store.

@@ -24,11 +24,14 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mulgara.mrg.Bnode;
 import org.mulgara.mrg.Graph;
+import org.mulgara.mrg.ObjectNode;
+import org.mulgara.mrg.PredicateNode;
+import org.mulgara.mrg.SubjectNode;
+import org.mulgara.mrg.Triple;
 import org.mulgara.mrg.parser.ParseException;
 import org.mulgara.mrg.parser.XMLGraphParser;
-import org.mulgara.mrg.vocab.RDF;
-import org.mulgara.mrg.vocab.uri.FOAF;
 
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IGraphInfo;
@@ -115,6 +118,34 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
             i++;
         }
         return i;
+    }
+
+    private InputStream getInputStream(final String testFile) {
+        return AbstractStoreTest.class.getResourceAsStream(testFile);
+    }
+
+    private Graph getRDFXMLGraph(final String testFile) throws ParseException, IOException {
+        return getRDFXMLGraph(getInputStream(testFile));
+    }
+
+    private Graph getRDFXMLGraph(final InputStream in) throws ParseException, IOException {
+        return new XMLGraphParser(in).getGraph();
+    }
+
+    private Graph getRDFXMLGraph(final ByteArrayOutputStream out) throws ParseException, IOException {
+        return getRDFXMLGraph(new ByteArrayInputStream(out.toByteArray()));
+    }
+
+    private void assertGraphEquality(final Graph g1, final Graph g2) {
+        assertEquals(g1.size(), g2.size());
+        for (Triple t: g2.getTriples()) {
+            SubjectNode s = t.getSubject();
+            PredicateNode p = t.getPredicate();
+            ObjectNode o = t.getObject();
+            if (s instanceof Bnode) s = null;
+            if (o instanceof Bnode) o = null;
+            assertTrue("Graph does not contain: " + t, g1.match(s, p, o).hasNext());
+          }
     }
 
     @SuppressWarnings("unused")
@@ -302,38 +333,26 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         if (!isRDFStore()) {
             return;
         }
-        final String p1 = "http://psi.example.org/P1";
-        final String name1 = "Name";
-        final String p2 = "http://psi.example.org/P2";
-        final String name2 = "Name2";
+        final String testFile1 = "/test.rdf";
+        final String testFile2 = "/test2.rdf";
         assertEquals(0, graphCount());
-        InputStream in = AbstractStoreTest.class.getResourceAsStream("/test.rdf");
-        IGraphInfo info = _store.createOrReplaceGraph(_VALID_GRAPH, in, _VALID_GRAPH, MediaType.RDF_XML);
+        final IGraphInfo info = _store.createOrReplaceGraph(_VALID_GRAPH, getInputStream(testFile1), _VALID_GRAPH, MediaType.RDF_XML);
         assertEquals(1, graphCount());
         assertEquals(_VALID_GRAPH, info.getURI());
         assertTrue(info.getSupportedMediaTypes().contains(MediaType.RDF_XML));
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         _store.getGraph(_VALID_GRAPH, MediaType.RDF_XML).write(out);
-        ByteArrayInputStream input = new ByteArrayInputStream(out.toByteArray());
-        Graph graph = new XMLGraphParser(input).getGraph();
-        assertEquals(2, graph.size());
-        assertTrue(graph.isAsserted(p1, RDF.TYPE, FOAF.PERSON));
-        assertTrue(graph.isAsserted(p1, FOAF.NAME, name1));
+
+        assertGraphEquality(getRDFXMLGraph(testFile1), getRDFXMLGraph(out));
         
-        in = AbstractStoreTest.class.getResourceAsStream("/test2.rdf");
-        info = _store.createOrReplaceGraph(_VALID_GRAPH, in, _VALID_GRAPH, MediaType.RDF_XML);
+        final IGraphInfo info2 = _store.createOrReplaceGraph(_VALID_GRAPH, getInputStream(testFile2), _VALID_GRAPH, MediaType.RDF_XML);
         assertEquals(1, graphCount());
-        assertEquals(_VALID_GRAPH, info.getURI());
-        assertTrue(info.getSupportedMediaTypes().contains(MediaType.RDF_XML));
+        assertEquals(info.getURI(), info2.getURI());
+        assertTrue(info2.getSupportedMediaTypes().contains(MediaType.RDF_XML));
         out = new ByteArrayOutputStream();
         _store.getGraph(_VALID_GRAPH, MediaType.RDF_XML).write(out);
-        input = new ByteArrayInputStream(out.toByteArray());
-        graph = new XMLGraphParser(input).getGraph();
-        assertEquals(2, graph.size());
-        assertFalse(graph.isAsserted(p1, RDF.TYPE, FOAF.PERSON));
-        assertFalse(graph.isAsserted(p1, FOAF.NAME, name1));
-        assertTrue(graph.isAsserted(p2, RDF.TYPE, FOAF.PERSON));
-        assertTrue(graph.isAsserted(p2, FOAF.NAME, name2));
+
+        assertGraphEquality(getRDFXMLGraph(testFile2), getRDFXMLGraph(out));
         
         _store.deleteGraph(_VALID_GRAPH);
         assertEquals(0, graphCount());
@@ -343,39 +362,28 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         if (!isRDFStore()) {
             return;
         }
-        final String p1 = "http://psi.example.org/P1";
-        final String name1 = "Name";
-        final String p2 = "http://psi.example.org/P2";
-        final String name2 = "Name2";
+        final String testFile1 = "/test.rdf";
+        final String testFile2 = "/test2.rdf";
+        final String testFilesMerged = "/test+test2.rdf";
         final URI base = URI.create("http://www.semagia.com/g/");
         assertEquals(0, graphCount());
-        InputStream in = AbstractStoreTest.class.getResourceAsStream("/test.rdf");
-        IGraphInfo info = _store.createGraph(in, base, MediaType.RDF_XML);
+        final IGraphInfo info = _store.createGraph(getInputStream(testFile1), base, MediaType.RDF_XML);
         assertEquals(1, graphCount());
         assertFalse(base.relativize(info.getURI()).isAbsolute());
         assertTrue(info.getSupportedMediaTypes().contains(MediaType.RDF_XML));
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         _store.getGraph(info.getURI(), MediaType.RDF_XML).write(out);
-        ByteArrayInputStream input = new ByteArrayInputStream(out.toByteArray());
-        Graph graph = new XMLGraphParser(input).getGraph();
-        assertEquals(2, graph.size());
-        assertTrue(graph.isAsserted(p1, RDF.TYPE, FOAF.PERSON));
-        assertTrue(graph.isAsserted(p1, FOAF.NAME, name1));
         
-        in = AbstractStoreTest.class.getResourceAsStream("/test2.rdf");
-        IGraphInfo info2 = _store.updateGraph(info.getURI(), in, info.getURI(), MediaType.RDF_XML);
+        assertGraphEquality(getRDFXMLGraph(testFile1), getRDFXMLGraph(out));
+        
+        final IGraphInfo info2 = _store.updateGraph(info.getURI(), getInputStream(testFile2), info.getURI(), MediaType.RDF_XML);
         assertEquals(1, graphCount());
         assertEquals(info.getURI(), info2.getURI());
         assertTrue(info.getSupportedMediaTypes().contains(MediaType.RDF_XML));
         out = new ByteArrayOutputStream();
         _store.getGraph(info.getURI(), MediaType.RDF_XML).write(out);
-        input = new ByteArrayInputStream(out.toByteArray());
-        graph = new XMLGraphParser(input).getGraph();
-        assertEquals(4, graph.size());
-        assertTrue(graph.isAsserted(p1, RDF.TYPE, FOAF.PERSON));
-        assertTrue(graph.isAsserted(p1, FOAF.NAME, name1));
-        assertTrue(graph.isAsserted(p2, RDF.TYPE, FOAF.PERSON));
-        assertTrue(graph.isAsserted(p2, FOAF.NAME, name2));
+        
+        assertGraphEquality(getRDFXMLGraph(testFilesMerged), getRDFXMLGraph(out));
 
         _store.deleteGraph(info.getURI());
         assertEquals(0, graphCount());

@@ -333,6 +333,9 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         assertFalse(graph.isAsserted(p1, FOAF.NAME, name1));
         assertTrue(graph.isAsserted(p2, RDF.TYPE, FOAF.PERSON));
         assertTrue(graph.isAsserted(p2, FOAF.NAME, name2));
+        
+        _store.deleteGraph(_VALID_GRAPH);
+        assertEquals(0, graphCount());
     }
 
     public void testCreateAndUpdateRDFGraph() throws ParseException, IOException, StoreException, URISyntaxException {
@@ -371,6 +374,9 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         assertTrue(graph.isAsserted(p1, FOAF.NAME, name1));
         assertTrue(graph.isAsserted(p2, RDF.TYPE, FOAF.PERSON));
         assertTrue(graph.isAsserted(p2, FOAF.NAME, name2));
+
+        _store.deleteGraph(_VALID_GRAPH);
+        assertEquals(0, graphCount());
     }
 
 }

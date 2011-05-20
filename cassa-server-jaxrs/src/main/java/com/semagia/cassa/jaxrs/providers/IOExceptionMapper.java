@@ -30,7 +30,7 @@ import javax.ws.rs.ext.Provider;
 public class IOExceptionMapper implements ExceptionMapper<IOException> {
 
     @Override
-    public Response toResponse(IOException arg0) {
+    public Response toResponse(IOException ex) {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 

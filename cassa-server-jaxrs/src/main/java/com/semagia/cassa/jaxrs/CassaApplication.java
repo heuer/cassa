@@ -22,15 +22,17 @@ import javax.ws.rs.core.Application;
 
 import com.semagia.cassa.jaxrs.providers.GraphNotExistsExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.IOExceptionMapper;
-import com.semagia.cassa.jaxrs.providers.RuntimeExceptionMapper;
+import com.semagia.cassa.jaxrs.providers.IllegalArgumentExceptionMapper;
+import com.semagia.cassa.jaxrs.providers.NullPointerExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.StorageExceptionMapper;
+import com.semagia.cassa.jaxrs.providers.UnsupportedMediaTypeExceptionMapper;
 
 /**
  * The Cassa application.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public class CassaApplication extends Application {
+public final class CassaApplication extends Application {
 
     /* (non-Javadoc)
      * @see javax.ws.rs.core.Application#getClasses()
@@ -39,6 +41,7 @@ public class CassaApplication extends Application {
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<Class<?>>();
         classes.add(ServiceResource.class);
+        classes.add(GraphsResource.class);
         classes.add(LocalGraphResource.class);
         return classes;
     }
@@ -49,8 +52,10 @@ public class CassaApplication extends Application {
     @Override
     public Set<Object> getSingletons() {
         Set<Object> singletons = new HashSet<Object>();
-        singletons.add(new RuntimeExceptionMapper());
+        singletons.add(new NullPointerExceptionMapper());
+        singletons.add(new IllegalArgumentExceptionMapper());
         singletons.add(new StorageExceptionMapper());
+        singletons.add(new UnsupportedMediaTypeExceptionMapper());
         singletons.add(new IOExceptionMapper());
         singletons.add(new GraphNotExistsExceptionMapper());
         return singletons;

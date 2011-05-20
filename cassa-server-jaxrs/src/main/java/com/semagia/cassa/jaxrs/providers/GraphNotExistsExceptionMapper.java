@@ -30,7 +30,7 @@ import com.semagia.cassa.server.store.GraphNotExistsException;
 public class GraphNotExistsExceptionMapper implements ExceptionMapper<GraphNotExistsException> {
 
     @Override
-    public Response toResponse(GraphNotExistsException arg0) {
+    public Response toResponse(GraphNotExistsException ex) {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 

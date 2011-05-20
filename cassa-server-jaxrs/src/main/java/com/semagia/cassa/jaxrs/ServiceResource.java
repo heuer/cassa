@@ -31,7 +31,7 @@ import com.semagia.cassa.server.store.StoreException;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-@Path("/service")
+@Path("/service/")
 public class ServiceResource extends AbstractGraphResource {
 
     /**

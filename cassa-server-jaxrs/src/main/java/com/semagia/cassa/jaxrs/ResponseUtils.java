@@ -96,4 +96,13 @@ final class ResponseUtils {
         return Response.status(Response.Status.ACCEPTED).build();
     }
 
+    /**
+     * Returns a HTTP Bad Request response.
+     *
+     * @return A Bad Request response.
+     */
+    public static Response badRequest() {
+        return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
 }

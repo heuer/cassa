@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<topicMap xmlns="http://www.topicmaps.org/xtm/" version="2.0">
-  <topic id="p2">
+<topicMap xmlns="http://www.topicmaps.org/xtm/" version="2.1">
+  <topic>
+    <subjectIdentifier href="http://psi.example.org/P2"/>
     <name>
       <value>Name2</value>
     </name>

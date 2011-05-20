@@ -1,8 +1,8 @@
 <topicMap>
 <topic number="1">
-<itemIdentifiers>
-<locator>#p2</locator>
-</itemIdentifiers>
+<subjectIdentifiers>
+<locator>psi.example.org/P2</locator>
+</subjectIdentifiers>
 <name number="1">
 <value>Name2</value>
 <type topicref="2"></type>
@@ -10,7 +10,7 @@
 </topic>
 <topic number="2">
 <subjectIdentifiers>
-<locator>http://psi.topicmaps.org/iso13250/model/topic-name</locator>
+<locator>psi.topicmaps.org/iso13250/model/topic-name</locator>
 </subjectIdentifiers>
 </topic>
 </topicMap>

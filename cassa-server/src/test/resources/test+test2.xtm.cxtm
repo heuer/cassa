@@ -1,17 +1,17 @@
 <topicMap>
 <topic number="1">
-<itemIdentifiers>
-<locator>test test2.xtm#p1</locator>
-</itemIdentifiers>
+<subjectIdentifiers>
+<locator>psi.example.org/P1</locator>
+</subjectIdentifiers>
 <name number="1">
 <value>Name</value>
 <type topicref="3"></type>
 </name>
 </topic>
 <topic number="2">
-<itemIdentifiers>
-<locator>test test2.xtm#p2</locator>
-</itemIdentifiers>
+<subjectIdentifiers>
+<locator>psi.example.org/P2</locator>
+</subjectIdentifiers>
 <name number="1">
 <value>Name2</value>
 <type topicref="3"></type>
@@ -19,7 +19,7 @@
 </topic>
 <topic number="3">
 <subjectIdentifiers>
-<locator>http://psi.topicmaps.org/iso13250/model/topic-name</locator>
+<locator>psi.topicmaps.org/iso13250/model/topic-name</locator>
 </subjectIdentifiers>
 </topic>
 </topicMap>

@@ -20,13 +20,16 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 /**
- * 
+ * Converts a {@link IllegalArgumentException} into a HTTP Bad Request error.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 @Provider
 public class IllegalArgumentExceptionMapper implements ExceptionMapper<IllegalArgumentException> {
 
+    /* (non-Javadoc)
+     * @see javax.ws.rs.ext.ExceptionMapper#toResponse(java.lang.Throwable)
+     */
     @Override
     public Response toResponse(IllegalArgumentException ex) {
         return Response.status(Response.Status.BAD_REQUEST).build();

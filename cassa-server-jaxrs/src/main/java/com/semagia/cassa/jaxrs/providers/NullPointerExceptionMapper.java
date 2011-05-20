@@ -20,13 +20,16 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 /**
- * 
+ * Converts a {@link NullPointerException} into a HTTP Bad Request error.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 @Provider
 public class NullPointerExceptionMapper implements ExceptionMapper<NullPointerException> {
 
+    /* (non-Javadoc)
+     * @see javax.ws.rs.ext.ExceptionMapper#toResponse(java.lang.Throwable)
+     */
     @Override
     public Response toResponse(NullPointerException ex) {
         return Response.status(Response.Status.BAD_REQUEST).build();

@@ -22,13 +22,16 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 /**
- * 
+ * Converts a {@link IOException} into a HTTP HTTP Internal Server error.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 @Provider
 public class IOExceptionMapper implements ExceptionMapper<IOException> {
 
+    /* (non-Javadoc)
+     * @see javax.ws.rs.ext.ExceptionMapper#toResponse(java.lang.Throwable)
+     */
     @Override
     public Response toResponse(IOException ex) {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

@@ -22,13 +22,17 @@ import javax.ws.rs.ext.Provider;
 import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
 
 /**
- * 
+ * Converts a {@link UnsupportedMediaTypeException} into a HTTP Not Acceptable
+ * error with a "Vary: Accept" header.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 @Provider
 public class UnsupportedMediaTypeExceptionMapper implements ExceptionMapper<UnsupportedMediaTypeException> {
 
+    /* (non-Javadoc)
+     * @see javax.ws.rs.ext.ExceptionMapper#toResponse(java.lang.Throwable)
+     */
     @Override
     public Response toResponse(UnsupportedMediaTypeException ex) {
         return Response.status(Response.Status.NOT_ACCEPTABLE).header("Vary", "Accept").build();

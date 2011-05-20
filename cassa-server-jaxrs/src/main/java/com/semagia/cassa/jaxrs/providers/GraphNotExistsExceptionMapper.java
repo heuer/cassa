@@ -22,13 +22,16 @@ import javax.ws.rs.ext.Provider;
 import com.semagia.cassa.server.store.GraphNotExistsException;
 
 /**
- * 
+ * Converts a {@link GraphNotExistsException} into a HTTP Not Found response.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 @Provider
 public class GraphNotExistsExceptionMapper implements ExceptionMapper<GraphNotExistsException> {
 
+    /* (non-Javadoc)
+     * @see javax.ws.rs.ext.ExceptionMapper#toResponse(java.lang.Throwable)
+     */
     @Override
     public Response toResponse(GraphNotExistsException ex) {
         return Response.status(Response.Status.NOT_FOUND).build();

@@ -36,8 +36,6 @@ public class ServiceResource extends AbstractGraphResource {
 
     /**
      * The URI of the requested graph.
-     * 
-     * If the URI is null, it indicates the default graph.
      */
     private final URI _graph;
     private final boolean _wantServiceDescription;

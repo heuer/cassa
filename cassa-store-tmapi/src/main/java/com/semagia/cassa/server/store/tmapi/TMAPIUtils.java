@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.tmapi.core.TopicMap;
@@ -45,7 +44,7 @@ import com.semagia.mio.Syntax;
  */
 final class TMAPIUtils {
 
-    private static final  List<MediaType> _READABLE_MEDIATYPES = Collections.unmodifiableList(Arrays.asList(MediaType.XTM, MediaType.CTM));
+    private static final  List<MediaType> _READABLE_MEDIATYPES = Arrays.asList(MediaType.XTM, MediaType.CTM);
 
     private static final  List<MediaType> _WRITABLE_MEDIATYPES = _READABLE_MEDIATYPES;
 

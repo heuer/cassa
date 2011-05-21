@@ -89,7 +89,7 @@ public interface IStore {
      * Updates a graph.
      * 
      * @param graphURI The graph URI.
-     * @param in
+     * @param in The input stream to read the graph from.
      * @param baseURI The base URI to resolve relative URIs against (in most cases identical to the graph IRI).
      * @param mediaType The media type of the input stream.
      * @return Metadata of the created/updated graph.
@@ -102,7 +102,7 @@ public interface IStore {
     /**
      * Creates a graph.
      * 
-     * @param in
+     * @param in The input stream to read the graph from.
      * @param baseURI The base URI to resolve relative URIs against.
      * @param mediaType The media type of the input stream.
      * @return Metadata of the created/updated graph.
@@ -116,7 +116,7 @@ public interface IStore {
      * Creates or updates the graph with the specified URI.
      *
      * @param graphURI The graph URI.
-     * @param in
+     * @param in The input stream to read the graph from.
      * @param baseURI The base URI to resolve relative URIs against (in most cases identical to the graph IRI).
      * @param mediaType The media type of the input stream.
      * @return Metadata of the created/replaced graph.

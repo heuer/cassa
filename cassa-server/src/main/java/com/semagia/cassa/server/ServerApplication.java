@@ -18,10 +18,9 @@ package com.semagia.cassa.server;
 import com.semagia.cassa.server.store.IStore;
 
 /**
- * Thread-safe, immutable context.
+ * Thread-safe, immutable {@link IServerApplication} implementation.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
- * @version $Rev$ - $Date$
  */
 public class ServerApplication implements IServerApplication {
 

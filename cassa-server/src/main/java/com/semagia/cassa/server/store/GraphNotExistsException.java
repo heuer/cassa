@@ -28,12 +28,23 @@ public class GraphNotExistsException extends StoreException {
     private final URI _uri;
 
     /**
-     * 
+     * Constructs an instance without a message.
      *
      * @param uri The non-existing graph URI.
      */
     public GraphNotExistsException(final URI uri) {
-        super("The graph " + (uri == IStore.DEFAULT_GRAPH ? "'default'" : "<" + uri.toString() + ">") + " does not exist");
+        this(null, uri);
+    }
+
+    /**
+     * Constructs an instance with a detail message and the non-existing graph
+     * URI.
+     *
+     * @param msg The message.
+     * @param uri The non-existing graph URI.
+     */
+    public GraphNotExistsException(final String msg, final URI uri) {
+        super(msg);
         _uri = uri;
     }
 
@@ -44,6 +55,15 @@ public class GraphNotExistsException extends StoreException {
      */
     public URI getURI() {
         return _uri;
+    }
+
+    /**
+     * Returns if the URI refers to the default graph.
+     *
+     * @return true if the URI refers to the default graph.
+     */
+    public boolean isDefaultGraph() {
+        return _uri == IStore.DEFAULT_GRAPH;
     }
 
 }

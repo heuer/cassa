@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Variant;
 
 import com.semagia.cassa.common.MediaType;
+import com.semagia.cassa.server.ServerApplicationProvider;
 import com.semagia.cassa.server.store.IStore;
 
 /**
@@ -38,7 +39,7 @@ abstract class AbstractResource {
     @Context 
     private Request _request;
 
-    private IStore _store;
+    private final IStore _store = ServerApplicationProvider.getServerApplication().getStore();
 
     /**
      * Returns the store.

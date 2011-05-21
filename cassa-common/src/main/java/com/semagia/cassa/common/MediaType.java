@@ -43,6 +43,11 @@ public final class MediaType {
      */
     public static final MediaType RDF_XML = MediaType.valueOf("application/rdf+xml");
 
+    /**
+     * RDF Turtle media type.
+     */
+    public static final MediaType TURTLE = MediaType.valueOf("text/turtle");
+
     private final String _mainType;
     private final String _subType;
     private final List<Parameter> _params;

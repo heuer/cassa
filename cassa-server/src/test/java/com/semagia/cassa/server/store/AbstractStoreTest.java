@@ -29,6 +29,7 @@ import org.mulgara.mrg.ObjectNode;
 import org.mulgara.mrg.PredicateNode;
 import org.mulgara.mrg.SubjectNode;
 import org.mulgara.mrg.Triple;
+import org.mulgara.mrg.parser.N3GraphParser;
 import org.mulgara.mrg.parser.XMLGraphParser;
 import org.tinytim.mio.CXTMTopicMapWriter;
 import org.tinytim.mio.TinyTimMapInputHandler;
@@ -140,6 +141,14 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
 
     private Graph getRDFXMLGraph(final ByteArrayOutputStream out) throws Exception {
         return getRDFXMLGraph(new ByteArrayInputStream(out.toByteArray()));
+    }
+
+    private Graph getTurtleGraph(final InputStream in) throws Exception {
+        return new N3GraphParser(in).getGraph();
+    }
+
+    private Graph getTurtleGraph(final ByteArrayOutputStream out) throws Exception {
+        return getTurtleGraph(new ByteArrayInputStream(out.toByteArray()));
     }
 
     private void assertGraphEquality(final Graph g1, final Graph g2) {
@@ -427,6 +436,80 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         _store.getGraph(info.getURI(), mediaType).write(out);
         
         assertGraphEquality(getRDFXMLGraph(testFilesMerged), getRDFXMLGraph(out));
+
+        _store.deleteGraph(info.getURI());
+        assertEquals(0, graphCount());
+    }
+
+    public void testCreateAndReplaceRDFGraphTurtle() throws Exception {
+        if (!isRDFStore()) {
+            return;
+        }
+        final MediaType mediaType = MediaType.RDF_XML;
+        final String testFile1 = "/test.rdf";
+        final String testFile2 = "/test2.rdf";
+        final MediaType readMediaType = MediaType.TURTLE;
+        assertEquals(0, graphCount());
+        final IGraphInfo info = _store.createOrReplaceGraph(_VALID_GRAPH, getInputStream(testFile1), _VALID_GRAPH, mediaType);
+        assertEquals(1, graphCount());
+        assertEquals(_VALID_GRAPH, info.getURI());
+        assertTrue(info.getSupportedMediaTypes().contains(mediaType));
+
+        if (!info.getSupportedMediaTypes().contains(readMediaType)) {
+            return;
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        _store.getGraph(_VALID_GRAPH, readMediaType).write(out);
+
+        assertGraphEquality(getRDFXMLGraph(testFile1), getTurtleGraph(out));
+        
+        final IGraphInfo info2 = _store.createOrReplaceGraph(_VALID_GRAPH, getInputStream(testFile2), _VALID_GRAPH, mediaType);
+        assertEquals(1, graphCount());
+        assertEquals(info.getURI(), info2.getURI());
+        assertTrue(info2.getSupportedMediaTypes().contains(mediaType));
+        out = new ByteArrayOutputStream();
+        _store.getGraph(_VALID_GRAPH, readMediaType).write(out);
+
+        assertGraphEquality(getRDFXMLGraph(testFile2), getTurtleGraph(out));
+        
+        _store.deleteGraph(_VALID_GRAPH);
+        assertEquals(0, graphCount());
+    }
+
+    public void testCreateAndUpdateRDFGraphTurtle() throws Exception {
+        if (!isRDFStore()) {
+            return;
+        }
+        final MediaType mediaType = MediaType.RDF_XML;
+        final MediaType readMediaType = MediaType.TURTLE;
+        final String testFile1 = "/test.rdf";
+        final String testFile2 = "/test2.rdf";
+        final String testFilesMerged = "/test+test2.rdf";
+        final URI base = URI.create("http://www.semagia.com/g/");
+        assertEquals(0, graphCount());
+        final IGraphInfo info = _store.createGraph(getInputStream(testFile1), base, mediaType);
+        assertEquals(1, graphCount());
+        assertFalse(base.relativize(info.getURI()).isAbsolute());
+        assertTrue(info.getSupportedMediaTypes().contains(mediaType));
+        
+        if (!info.getSupportedMediaTypes().contains(readMediaType)) {
+            return;
+        }
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        _store.getGraph(info.getURI(), readMediaType).write(out);
+        
+        assertGraphEquality(getRDFXMLGraph(testFile1), getTurtleGraph(out));
+        
+        final IGraphInfo info2 = _store.updateGraph(info.getURI(), getInputStream(testFile2), info.getURI(), mediaType);
+        assertEquals(1, graphCount());
+        assertEquals(info.getURI(), info2.getURI());
+        assertTrue(info.getSupportedMediaTypes().contains(mediaType));
+        out = new ByteArrayOutputStream();
+        _store.getGraph(info.getURI(), readMediaType).write(out);
+        
+        assertGraphEquality(getRDFXMLGraph(testFilesMerged), getTurtleGraph(out));
 
         _store.deleteGraph(info.getURI());
         assertEquals(0, graphCount());

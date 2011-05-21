@@ -38,7 +38,7 @@ abstract class AbstractResource {
     @Context 
     private Request _request;
 
-    private IStore _store = ToyStore.getStore();
+    private IStore _store;
 
     /**
      * Returns the store.
@@ -68,21 +68,6 @@ abstract class AbstractResource {
         }
         builder = Response.ok();
         return lastModification != -1 ? builder.lastModified(lastModificationDate) : builder;
-    }
-
-    /**
-     * Creates a {@link ResponseBuilder} with a last-modified header.
-     * 
-     * If the request contains a <tt>If-Modified-Since</tt> header and the
-     * resource wasn't modified, a {@link WebApplicationException} with
-     * the status <tt>Not modified (304)</tt> is thrown.
-     *
-     * @return A response builder.
-     * @throws WebApplicationException In case the resource wasn't modified.
-     */
-    protected final ResponseBuilder makeResponseBuilder(final long lastModification, List<MediaType> mediaTypes) throws WebApplicationException {
-        return makeResponseBuilder(lastModification)
-                .variants(MediaTypeUtils.asVariants(mediaTypes));
     }
 
     /**

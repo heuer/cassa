@@ -32,6 +32,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import com.semagia.cassa.common.MediaType;
@@ -58,7 +59,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
     protected abstract URI getGraphURI();
 
     /**
-     * 
+     * Writes a graph.
      * 
      * @return A graph serialization.
      * @throws StorageException In case of an error.
@@ -70,30 +71,24 @@ public abstract class AbstractGraphResource extends AbstractResource {
         final IGraphInfo graph = store.getGraphInfo(graphURI);
         final MediaType mt = getMediaType(graph.getSupportedMediaTypes());
         return buildStreamingEntity(
-                makeResponseBuilder(graph.getLastModification(),
-                        graph.getSupportedMediaTypes()),
-                        store.getGraph(graphURI, mt));
+                makeResponseBuilder(graph), store.getGraph(graphURI, mt));
     }
 
     /**
-     * 
+     * Checks if a graph exists.
      *
-     * @return
-     * @throws StoreException
+     * @return A response with graph metadata.
+     * @throws StorageException In case of an error.
      */
     @HEAD
     public Response getGraphInfo() throws StoreException {
-        final URI graphURI = getGraphURI();
-        final IStore store = getStore();
-        final IGraphInfo graph = store.getGraphInfo(graphURI);
-        return makeResponseBuilder(graph.getLastModification(), 
-                graph.getSupportedMediaTypes()).build();
+        return makeResponseBuilder(getStore().getGraphInfo(getGraphURI())).build();
     }
 
     /**
-     * 
+     * Creates a new graph or replaces an existing graph.
      *
-     * @return
+     * @return A response indicating if a graph was created or replaced.
      * @throws IOException In case of an I/O error. 
      * @throws StorageException In case of an error.
      */
@@ -109,9 +104,9 @@ public abstract class AbstractGraphResource extends AbstractResource {
     }
 
     /**
-     * 
+     * Creates a new graph or updates an existing graph.
      *
-     * @return
+     * @return A response indicating if a graph was created or updated.
      * @throws IOException In case of an I/O error.
      * @throws StorageException In case of an error.
      */
@@ -127,13 +122,24 @@ public abstract class AbstractGraphResource extends AbstractResource {
     }
 
     /**
+     * Deletes a graph.
+     *
+     * @return A response indicating if the graph was removed immediately or deletion is scheduled.
+     * @throws StorageException In case of an error.
+     */
+    @DELETE
+    public Response deleteGraph() throws StoreException {
+        return getStore().deleteGraph(getGraphURI()) == RemovalStatus.DELAYED ? accepted() : noContent();
+    }
+
+    /**
      * Returns the base URI.
      *
      * @param graphURI The graph URI or {@code null}.
      * @return The {@code graphURI} if it does not represent the default graph, 
      *          otherwise a URI which represents the path to this resource. 
      */
-    private URI getBaseURI(URI graphURI) {
+    private URI getBaseURI(final URI graphURI) {
         if (graphURI == null || graphURI == IStore.DEFAULT_GRAPH) {
             return _uriInfo.getAbsolutePath();
         }
@@ -141,14 +147,15 @@ public abstract class AbstractGraphResource extends AbstractResource {
     }
 
     /**
-     * 
+     * Returns a {@link ResponseBuilder} initialized with the provided graph metadata.
      *
-     * @return
-     * @throws StorageException In case of an error.
+     * @param graphInfo The graph's metadata.
+     * @return A ResponseBuilder instance.
      */
-    @DELETE
-    public Response deleteGraph() throws StoreException {
-        return getStore().deleteGraph(getGraphURI()) == RemovalStatus.DELAYED ? accepted() : noContent();
+    private ResponseBuilder makeResponseBuilder(final IGraphInfo graphInfo) {
+        final ResponseBuilder builder = super.makeResponseBuilder(graphInfo.getLastModification());
+        builder.variants(MediaTypeUtils.asVariants(graphInfo.getSupportedMediaTypes()));
+        return builder;
     }
 
 }

@@ -60,16 +60,6 @@ final class ResponseUtils {
     }
 
     /**
-     * Returns a HTTP Method Not Allowed (405) response with an "Allow" header
-     * set to "GET, HEAD".
-     *
-     * @return A Method Not Allowed response.
-     */
-    public static Response methodNotAllowed() {
-        return Response.status(405).header("Allow", "GET, HEAD").build();
-    }
-
-    /**
      * Returns a HTTP No Content response.
      *
      * @return A No Content response.

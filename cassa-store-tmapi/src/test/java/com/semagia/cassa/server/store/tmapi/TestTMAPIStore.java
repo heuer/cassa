@@ -17,6 +17,7 @@ package com.semagia.cassa.server.store.tmapi;
 
 import java.net.URI;
 
+import org.tmapi.core.TopicMapSystem;
 import org.tmapi.core.TopicMapSystemFactory;
 
 import com.semagia.cassa.server.store.AbstractStoreTest;
@@ -28,12 +29,15 @@ import com.semagia.cassa.server.store.AbstractStoreTest;
  */
 public class TestTMAPIStore extends AbstractStoreTest<TMAPIStore> {
 
+    private TopicMapSystem _sys;
+
     /* (non-Javadoc)
      * @see com.semagia.cassa.server.store.AbstractStoreTest#createStore()
      */
     @Override
     protected TMAPIStore createStore() throws Exception {
-        return new TMAPIStore(TopicMapSystemFactory.newInstance().newTopicMapSystem());
+        _sys = TopicMapSystemFactory.newInstance().newTopicMapSystem();
+        return new TMAPIStore(_sys);
     }
 
     /* (non-Javadoc)
@@ -42,7 +46,7 @@ public class TestTMAPIStore extends AbstractStoreTest<TMAPIStore> {
     @Override
     protected void createGraph(TMAPIStore store, URI graphURI)
             throws Exception {
-        _store._sys.createTopicMap(graphURI.toString());
+        _sys.createTopicMap(graphURI.toString());
     }
 
     /* (non-Javadoc)

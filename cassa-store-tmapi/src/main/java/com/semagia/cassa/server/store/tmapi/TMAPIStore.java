@@ -45,8 +45,7 @@ import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
  */
 public final class TMAPIStore implements IStore {
 
-    // Package visibility for running TestTMAPIStore tests
-    final TopicMapSystem _sys;
+    private final TopicMapSystem _sys;
 
     public TMAPIStore(final TopicMapSystem sys) {
         _sys = sys;

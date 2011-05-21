@@ -42,11 +42,19 @@ final class SesameUtils {
         for (RDFFormat format: RDFParserRegistry.getInstance().getKeys()) {
             _READABLE_MEDIATYPES.add(asMediaType(format));
         }
+        if (RDFParserRegistry.getInstance().has(RDFFormat.TURTLE)) {
+            // <http://www.openrdf.org/issues/browse/RIO-74>
+            _READABLE_MEDIATYPES.add(MediaType.TURTLE);
+        }
         _READABLE_MEDIATYPES = Collections.unmodifiableList(_READABLE_MEDIATYPES);
 
         _WRITABLE_MEDIATYPES = new ArrayList<MediaType>();
         for (RDFFormat format: RDFWriterRegistry.getInstance().getKeys()) {
             _WRITABLE_MEDIATYPES.add(asMediaType(format));
+        }
+        if (RDFWriterRegistry.getInstance().has(RDFFormat.TURTLE)) {
+            // <http://www.openrdf.org/issues/browse/RIO-74>
+            _WRITABLE_MEDIATYPES.add(MediaType.TURTLE);
         }
         _WRITABLE_MEDIATYPES = Collections.unmodifiableList(_WRITABLE_MEDIATYPES);
     }
@@ -106,7 +114,10 @@ final class SesameUtils {
      * @throws UnsupportedMediaTypeException In case no reader for the media type can be found.
      */
     public static RDFFormat asReadableRDFFormat(final MediaType mediaType) throws UnsupportedMediaTypeException {
-        final RDFFormat format = Rio.getParserFormatForMIMEType(toString(mediaType));
+        RDFFormat format = Rio.getParserFormatForMIMEType(toString(mediaType));
+        if (format == null && MediaType.TURTLE.equals(mediaType)) {
+            format = RDFFormat.TURTLE;
+        }
         if (format == null) {
             throw new UnsupportedMediaTypeException("The media type " + mediaType + " cannot be read", getReadableMediaTypes());
         }
@@ -121,7 +132,10 @@ final class SesameUtils {
      * @throws UnsupportedMediaTypeException In case no writer for the media type can be found.
      */
     public static RDFFormat asWritableRDFFormat(final MediaType mediaType) throws UnsupportedMediaTypeException {
-        final RDFFormat format = Rio.getWriterFormatForMIMEType(toString(mediaType));
+        RDFFormat format = Rio.getWriterFormatForMIMEType(toString(mediaType));
+        if (format == null && MediaType.TURTLE.equals(mediaType)) {
+            format = RDFFormat.TURTLE;
+        }
         if (format == null) {
             throw new UnsupportedMediaTypeException("The media type " + mediaType + " cannot be written", getWritableMediaTypes());
         }

@@ -15,6 +15,8 @@
  */
 package com.semagia.cassa.server.store;
 
+import java.net.URI;
+
 /**
  * Exception thrown if a client tries to access a non-existing graph.
  * 
@@ -23,32 +25,25 @@ package com.semagia.cassa.server.store;
 @SuppressWarnings("serial")
 public class GraphNotExistsException extends StoreException {
 
-    /**
-     * 
-     *
-     * @param msg The detail message.
-     */
-    public GraphNotExistsException(String msg) {
-        super(msg);
-    }
+    private final URI _uri;
 
     /**
      * 
      *
-     * @param msg The detail message.
-     * @param cause The cause of the exception.
+     * @param uri The non-existing graph URI.
      */
-    public GraphNotExistsException(String msg, Throwable cause) {
-        super(msg, cause);
+    public GraphNotExistsException(final URI uri) {
+        super("The graph " + (uri == IStore.DEFAULT_GRAPH ? "'default'" : "<" + uri.toString() + ">") + " does not exist");
+        _uri = uri;
     }
 
     /**
-     * 
+     * Returns the non-existing graph URI.
      *
-     * @param cause The cause of the exception.
+     * @return The non-existing graph URI.
      */
-    public GraphNotExistsException(Throwable cause) {
-        super(cause);
+    public URI getURI() {
+        return _uri;
     }
 
 }

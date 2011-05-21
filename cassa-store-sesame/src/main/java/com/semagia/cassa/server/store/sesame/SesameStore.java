@@ -193,8 +193,7 @@ public final class SesameStore implements IStore {
     private void ensureGraphExists(final URI graphURI) throws GraphNotExistsException, StoreException {
         try {
             if (_conn.isEmpty() || !containsGraph(graphURI)) {
-                final String graph = graphURI == IStore.DEFAULT_GRAPH ? "'default'" : "<" + graphURI.toString() + ">";
-                throw new GraphNotExistsException("The graph " + graph + " does not exist");
+                throw new GraphNotExistsException(graphURI);
             }
         }
         catch (OpenRDFException ex) {

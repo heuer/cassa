@@ -136,7 +136,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * Returns the base URI.
      *
      * @param graphURI The graph URI or {@code null}.
-     * @return The {@code graphURI} if it does not represent the default graph, 
+     * @return The {@code graphURI} if it does not represent the default graph or is {@code null}, 
      *          otherwise a URI which represents the path to this resource. 
      */
     private URI getBaseURI(final URI graphURI) {

@@ -18,12 +18,25 @@ package com.semagia.cassa.server.spi;
 import com.semagia.cassa.server.IServerApplication;
 
 /**
- * 
+ * Factory which creates {@link IServerApplication} instance.
+ * <p>
+ * Implementations of this class may return either a singleton instance of
+ * {@link IServerApplication} or a new instance of {@link IServerApplication}
+ * for each invocation of {@link #createServerApplication()}.
+ * </p>
+ * <p>
+ * Implementations are meant to be thread-safe.
+ * </p>
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 public interface ServerApplicationFactory {
 
-    IServerApplication createServerApplication();
+    /**
+     * Returns a {@link IServerApplication} instance.
+     *
+     * @return A {@link IServerApplication} instance, never <tt>null</tt>.
+     */
+    public IServerApplication createServerApplication();
 
 }

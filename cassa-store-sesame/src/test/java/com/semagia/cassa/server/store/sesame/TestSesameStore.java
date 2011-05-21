@@ -19,6 +19,7 @@ import java.net.URI;
 
 import org.openrdf.model.ValueFactory;
 import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 
@@ -30,6 +31,8 @@ import com.semagia.cassa.server.store.AbstractStoreTest;
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 public class TestSesameStore extends AbstractStoreTest<SesameStore> {
+
+    private Repository _repository;
 
     /* (non-Javadoc)
      * @see com.semagia.cassa.server.store.AbstractStoreTest#isRDFStore()
@@ -52,9 +55,9 @@ public class TestSesameStore extends AbstractStoreTest<SesameStore> {
      */
     @Override
     protected SesameStore createStore() throws Exception {
-        Repository myRepository = new SailRepository(new MemoryStore());
-        myRepository.initialize();
-        return new SesameStore(myRepository.getConnection());
+        _repository = new SailRepository(new MemoryStore());
+        _repository.initialize();
+        return new SesameStore(_repository);
     }
 
     /* (non-Javadoc)
@@ -63,11 +66,13 @@ public class TestSesameStore extends AbstractStoreTest<SesameStore> {
     @Override
     protected void createGraph(SesameStore store, URI graphURI)
             throws Exception {
-        final ValueFactory factory = store._conn.getValueFactory();
-        store._conn.add(factory.createBNode(), 
+        final RepositoryConnection conn = _repository.getConnection(); 
+        final ValueFactory factory = _repository.getValueFactory();
+        conn.add(factory.createBNode(), 
                     factory.createURI("http://psi.example.org/foo"), 
                     factory.createBNode(), 
                     factory.createURI(graphURI.toString()));
+        conn.close();
     }
 
 }

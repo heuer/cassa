@@ -25,7 +25,9 @@ import java.util.UUID;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Resource;
+import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryResult;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFWriter;
@@ -50,11 +52,37 @@ public final class SesameStore implements IStore {
 
     private static Resource[] _ALL_CONTEXTS = new Resource[0];
 
-    // Package visibility for running TestSesameStore tests
-    final RepositoryConnection _conn;
+    private final Repository _repository;
 
-    public SesameStore(final RepositoryConnection conn) {
-        _conn = conn;
+    public SesameStore(final Repository repository) {
+        _repository = repository;
+    }
+
+    private RepositoryConnection getConnection() throws StoreException {
+        try {
+            return _repository.getConnection();
+        }
+        catch (RepositoryException ex) {
+            throw new StoreException(ex);
+        }
+    }
+
+    private static void rollbackConnection(final RepositoryConnection conn) throws StoreException {
+        try {
+            conn.rollback();
+        }
+        catch (RepositoryException ex) {
+            throw new StoreException(ex);
+        }
+    }
+
+    private static void closeConnection(final RepositoryConnection conn) throws StoreException {
+        try {
+            conn.close();
+        }
+        catch (RepositoryException ex) {
+            throw new StoreException(ex);
+        }
     }
 
     /* (non-Javadoc)
@@ -62,17 +90,25 @@ public final class SesameStore implements IStore {
      */
     @Override
     public Iterable<IGraphInfo> getGraphInfos() throws StoreException {
-        final List<IGraphInfo> uris = new ArrayList<IGraphInfo>();
+        final RepositoryConnection conn = getConnection();
         try {
-            final RepositoryResult<Resource> res = _conn.getContextIDs();
-            while(res.hasNext()) {
-                uris.add(new GraphInfo(URI.create(res.next().stringValue())));
-            }
-            res.close();
+            return getGraphInfos(conn);
         }
         catch (OpenRDFException ex) {
             throw new StoreException(ex);
         }
+        finally {
+            closeConnection(conn);
+        }
+    }
+
+    private Iterable<IGraphInfo> getGraphInfos(final RepositoryConnection conn) throws OpenRDFException {
+        final List<IGraphInfo> uris = new ArrayList<IGraphInfo>();
+        final RepositoryResult<Resource> res = conn.getContextIDs();
+        while(res.hasNext()) {
+            uris.add(new GraphInfo(URI.create(res.next().stringValue())));
+        }
+        res.close();
         return uris;
     }
 
@@ -83,8 +119,16 @@ public final class SesameStore implements IStore {
     public IWritableRepresentation getGraph(URI graphURI, MediaType mediaType)
             throws GraphNotExistsException, UnsupportedMediaTypeException,
             StoreException {
-        ensureGraphExists(graphURI);
-        return new WritableRepresentation(SesameUtils.asWritableRDFFormat(mediaType),
+        final RepositoryConnection conn = getConnection();
+        try {
+            ensureGraphExists(conn, graphURI);
+        }
+        catch (OpenRDFException ex) {
+            closeConnection(conn);
+            throw new StoreException(ex);
+        }
+        return new WritableRepresentation(conn, 
+                SesameUtils.asWritableRDFFormat(mediaType),
                 mediaType, getContext(graphURI));
     }
 
@@ -96,7 +140,24 @@ public final class SesameStore implements IStore {
         if (graphURI == IStore.DEFAULT_GRAPH) {
             return true;
         }
-        for (IGraphInfo info: getGraphInfos()) {
+        final RepositoryConnection conn = getConnection();
+        try {
+            return containsGraph(conn, graphURI);
+        }
+        catch (OpenRDFException ex) {
+            throw new StoreException(ex);
+        }
+        finally {
+            closeConnection(conn);
+        }
+    }
+
+    private boolean containsGraph(final RepositoryConnection conn, 
+            URI graphURI) throws OpenRDFException {
+        if (graphURI == IStore.DEFAULT_GRAPH) {
+            return true;
+        }
+        for (IGraphInfo info: getGraphInfos(conn)) {
             if (graphURI.equals(info.getURI())) {
                 return true;
             }
@@ -110,7 +171,16 @@ public final class SesameStore implements IStore {
     @Override
     public IGraphInfo getGraphInfo(URI graphURI)
             throws GraphNotExistsException, StoreException {
-        ensureGraphExists(graphURI);
+        final RepositoryConnection conn = getConnection();
+        try {
+            ensureGraphExists(conn, graphURI);
+        }
+        catch (OpenRDFException ex) {
+            throw new StoreException(ex);
+        }
+        finally {
+            closeConnection(conn);
+        }
         return new GraphInfo(graphURI);
     }
 
@@ -120,12 +190,19 @@ public final class SesameStore implements IStore {
     @Override
     public RemovalStatus deleteGraph(URI graphURI)
             throws GraphNotExistsException, StoreException {
-        ensureGraphExists(graphURI);
+        final RepositoryConnection conn = getConnection();
         try {
-            _conn.clear(getContext(graphURI));
+            ensureGraphExists(conn, graphURI);
+            conn.setAutoCommit(false);
+            conn.clear(getContext(graphURI));
+            conn.commit();
         }
         catch (OpenRDFException ex) {
+            rollbackConnection(conn);
             throw new StoreException(ex);
+        }
+        finally {
+            closeConnection(conn);
         }
         return RemovalStatus.IMMEDIATELY;
     }
@@ -137,12 +214,19 @@ public final class SesameStore implements IStore {
     public IGraphInfo updateGraph(URI graphURI, InputStream in, URI baseURI,
             MediaType mediaType) throws UnsupportedMediaTypeException,
             IOException, StoreException {
-        ensureGraphExists(graphURI);
+        final RepositoryConnection conn = getConnection();
         try {
-            _conn.add(in, baseURI.toString(), SesameUtils.asReadableRDFFormat(mediaType), getContext(graphURI));
+            ensureGraphExists(conn, graphURI);
+            conn.setAutoCommit(false);
+            conn.add(in, baseURI.toString(), SesameUtils.asReadableRDFFormat(mediaType), getContext(graphURI));
+            conn.commit();
         } 
         catch (OpenRDFException ex) {
+            rollbackConnection(conn);
             throw new StoreException(ex);
+        }
+        finally {
+            closeConnection(conn);
         }
         return new GraphInfo(graphURI);
     }
@@ -155,11 +239,18 @@ public final class SesameStore implements IStore {
             MediaType mediaType) throws UnsupportedMediaTypeException,
             IOException, StoreException {
         final URI graphURI = baseURI.resolve(UUID.randomUUID().toString());
+        final RepositoryConnection conn = getConnection();
         try {
-            _conn.add(in, baseURI.toString(), SesameUtils.asReadableRDFFormat(mediaType), getContext(graphURI));
+            conn.setAutoCommit(false);
+            conn.add(in, baseURI.toString(), SesameUtils.asReadableRDFFormat(mediaType), getContext(graphURI));
+            conn.commit();
         } 
         catch (OpenRDFException ex) {
+            rollbackConnection(conn);
             throw new StoreException(ex);
+        }
+        finally {
+            closeConnection(conn);
         }
         return new GraphInfo(graphURI);
     }
@@ -173,12 +264,19 @@ public final class SesameStore implements IStore {
             throws UnsupportedMediaTypeException, IOException, StoreException {
         final RDFFormat format = SesameUtils.asReadableRDFFormat(mediaType);
         final Resource[] contexts = getContext(graphURI);
+        final RepositoryConnection conn = getConnection();
         try {
-            _conn.clear(contexts);
-            _conn.add(in, baseURI.toString(), format, contexts);
+            conn.setAutoCommit(false);
+            conn.clear(contexts);
+            conn.add(in, baseURI.toString(), format, contexts);
+            conn.commit();
         } 
         catch (OpenRDFException ex) {
+            rollbackConnection(conn);
             throw new StoreException(ex);
+        }
+        finally {
+            closeConnection(conn);
         }
         return new GraphInfo(graphURI);
     }
@@ -190,14 +288,9 @@ public final class SesameStore implements IStore {
      * @throws GraphNotExistsException In case the graph URI does not exist.
      * @throws StoreException In case of an error.
      */
-    private void ensureGraphExists(final URI graphURI) throws GraphNotExistsException, StoreException {
-        try {
-            if (_conn.isEmpty() || !containsGraph(graphURI)) {
-                throw new GraphNotExistsException(graphURI);
-            }
-        }
-        catch (OpenRDFException ex) {
-            throw new StoreException(ex);
+    private void ensureGraphExists(final RepositoryConnection conn, final URI graphURI) throws GraphNotExistsException, OpenRDFException {
+        if (conn.isEmpty() || !containsGraph(conn, graphURI)) {
+            throw new GraphNotExistsException(graphURI);
         }
     }
 
@@ -219,7 +312,7 @@ public final class SesameStore implements IStore {
      * @return A resource which represents the URI.
      */
     private Resource asResource(final URI uri) {
-        return _conn.getValueFactory().createURI(uri.toString());
+        return _repository.getValueFactory().createURI(uri.toString());
     }
 
 
@@ -239,15 +332,18 @@ public final class SesameStore implements IStore {
     }
 
 
-    private class WritableRepresentation implements IWritableRepresentation {
+    private static class WritableRepresentation implements IWritableRepresentation {
 
+        private final RepositoryConnection _conn;
         private final RDFFormat _format;
         private final MediaType _mediaType;
         private Resource[] _resources;
 
-        public WritableRepresentation(final RDFFormat format, 
+        public WritableRepresentation(final RepositoryConnection conn, 
+                final RDFFormat format, 
                 final MediaType mediaType,
                 final Resource[] resources) {
+            _conn = conn;
             _format = format;
             _mediaType = mediaType;
             _resources = resources;
@@ -267,6 +363,14 @@ public final class SesameStore implements IStore {
                     throw (IOException) ex.getCause();
                 }
                 throw new IOException(ex);
+            }
+            finally {
+                try {
+                    _conn.close();
+                }
+                catch (RepositoryException ex) {
+                    throw new IOException(ex);
+                }
             }
         }
 

@@ -213,6 +213,46 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         assertEquals(_VALID_GRAPH, infos.get(0).getURI());
     }
 
+    public void testDefaultGraph() throws Exception {
+        assertTrue("The default graph must always exists", 
+                _store.containsGraph(IStore.DEFAULT_GRAPH));
+        _store.deleteGraph(IStore.DEFAULT_GRAPH);
+        assertTrue("After deleting the default graph it must be reconstructed", 
+                _store.containsGraph(IStore.DEFAULT_GRAPH));
+    }
+
+    public void testDefaultGraphInfo() throws Exception {
+        try {
+            _store.getGraphInfo(IStore.DEFAULT_GRAPH);
+        }
+        catch (GraphNotExistsException ex) {
+            fail("The default graph must always exist");
+        }
+    }
+
+    public void testGetDefaultGraphRDF() throws Exception {
+        if (!isRDFStore()) {
+            return;
+        }
+        final IWritableRepresentation writer = _store.getGraph(IStore.DEFAULT_GRAPH, MediaType.RDF_XML);
+        assertEquals(MediaType.RDF_XML, writer.getMediaType());
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        writer.write(out);
+        assertGraphEquality(getRDFXMLGraph("/empty.rdf"), getRDFXMLGraph(out));
+    }
+
+    public void testGetDefaultGraphTM() throws Exception {
+        if (!isTMStore()) {
+            return;
+        }
+        final IWritableRepresentation writer = _store.getGraph(IStore.DEFAULT_GRAPH, MediaType.XTM);
+        assertEquals(MediaType.XTM, writer.getMediaType());
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        writer.write(out);
+        final URI base = URI.create("http://www.example.org/");
+        assertGraphEquality("/empty.xtm.cxtm", getXTMGraph(out, base), base);
+    }
+
     public void testContainsGraphInvalid() throws Exception {
         assertFalse(_store.containsGraph(_INVALID_GRAPH));
         assertFalse(_store.containsGraph(_VALID_GRAPH));
@@ -242,28 +282,9 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         assertEquals(0, graphCount());
     }
 
-    //TODO: Unsure about this test since the "default" graph may not be equivalent with "all graphs"
-//    public void testDeleteValid2() throws Exception {
-//        assertEquals(0, graphCount());
-//        createDefaultGraph();
-//        assertEquals(1, graphCount());
-//        _store.deleteGraph(IStore.DEFAULT_GRAPH);
-//        assertEquals(0, graphCount());
-//    }
-
     public void testGetGraphInfoNotExisting() throws Exception {
         try {
             _store.getGraphInfo(_INVALID_GRAPH);
-            fail("Expected an exception for a non-existing graph");
-        }
-        catch (GraphNotExistsException ex) {
-            // noop.
-        }
-    }
-
-    public void testGetGraphInfoNotExisting2() throws Exception {
-        try {
-            _store.getGraphInfo(IStore.DEFAULT_GRAPH);
             fail("Expected an exception for a non-existing graph");
         }
         catch (GraphNotExistsException ex) {
@@ -286,16 +307,6 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
     public void testGetNotExisting() throws Exception {
         try {
             _store.getGraph(_INVALID_GRAPH, MediaType.RDF_XML);
-            fail("Expected an exception for a non-existing graph");
-        }
-        catch (GraphNotExistsException ex) {
-            // noop.
-        }
-    }
-
-    public void testGetNotExisting2() throws Exception {
-        try {
-            _store.getGraph(IStore.DEFAULT_GRAPH, MediaType.RDF_XML);
             fail("Expected an exception for a non-existing graph");
         }
         catch (GraphNotExistsException ex) {

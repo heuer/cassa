@@ -97,10 +97,20 @@ public abstract class AbstractGraphResource extends AbstractResource {
         final URI graphURI = getGraphURI();
         final IStore store = getStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
-        final boolean wasKnown = store.containsGraph(graphURI);
+        final boolean wasKnown = graphURI == IStore.DEFAULT_GRAPH || store.containsGraph(graphURI);
         final IGraphInfo info = store.createOrReplaceGraph(graphURI, in, getBaseURI(graphURI), mt);
-        //TODO: Is it a good idea to return the IRI here? It may refer to an external server...
-        return wasKnown ? noContent() : created(info.getURI());
+        if (wasKnown) {
+            return noContent();
+        }
+        if (!_uriInfo.getBaseUri().relativize(info.getURI()).isAbsolute()) {
+            // Grah is a local graph
+            return created(graphURI);
+        }
+        // Not a local graph -> set the location to the service resource
+        return created(_uriInfo.getBaseUriBuilder()
+                                    .path(ServiceResource.class)
+                                    .queryParam("graph", "{graph}")
+                                    .build(info.getURI()));
     }
 
     /**
@@ -130,6 +140,17 @@ public abstract class AbstractGraphResource extends AbstractResource {
     @DELETE
     public Response deleteGraph() throws StoreException {
         return getStore().deleteGraph(getGraphURI()) == RemovalStatus.DELAYED ? accepted() : noContent();
+    }
+
+    /**
+     * Modifies a graph.
+     *
+     * @return 
+     * @throws StorageException In case of an error.
+     */
+    @PATCH
+    public Response modifyGraph(InputStream in, @Context HttpHeaders header) throws IOException, StoreException {
+        return Response.ok("Hello").build();
     }
 
     /**

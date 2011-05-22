@@ -103,7 +103,8 @@ public abstract class AbstractGraphResource extends AbstractResource {
         if (wasKnown) {
             return noContent();
         }
-        if (!_uriInfo.getBaseUri().relativize(info.getURI()).isAbsolute()) {
+        if (!_uriInfo.getBaseUriBuilder()
+                .path(GraphsResource.class).build().relativize(info.getURI()).isAbsolute()) {
             // Graph is a local graph
             return created(graphURI);
         }

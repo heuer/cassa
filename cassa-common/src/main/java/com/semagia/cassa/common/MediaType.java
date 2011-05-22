@@ -141,6 +141,19 @@ public final class MediaType {
     }
 
     /**
+     * Returns the (normalized) media type as string representation without
+     * parameters.
+     *
+     * @return "type/subtype"
+     */
+    public String toStringWithoutParameters() {
+        return new StringBuilder(_mainType)
+                    .append('/')
+                    .append(_subType)
+                    .toString();
+    }
+
+    /**
      * Returns the (normalized) media type as string representation
      * suitable for use as the value of a corresponding HTTP header
      * 

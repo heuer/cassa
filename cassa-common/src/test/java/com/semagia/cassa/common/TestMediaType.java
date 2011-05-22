@@ -82,6 +82,7 @@ public class TestMediaType extends TestCase {
         assertEquals("version", param.getKey());
         assertEquals("1.0", param.getValue());
         assertEquals("application/x-tm+xml;version=1.0", mt.toString());
+        assertEquals("application/x-tm+xml", mt.toStringWithoutParameters());
         final MediaType mt2 = MediaType.valueOf(mt.toString());
         assertEquals(mt, mt2);
         assertEquals(mt.hashCode(), mt2.hashCode());
@@ -96,6 +97,7 @@ public class TestMediaType extends TestCase {
         assertEquals("version", param.getKey());
         assertEquals("1.0", param.getValue());
         assertEquals("application/x-tm+xml;version=1.0", mt.toString());
+        assertEquals("application/x-tm+xml", mt.toStringWithoutParameters());
         final MediaType mt2 = MediaType.valueOf(mt.toString());
         assertEquals(mt, mt2);
         assertEquals(mt.hashCode(), mt2.hashCode());

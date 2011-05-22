@@ -289,10 +289,7 @@ public final class SesameStore implements IStore {
      * @throws StoreException In case of an error.
      */
     private void ensureGraphExists(final RepositoryConnection conn, final URI graphURI) throws GraphNotExistsException, OpenRDFException {
-        if (graphURI == IStore.DEFAULT_GRAPH) {
-            return;
-        }
-        if (conn.isEmpty() || !containsGraph(conn, graphURI)) {
+        if (graphURI != IStore.DEFAULT_GRAPH && !containsGraph(conn, graphURI)) {
             throw new GraphNotExistsException(graphURI);
         }
     }

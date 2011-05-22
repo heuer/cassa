@@ -77,18 +77,48 @@ public final class GraphClient {
         _mediaType = mediaType;
     }
 
+    /**
+     * Returns the default graph using the {@link #getDefaultMediaType()}.
+     *
+     * @return A graph or {@code null} if the graph does not exist (Note: graph
+     *          stores are required to have always a default graph).
+     * @throws IOException In case of an error.
+     */
     public Graph getGraph() throws IOException {
         return getGraph(_mediaType);
     }
 
+    /**
+     * Returns the default graph using the provided media type.
+     *
+     * @param mediaType The requested media type.
+     * @return A graph or {@code null} if the graph does not exist (Note: graph
+     *          stores are required to have always a default graph).
+     * @throws IOException In case of an error.
+     */
     public Graph getGraph(final MediaType mediaType) throws IOException {
         return _getGraph(_DEFAULT_GRAPH, mediaType);
     }
 
+    /**
+     * Returns the graph with the provided URI using the {@link #getDefaultMediaType()}.
+     *
+     * @param graphURI The graph URI.
+     * @return A graph or {@code null} if the graph does not exist.
+     * @throws IOException In case of an error.
+     */
     public Graph getGraph(final URI graphURI) throws IOException {
         return getGraph(graphURI, _mediaType);
     }
 
+    /**
+     * Returns the graph with the provided URI using the provided media type.
+     *
+     * @param graphURI The graph URI.
+     * @param mediaType The requested media type.
+     * @return A graph or {@code null} if the graph does not exist.
+     * @throws IOException In case of an error.
+     */
     public Graph getGraph(final URI graphURI, final MediaType mediaType) throws IOException {
         return _getGraph(graphURI, mediaType);
     }
@@ -110,18 +140,67 @@ public final class GraphClient {
         return new Graph(entity.getContent(), mt, encoding);
     }
 
+    /**
+     * Creates a graph under the specified URI using the content of the provided
+     * file.
+     * 
+     * This method tries to detect the media type of the graph content by the
+     * file name extension.
+     *
+     * @param graphURI The graph URI.
+     * @param file The file to read the graph from.
+     * @return {@code true} indicating that the graph was created sucessfully,
+     *          otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
     public boolean createGraph(final URI graphURI, final File file) throws IOException {
         return createGraph(graphURI, file, MediaTypeUtils.guessMediaType(file.toURI()));
     }
 
+    /**
+     * Creates a graph under the specified URI using the content of the provided
+     * file.
+     *
+     * @param graphURI The graph URI.
+     * @param file The file to read the graph from.
+     * @param mediaType The content type of the file.
+     * @return {@code true} indicating that the graph was created sucessfully,
+     *          otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
     public boolean createGraph(final URI graphURI, final File file, final MediaType mediaType) throws IOException {
         return _createGraph(graphURI, file, mediaType);
     }
 
+    /**
+     * Creates a graph under the specified URI using the content of the stream.
+     * 
+     * Note: This method does not close the input stream. The caller should
+     * close it.
+     *
+     * @param graphURI The graph URI.
+     * @param in The input stream to read the graph from.
+     * @return {@code true} indicating that the graph was created sucessfully,
+     *          otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
     public boolean createGraph(final URI graphURI, final InputStream in) throws IOException {
         return createGraph(graphURI, in, _mediaType);
     }
 
+    /**
+     * Creates a graph under the specified URI using the content of the stream.
+     *
+     * Note: This method does not close the input stream. The caller should
+     * close it.
+     *
+     * @param graphURI The graph URI.
+     * @param in The input stream to read the graph from.
+     * @param mediaType The content type of the input stream.
+     * @return {@code true} indicating that the graph was created sucessfully,
+     *          otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
     public boolean createGraph(final URI graphURI, final InputStream in, final MediaType mediaType) throws IOException {
         return _createGraph(graphURI, in, mediaType);
     }
@@ -148,10 +227,26 @@ public final class GraphClient {
         return status == 200 || status == 201 || status == 204;
     }
 
+    /**
+     * Returns if the default graph exists.
+     * 
+     * This method should always return {@code true} if the graph store is
+     * standards-compilant.
+     * 
+     * @return {@code true} if the default graph exists, otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
     public boolean existsGraph() throws IOException {
         return _existsGraph(_DEFAULT_GRAPH);
     }
 
+    /**
+     * Returns if a graph with the provided URI exists. 
+     *
+     * @param graphURI The graph URI.
+     * @return {@code true} if the graph exists, otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
     public boolean existsGraph(final URI graphURI) throws IOException {
         return _existsGraph(graphURI);
     }
@@ -161,10 +256,32 @@ public final class GraphClient {
         return getStatusCode(head) == 200;
     }
 
+    /**
+     * Deletes the default graph.
+     * 
+     * Note: The default graph always exists. After deletion a new default
+     * graph is created:
+     * <pre>
+     *      client.deleteGraph()
+     *      client.existsGraph() == true
+     * </pre>
+     *
+     * @return The removal status or {@code null} if the graph does not exist
+     *          or wasn't deleted.
+     * @throws IOException In case of an error.
+     */
     public RemovalStatus deleteGraph() throws IOException {
         return _deleteGraph(_DEFAULT_GRAPH);
     }
 
+    /**
+     * Deletes the graph under the provided URI.
+     *
+     * @param graphURI The graph URI.
+     * @return The removal status or {@code null} if the graph does not exist
+     *          or wasn't deleted.
+     * @throws IOException In case of an error.
+     */
     public RemovalStatus deleteGraph(final URI graphURI) throws IOException {
         return _deleteGraph( graphURI);
     }
@@ -181,34 +298,126 @@ public final class GraphClient {
         return null;
     }
 
+    /**
+     * Updates the default graph by reading the provided stream, assuming
+     * the {@link #getDefaultMediaType()}.
+     *
+     * Note: This method does not close the input stream. The caller should
+     * close it.
+     *
+     * @param in The input stream to read the graph from.
+     * @return {@code true} indicating that the graph was updated sucessfully,
+     *          otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
     public boolean updateGraph(final InputStream in) throws IOException {
         return updateGraph(in, _mediaType);
     }
 
+    /**
+     * Updates the default graph by reading the provided file, assuming
+     * the {@link #getDefaultMediaType()}.
+     *
+     * @param file The file to read the graph from.
+     * @return {@code true} indicating that the graph was updated sucessfully,
+     *          otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
     public boolean updateGraph(final File file) throws IOException {
         return _updateGraph(_DEFAULT_GRAPH, file);
     }
 
+    /**
+     * Updates the default graph by reading the provided file, using the 
+     * provided media type.
+     *
+     * @param file The file to read the graph from.
+     * @param mediaType The content type of the file.
+     * @return {@code true} indicating that the graph was updated sucessfully,
+     *          otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
     public boolean updateGraph(final File file, final MediaType mediaType) throws IOException {
         return _updateGraph(_DEFAULT_GRAPH, file, mediaType);
     }
 
+    /**
+     * Updates the default graph by reading the provided stream, using
+     * the provided media type.
+     * 
+     * Note: This method does not close the input stream. The caller should
+     * close it.
+     *
+     * @param in The input stream to read the graph from.
+     * @param mediaType The content type of the input stream.
+     * @return {@code true} indicating that the graph was updated sucessfully,
+     *          otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
     public boolean updateGraph(final InputStream in, final MediaType mediaType) throws IOException {
         return _updateGraph(_DEFAULT_GRAPH, in, mediaType);
     }
 
+    /**
+     * Updates the provided graph by reading the provided stream, using the 
+     * default media type {@link #getDefaultMediaType()}.
+     * 
+     * Note: This method does not close the input stream. The caller should
+     * close it.
+     *
+     * @param graphURI The graph URI.
+     * @param in The input stream to read the graph from.
+     * @return {@code true} indicating that the graph was updated sucessfully,
+     *          otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
     public boolean updateGraph(final URI graphURI, final InputStream in) throws IOException {
         return updateGraph(graphURI, in, _mediaType);
     }
 
+    /**
+     * Updates the provided graph by reading the provided file, using the 
+     * default media type {@link #getDefaultMediaType()}.
+     * 
+     * @param graphURI The graph URI.
+     * @param file The file to read the graph from.
+     * @return {@code true} indicating that the graph was updated sucessfully,
+     *          otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
     public boolean updateGraph(final URI graphURI, final File file) throws IOException {
         return _updateGraph(graphURI, file);
     }
 
+    /**
+     * Updates the provided graph by reading the provided file, using the 
+     * provided media type.
+     * 
+     * @param graphURI The graph URI.
+     * @param file The file to read the graph from.
+     * @param mediaType The content type of the file.
+     * @return {@code true} indicating that the graph was updated sucessfully,
+     *          otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
     public boolean updateGraph(final URI graphURI, final File file, final MediaType mediaType) throws IOException {
         return _updateGraph(graphURI, file, mediaType);
     }
 
+    /**
+     * Updates the provided graph by reading the provided stream, using the 
+     * provided media type.
+     *
+     * Note: This method does not close the input stream. The caller should
+     * close it.
+     *
+     * @param graphURI The graph URI.
+     * @param in The input stream to read the graph from.
+     * @param mediaType The content type of the input stream.
+     * @return {@code true} indicating that the graph was updated sucessfully,
+     *          otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
     public boolean updateGraph(final URI graphURI, final InputStream in, final MediaType mediaType) throws IOException {
         return _updateGraph(graphURI, in, mediaType);
     }

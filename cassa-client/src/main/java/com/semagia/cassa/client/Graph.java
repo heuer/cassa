@@ -24,7 +24,10 @@ import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IWritableRepresentation;
 
 /**
+ * Wraps a {@link InputStream} providing some convenient methods.
  * 
+ * Note: The caller which receives a Graph instance MUST call {@link #close()}
+ * or {@link #getInputStream()#close()}.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */

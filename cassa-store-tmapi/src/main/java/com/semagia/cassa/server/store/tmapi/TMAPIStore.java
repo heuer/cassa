@@ -45,10 +45,19 @@ import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
  */
 public final class TMAPIStore implements IStore {
 
+    private static final String _DEFAULT_GRAPH_IRI_BASE = "urn:x-cassa-tmapi:";
     private final TopicMapSystem _sys;
+    private final Locator _defaultGraphLocator;
 
     public TMAPIStore(final TopicMapSystem sys) {
         _sys = sys;
+        _defaultGraphLocator = _sys.createLocator(_DEFAULT_GRAPH_IRI_BASE + UUID.randomUUID().toString());
+        try {
+            _sys.createTopicMap(_defaultGraphLocator);
+        }
+        catch (TMAPIException ex) {
+            throw new IllegalStateException("Expected an empty topic map system");
+        }
     }
 
     /* (non-Javadoc)
@@ -58,6 +67,9 @@ public final class TMAPIStore implements IStore {
     public Iterable<IGraphInfo> getGraphInfos() throws StoreException {
         final List<IGraphInfo> graphs = new ArrayList<IGraphInfo>();
         for (Locator loc: _sys.getLocators()) {
+            if (loc.equals(_defaultGraphLocator)) {
+                continue;
+            }
             graphs.add(new GraphInfo(loc));
         }
         return graphs;
@@ -100,7 +112,11 @@ public final class TMAPIStore implements IStore {
     public RemovalStatus deleteGraph(URI graphURI)
             throws GraphNotExistsException, StoreException {
         ensureGraphExists(graphURI);
-        _sys.getTopicMap(asLocator(graphURI)).remove();
+        final Locator loc = asLocator(graphURI);
+        _sys.getTopicMap(loc).remove();
+        if (_defaultGraphLocator.equals(loc)) {
+            makeTopicMap(_defaultGraphLocator);
+        }
         return RemovalStatus.IMMEDIATELY;
     }
 
@@ -154,7 +170,7 @@ public final class TMAPIStore implements IStore {
      * @throws StoreException In case of an error.
      */
     private void ensureGraphExists(final URI graphURI) throws GraphNotExistsException, StoreException {
-        if (graphURI == IStore.DEFAULT_GRAPH || !containsGraph(graphURI)) {
+        if (graphURI != IStore.DEFAULT_GRAPH && !containsGraph(graphURI)) {
             throw new GraphNotExistsException(graphURI);
         }
     }
@@ -166,7 +182,8 @@ public final class TMAPIStore implements IStore {
      * @return The equivalent Locator instance.
      */
     private Locator asLocator(final URI uri) {
-        return _sys.createLocator(uri.toString());
+        return uri == IStore.DEFAULT_GRAPH ? _defaultGraphLocator 
+                                           : _sys.createLocator(uri.toString());
     }
 
     private TopicMap makeTopicMap(final Locator loc) throws StoreException {

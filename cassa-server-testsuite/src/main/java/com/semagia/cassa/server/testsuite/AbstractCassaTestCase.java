@@ -15,6 +15,7 @@
  */
 package com.semagia.cassa.server.testsuite;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
@@ -35,6 +36,10 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
 
     protected GraphClient _client;
 
+    protected abstract MediaType getDefaultMediaType() throws Exception;
+
+    protected abstract InputStream getGraphDefaultMediaType() throws Exception;
+
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
@@ -42,6 +47,7 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
     protected void setUp() throws Exception {
         super.setUp();
         _client = new GraphClient(TestUtils.getServiceEndpoint());
+        _client.setDefaultMediaType(getDefaultMediaType());
     }
 
     /* (non-Javadoc)
@@ -50,11 +56,34 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
+        deleteEverything();
         _client = null;
     }
 
-    protected final InputStream getInputStream(final String testFile) {
-        return this.getClass().getResourceAsStream(testFile);
+    private void deleteEverything() throws Exception {
+        //TODO: Implement me
+    }
+
+    protected final InputStream getInputStream(final String testFile) throws Exception {
+        return getClass().getResourceAsStream(testFile);
+    }
+
+    protected Graph getGraph(final URI graphURI) throws Exception {
+        return _client.getGraph(graphURI);
+    }
+
+    protected Graph getGraph() throws Exception {
+        return _client.getGraph();
+    }
+
+    protected Graph getGraph(final MediaType mediaType) throws Exception {
+        return _client.getGraph(mediaType);
+    }
+
+    protected InputStream getGraphInputStream(final URI graphURI, final MediaType mediaType) throws IOException {
+        final Graph graph = _client.getGraph(graphURI, mediaType);
+        assertNotNull(graph);
+        return graph.getInputStream();
     }
 
     public void testDefaultGraphExists() throws Exception {
@@ -71,8 +100,24 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
         assertNotNull(_client.getGraph(MEDIATYPE_ANY));
     }
 
+    public void testEmptyGraphCreation() throws Exception {
+        final URI graphURI = URI.create("http://www.example.org/");
+        assertGraphNotExists(graphURI);
+        _client.createGraph(graphURI, getGraphDefaultMediaType());
+        assertGraphExists(graphURI);
+        assertGraphGET(graphURI, getDefaultMediaType());
+    }
+
     public void assertGraphGET(final URI graphURI) throws Exception {
-        assertNotNull(_client.getGraph(graphURI, MEDIATYPE_ANY));
+        assertGraphGET(graphURI, MEDIATYPE_ANY);
+    }
+
+    public void assertGraphGET(final URI graphURI, final MediaType mediaType) throws Exception {
+        assertNotNull(_client.getGraph(graphURI, mediaType));
+    }
+
+    public void assertGraphNotExists(final URI graphURI) throws Exception {
+        assertFalse(_client.existsGraph(graphURI));
     }
 
     public void assertGraphExists(final URI graphURI) throws Exception {
@@ -89,4 +134,7 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
         assertTrue(_client.deleteGraph(graphURI) != null);
     }
 
+    public void createGraph(final URI graphURI, final String file) {
+        
+    }
 }

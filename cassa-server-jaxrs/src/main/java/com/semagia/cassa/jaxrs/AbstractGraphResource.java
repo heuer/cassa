@@ -15,6 +15,7 @@
  */
 package com.semagia.cassa.jaxrs;
 
+import static com.semagia.cassa.jaxrs.ResponseUtils.badRequest;
 import static com.semagia.cassa.jaxrs.ResponseUtils.accepted;
 import static com.semagia.cassa.jaxrs.ResponseUtils.buildStreamingEntity;
 import static com.semagia.cassa.jaxrs.ResponseUtils.created;
@@ -103,7 +104,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
             return noContent();
         }
         if (!_uriInfo.getBaseUri().relativize(info.getURI()).isAbsolute()) {
-            // Grah is a local graph
+            // Graph is a local graph
             return created(graphURI);
         }
         // Not a local graph -> set the location to the service resource
@@ -150,7 +151,8 @@ public abstract class AbstractGraphResource extends AbstractResource {
      */
     @PATCH
     public Response modifyGraph(InputStream in, @Context HttpHeaders header) throws IOException, StoreException {
-        return Response.ok("Hello").build();
+        // TODO: Implement me :)
+        return badRequest();
     }
 
     /**

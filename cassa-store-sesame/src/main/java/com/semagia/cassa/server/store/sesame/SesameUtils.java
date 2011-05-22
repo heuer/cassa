@@ -92,21 +92,6 @@ final class SesameUtils {
     }
 
     /**
-     * Converts the provided media type into a string.
-     * 
-     * The default string representation of {@link MediaType} may contains the
-     * paramaters (if any). This representation isn't comptible with {@link RDFFormat}.
-     * 
-     * This function returns just the type/subtype part of the provided media type.
-     * 
-     * @param mediaType The media type to convert.
-     * @return "type/subtype"
-     */
-    private static String toString(final MediaType mediaType) {
-        return mediaType.getType() + "/" + mediaType.getSubtype();
-    }
-
-    /**
      * Returns a readable RDFFormat.
      *
      * @param mediaType The requested media type.
@@ -114,7 +99,7 @@ final class SesameUtils {
      * @throws UnsupportedMediaTypeException In case no reader for the media type can be found.
      */
     public static RDFFormat asReadableRDFFormat(final MediaType mediaType) throws UnsupportedMediaTypeException {
-        RDFFormat format = Rio.getParserFormatForMIMEType(toString(mediaType));
+        RDFFormat format = Rio.getParserFormatForMIMEType(mediaType.toStringWithoutParameters());
         if (format == null && MediaType.TURTLE.equals(mediaType)) {
             format = RDFFormat.TURTLE;
         }
@@ -132,7 +117,7 @@ final class SesameUtils {
      * @throws UnsupportedMediaTypeException In case no writer for the media type can be found.
      */
     public static RDFFormat asWritableRDFFormat(final MediaType mediaType) throws UnsupportedMediaTypeException {
-        RDFFormat format = Rio.getWriterFormatForMIMEType(toString(mediaType));
+        RDFFormat format = Rio.getWriterFormatForMIMEType(mediaType.toStringWithoutParameters());
         if (format == null && MediaType.TURTLE.equals(mediaType)) {
             format = RDFFormat.TURTLE;
         }

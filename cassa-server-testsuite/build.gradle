@@ -1,0 +1,16 @@
+/*
+ * Gradle build file.
+ * 
+ * - Download Gradle from <http://www.gradle.org/>
+ * - Execute gradle build
+ */
+version = '0.0.1'
+
+projectName = 'Semagia Cassa Server Test Suite'
+projectDescription = projectName
+
+dependencies {
+    compile project(':cassa-client'),
+            'junit:junit:4.8.2'
+            'org.slf4j:slf4j-api:(1.5.8,)'
+}

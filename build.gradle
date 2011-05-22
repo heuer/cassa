@@ -42,6 +42,8 @@ configure(javaProjects()) {
       mavenRepo urls: 'http://tinytim.sourceforge.net/maven-repository/snapshots/'
       mavenRepo urls: 'http://repository.semagia.com/snapshots/'
       mavenRepo urls: 'http://repository.semagia.com/releases/'
+      mavenRepo urls: 'https://repository.apache.org/content/groups/public/'
+      mavenRepo urls: 'https://oss.sonatype.org/content/groups/public/'
   }
 
   dependencies {

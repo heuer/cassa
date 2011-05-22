@@ -36,10 +36,10 @@ import org.openrdf.rio.Rio;
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IGraphInfo;
 import com.semagia.cassa.common.dm.IWritableRepresentation;
+import com.semagia.cassa.common.dm.RemovalStatus;
 import com.semagia.cassa.common.dm.impl.DefaultGraphInfo;
 import com.semagia.cassa.server.store.GraphNotExistsException;
 import com.semagia.cassa.server.store.IStore;
-import com.semagia.cassa.server.store.RemovalStatus;
 import com.semagia.cassa.server.store.StoreException;
 import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
 

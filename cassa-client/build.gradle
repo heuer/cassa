@@ -1,0 +1,21 @@
+/*
+ * Gradle build file.
+ * 
+ * - Download Gradle from <http://www.gradle.org/>
+ * - Execute gradle build
+ */
+version = '0.0.1'
+
+projectName = 'Semagia Cassa Client'
+projectDescription = projectName
+
+configurations {
+    all*.exclude group: 'commons-logging'
+}
+
+dependencies {
+    compile project(':cassa-common'),
+            'org.apache.httpcomponents:httpclient:4.1.1',
+            'org.slf4j:slf4j-api:(1.5.8,)'
+    runtime 'org.slf4j:jcl-over-slf4j:(1.5.8,)'
+}

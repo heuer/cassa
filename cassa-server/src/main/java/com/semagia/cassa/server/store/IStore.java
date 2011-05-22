@@ -22,6 +22,7 @@ import java.net.URI;
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IGraphInfo;
 import com.semagia.cassa.common.dm.IWritableRepresentation;
+import com.semagia.cassa.common.dm.RemovalStatus;
 
 /**
  * Graph store.

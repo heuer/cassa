@@ -11,7 +11,6 @@ version = '0.0.1'
 projectName = 'Semagia Cassa Server Implementation'
 projectDescription = projectName
 
-
 dependencies {
     compile project(':cassa-server')
     compile 'com.sun.jersey:jersey-server:1.6',

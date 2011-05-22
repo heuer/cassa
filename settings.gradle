@@ -1,4 +1,5 @@
 include 'cassa-common',
+        'cassa-client',
         'cassa-server',
         'cassa-server-jaxrs',
         'cassa-store-sesame',

@@ -15,6 +15,14 @@
  */
 package com.semagia.cassa.server.testsuite.tm;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.Arrays;
+
+import org.tinytim.mio.CXTMTopicMapWriter;
+import org.tmapi.core.TopicMap;
+
 import com.semagia.cassa.server.testsuite.AbstractCassaTestCase;
 
 /**
@@ -23,5 +31,22 @@ import com.semagia.cassa.server.testsuite.AbstractCassaTestCase;
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 public class TestTMStore extends AbstractCassaTestCase {
+
+    private void assertGraphEquality(final String cxtmReferenceFile, final TopicMap g2, URI base) throws Exception {
+        final InputStream in = this.getInputStream(cxtmReferenceFile);
+        final ByteArrayOutputStream expected = new ByteArrayOutputStream();
+        int b;
+        while ((b = in.read()) != -1) {
+            expected.write(b);
+        }
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final CXTMTopicMapWriter writer = new CXTMTopicMapWriter(out, base.toString());
+        writer.write(g2);
+        final byte[] reference = expected.toByteArray();
+        final byte[] result = out.toByteArray();
+        if (!Arrays.equals(reference, result)) {
+            fail("Expected:\n" + expected.toString("utf-8") + "\n\ngot:\n" + out.toString("utf-8"));
+        }
+    }
 
 }

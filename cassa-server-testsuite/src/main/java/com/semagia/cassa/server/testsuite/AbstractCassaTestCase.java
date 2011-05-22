@@ -15,6 +15,8 @@
  */
 package com.semagia.cassa.server.testsuite;
 
+import java.io.InputStream;
+
 import junit.framework.TestCase;
 
 /**
@@ -24,4 +26,7 @@ import junit.framework.TestCase;
  */
 public abstract class AbstractCassaTestCase extends TestCase {
 
+    protected final InputStream getInputStream(final String testFile) {
+        return this.getClass().getResourceAsStream(testFile);
+    }
 }

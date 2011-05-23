@@ -23,14 +23,31 @@ import java.util.Arrays;
 import org.tinytim.mio.CXTMTopicMapWriter;
 import org.tmapi.core.TopicMap;
 
+import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.server.testsuite.AbstractCassaTestCase;
 
 /**
- * 
+ * Runs tests against a Topic Maps store.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 public class TestTMStore extends AbstractCassaTestCase {
+
+    /* (non-Javadoc)
+     * @see com.semagia.cassa.server.testsuite.AbstractCassaTestCase#getDefaultMediaType()
+     */
+    @Override
+    protected MediaType getDefaultMediaType() throws Exception {
+        return MediaType.XTM;
+    }
+
+    /* (non-Javadoc)
+     * @see com.semagia.cassa.server.testsuite.AbstractCassaTestCase#getGraphWithDefaultMediaType()
+     */
+    @Override
+    protected InputStream getGraphWithDefaultMediaType() throws Exception {
+        return getInputStream("/test.xtm");
+    }
 
     private void assertGraphEquality(final String cxtmReferenceFile, final TopicMap g2, URI base) throws Exception {
         final InputStream in = this.getInputStream(cxtmReferenceFile);

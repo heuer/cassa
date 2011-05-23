@@ -40,24 +40,13 @@ import com.semagia.cassa.server.testsuite.AbstractCassaTestCase;
  */
 public class TestRDFStore extends AbstractCassaTestCase {
 
-    static {
-        System.setProperty(SERVICE_ENDPOINT, "http://localhost:8080/cassa/service/");
-        System.setProperty(GRAPH_BASE, "http://localhost:8080/cassa/g/");
-    }
-
-    /* (non-Javadoc)
-     * @see com.semagia.cassa.server.testsuite.AbstractCassaTestCase#getDefaultMediaType()
-     */
     @Override
     protected MediaType getDefaultMediaType() {
         return MediaType.RDF_XML;
     }
 
-    /* (non-Javadoc)
-     * @see com.semagia.cassa.server.testsuite.AbstractCassaTestCase#getEmptyGraphDefaultMediaType()
-     */
     @Override
-    protected InputStream getGraphDefaultMediaType() throws Exception {
+    protected InputStream getGraphWithDefaultMediaType() throws Exception {
         return getInputStream("/test.rdf");
     }
 
@@ -103,9 +92,11 @@ public class TestRDFStore extends AbstractCassaTestCase {
         assertGraphEquality(getRDFXMLGraph("/empty.rdf"), getGraph());
     }
 
-    public void testCreation() {
+    public void testCreation() throws Exception {
         final URI uri = URI.create("http://www.example.org/");
-        createGraph(uri, "/test.rdf");
+        final String fileName = "/test.rdf";
+        createGraph(uri, fileName);
+        assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri));
     }
 
 }

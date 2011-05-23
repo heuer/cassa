@@ -15,9 +15,11 @@
  */
 package com.semagia.cassa.server.testsuite;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 
 import com.semagia.cassa.client.Graph;
 import com.semagia.cassa.client.GraphClient;
@@ -38,7 +40,7 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
 
     protected abstract MediaType getDefaultMediaType() throws Exception;
 
-    protected abstract InputStream getGraphDefaultMediaType() throws Exception;
+    protected abstract InputStream getGraphWithDefaultMediaType() throws Exception;
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
@@ -56,15 +58,18 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-        deleteEverything();
         _client = null;
     }
 
-    private void deleteEverything() throws Exception {
-        //TODO: Implement me
+    protected File getFile(final String testFile) throws Exception {
+        return new File(getResource(testFile).toURI());
     }
 
-    protected final InputStream getInputStream(final String testFile) throws Exception {
+    protected URL getResource(final String testFile) throws Exception {
+        return getClass().getResource(testFile);
+    }
+
+    protected InputStream getInputStream(final String testFile) throws Exception {
         return getClass().getResourceAsStream(testFile);
     }
 
@@ -103,7 +108,7 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
     public void testEmptyGraphCreation() throws Exception {
         final URI graphURI = URI.create("http://www.example.org/");
         assertGraphNotExists(graphURI);
-        _client.createGraph(graphURI, getGraphDefaultMediaType());
+        _client.createGraph(graphURI, getGraphWithDefaultMediaType());
         assertGraphExists(graphURI);
         assertGraphGET(graphURI, getDefaultMediaType());
     }
@@ -134,7 +139,9 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
         assertTrue(_client.deleteGraph(graphURI) != null);
     }
 
-    public void createGraph(final URI graphURI, final String file) {
-        
+    public void createGraph(final URI graphURI, final String file) throws Exception {
+        assertTrue(_client.createGraph(graphURI, getFile(file)));
+        assertGraphExists(graphURI);
     }
+
 }

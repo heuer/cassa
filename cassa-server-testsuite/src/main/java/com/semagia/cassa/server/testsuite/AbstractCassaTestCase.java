@@ -32,7 +32,11 @@ import junit.framework.TestCase;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public abstract class AbstractCassaTestCase extends TestCase implements IConstants {
+public abstract class AbstractCassaTestCase extends TestCase {
+
+    public static String 
+            SERVICE_ENDPOINT = "cassa-service-endpoint",
+            GRAPH_BASE = "cassa-graph-base";
 
     protected static final MediaType MEDIATYPE_ANY = MediaType.valueOf("*/*");
 
@@ -48,7 +52,7 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        _client = new GraphClient(TestUtils.getServiceEndpoint(), TestUtils.getGraphBase());
+        _client = new GraphClient(getServiceEndpoint(), getGraphBase());
         _client.setDefaultMediaType(getDefaultMediaType());
     }
 
@@ -59,6 +63,22 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
     protected void tearDown() throws Exception {
         super.tearDown();
         _client = null;
+    }
+
+    private static URI getServiceEndpoint() {
+        return URI.create(getSystemProperty(SERVICE_ENDPOINT));
+    }
+
+    private static URI getGraphBase() {
+        return URI.create(getSystemProperty(GRAPH_BASE));
+    }
+
+    private static String getSystemProperty(final String name) {
+        final String val = System.getProperty(name);
+        if (val == null) {
+            throw new IllegalStateException("The system property " + name + " is not defined");
+        }
+        return val;
     }
 
     protected File getFile(final String testFile) throws Exception {

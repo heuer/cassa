@@ -29,8 +29,7 @@ public class ServerApplication implements IServerApplication {
     /**
      * Creates a new instance with the provided storage and configuration.
      *
-     * @param storage The storage.
-     * @param config The configuration.
+     * @param store The store.
      */
     public ServerApplication(final IStore store) {
         if (store == null) {

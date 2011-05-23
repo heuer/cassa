@@ -560,7 +560,8 @@ public final class GraphClient {
         if (ext == null) {
             return null;
         }
-        return MediaType.valueOf(Syntax.forFileExtension(ext).getDefaultMIMEType());
+        final Syntax syntax = Syntax.forFileExtension(ext);
+        return syntax != null ? MediaType.valueOf(syntax.getDefaultMIMEType()) : null;
    }
 
 }

@@ -25,7 +25,7 @@ import com.semagia.cassa.jaxrs.providers.IOExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.IllegalArgumentExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.IllegalStateExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.NullPointerExceptionMapper;
-import com.semagia.cassa.jaxrs.providers.StorageExceptionMapper;
+import com.semagia.cassa.jaxrs.providers.StoreExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.UnsupportedMediaTypeExceptionMapper;
 
 /**
@@ -56,7 +56,7 @@ public final class CassaApplication extends Application {
         singletons.add(new NullPointerExceptionMapper());
         singletons.add(new IllegalArgumentExceptionMapper());
         singletons.add(new IllegalStateExceptionMapper());
-        singletons.add(new StorageExceptionMapper());
+        singletons.add(new StoreExceptionMapper());
         singletons.add(new UnsupportedMediaTypeExceptionMapper());
         singletons.add(new IOExceptionMapper());
         singletons.add(new GraphNotExistsExceptionMapper());

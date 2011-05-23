@@ -22,12 +22,12 @@ import javax.ws.rs.ext.Provider;
 import com.semagia.cassa.server.store.StoreException;
 
 /**
- * Converts a {@link StorageException} into a HTTP Internal Server error.
+ * Converts a {@link StoreException} into a HTTP Internal Server error.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 @Provider
-public class StorageExceptionMapper implements ExceptionMapper<StoreException> {
+public class StoreExceptionMapper implements ExceptionMapper<StoreException> {
 
     /* (non-Javadoc)
      * @see javax.ws.rs.ext.ExceptionMapper#toResponse(java.lang.Throwable)

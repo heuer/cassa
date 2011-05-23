@@ -111,4 +111,15 @@ public class TestRDFStore extends AbstractCassaTestCase {
         assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri, MediaType.TURTLE));
     }
 
+    public void testDeletion() throws Exception {
+        final URI uri = URI.create("http://www.example.org/graph");
+        final String fileName = "/test.rdf";
+        assertGraphNotExists(uri);
+        createGraph(uri, fileName);
+        assertGraphExists(uri);
+        assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri));
+        assertGraphDelete(uri);
+        assertGraphNotExists(uri);
+    }
+
 }

@@ -36,6 +36,7 @@ import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.semagia.cassa.common.MediaType;
+import com.semagia.cassa.common.Syntax;
 import com.semagia.cassa.common.dm.RemovalStatus;
 
 /**

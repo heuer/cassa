@@ -1,5 +1,5 @@
 /*
- * Copyright 2007 - 2010 Lars Heuer (heuer[at]semagia.com)
+ * Copyright 2007 - 2011 Lars Heuer (heuer[at]semagia.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.semagia.cassa.client;
+package com.semagia.cassa.common;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,7 +29,7 @@ import java.util.List;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-final class Syntax {
+public final class Syntax {
 
     /**
      * AsTMa= syntax.
@@ -319,6 +319,15 @@ final class Syntax {
      */
     public String[] getFileExtensions() {
         return _fileExtensions;
+    }
+
+    /**
+     * 
+     *
+     * @return
+     */
+    public String getDefaultPSI() {
+        return _psis[0];
     }
 
     /**

@@ -34,6 +34,7 @@ import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
 import com.semagia.mio.DeserializerRegistry;
 import com.semagia.mio.IDeserializer;
 import com.semagia.mio.MIOException;
+import com.semagia.mio.Property;
 import com.semagia.mio.Source;
 import com.semagia.mio.Syntax;
 
@@ -97,6 +98,9 @@ final class TMAPIUtils {
     public static void read(final TopicMap tm, final URI baseURI, 
             final InputStream in, final MediaType mediaType) throws IOException {
         final IDeserializer deser = DeserializerRegistry.getInstance().createDeserializer(Syntax.forMIMEType(toMIMEType(mediaType)));
+        // Enable more lenient topic map parsing
+        deser.setProperty(Property.VALIDATE, Boolean.FALSE);
+        deser.setProperty(Property.LTM_LEGACY, Boolean.FALSE);
         deser.setMapHandler(MapHandlerFactory.createMapHandler(tm));
         try {
             deser.parse(new Source(in, baseURI.toString()));

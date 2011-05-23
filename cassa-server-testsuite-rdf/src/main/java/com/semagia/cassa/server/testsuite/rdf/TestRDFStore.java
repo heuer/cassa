@@ -122,4 +122,17 @@ public class TestRDFStore extends AbstractCassaTestCase {
         assertGraphNotExists(uri);
     }
 
+    public void testCreateUpdate() throws Exception {
+        final URI uri = URI.create("http://www.example.org/create-update");
+        final String fileName1 = "/test.rdf";
+        final String fileName2 = "/test2.rdf";
+        final String filesMerged = "/test+test2.rdf";
+        assertGraphNotExists(uri);
+        createGraph(uri, fileName1);
+        assertGraphExists(uri);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
+        updateGraph(uri, fileName2);
+        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph(uri));
+    }
+
 }

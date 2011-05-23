@@ -133,6 +133,27 @@ public class TestRDFStore extends AbstractCassaTestCase {
         assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
         updateGraph(uri, fileName2);
         assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph(uri));
+        assertGraphDelete(uri);
+    }
+
+    public void testReplace() throws Exception {
+        final URI uri = URI.create("http://www.example.org/create-replace");
+        final String fileName1 = "/test.rdf";
+        final String fileName2 = "/test2.rdf";
+        assertGraphNotExists(uri);
+        createGraph(uri, fileName1);
+        assertGraphExists(uri);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
+        createGraph(uri, fileName2);
+        assertGraphEquality(getRDFXMLGraph(fileName2), getGraph(uri));
+        assertGraphDelete(uri);
+    }
+
+    public void testCreateLocalGraph() throws Exception {
+        final String fileName = "/test.rdf";
+        final URI uri = createGraph(fileName);
+        assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri));
+        assertGraphDelete(uri);
     }
 
 }

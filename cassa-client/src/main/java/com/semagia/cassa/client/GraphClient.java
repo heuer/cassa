@@ -161,7 +161,7 @@ public final class GraphClient {
      * @throws IOException In case of an error.
      */
     public boolean createGraph(final URI graphURI, final File file) throws IOException {
-        return createGraph(graphURI, file, guessMediaType(file.toURI()));
+        return createGraph(graphURI, file, guessMediaType(file));
     }
 
     /**
@@ -245,7 +245,7 @@ public final class GraphClient {
      * @throws IOException In case of an error.
      */
     public URI createGraph(final File file) throws IOException {
-        return createGraph(file, guessMediaType(file.toURI()));
+        return createGraph(file, guessMediaType(file));
     }
 
     /**
@@ -552,6 +552,10 @@ public final class GraphClient {
         request.abort();
         return status;
     }
+
+    private static MediaType guessMediaType(final File file) {
+        return guessMediaType(file.toURI());
+   }
 
     private static MediaType guessMediaType(final URI uri) {
         final String uri_ = uri.toString();

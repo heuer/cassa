@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -47,14 +48,20 @@ public final class GraphClient {
     private static final URI _DEFAULT_GRAPH = URI.create("");
 
     private final String _endpoint;
+    private final String _graphsEndpoint;
     private MediaType _mediaType;
     private final HttpClient _client;
 
     public GraphClient(final URI endpoint) {
+        this(endpoint, null);
+    }
+
+    public GraphClient(final URI endpoint, final URI graphsURI) {
         if (endpoint == null) {
             throw new IllegalArgumentException("The endpoint URI must not be null");
         }
         _endpoint = endpoint.toString();
+        _graphsEndpoint = graphsURI != null ? graphsURI.toString() : null;
         _client = new DefaultHttpClient();
     }
 
@@ -225,6 +232,93 @@ public final class GraphClient {
         put.setEntity(entity);
         final int status = getStatusCode(put);
         return status == 200 || status == 201 || status == 204;
+    }
+
+    /**
+     * Creates a graph using the content of the provided file.
+     * 
+     * This method tries to detect the media type of the graph content by the
+     * file name extension.
+     *
+     * @param file The file to read the graph from.
+     * @return The URI of the created graph or {@code null} if the graph was not created.
+     * @throws IOException In case of an error.
+     */
+    public URI createGraph(final File file) throws IOException {
+        return createGraph(file, MediaTypeUtils.guessMediaType(file.toURI()));
+    }
+
+    /**
+     * Creates a graph using the content of the provided file.
+     *
+     * @param file The file to read the graph from.
+     * @param mediaType The content type of the file.
+     * @return The URI of the created graph or {@code null} if the graph was not created.
+     * @throws IOException In case of an error.
+     */
+    public URI createGraph(final File file, final MediaType mediaType) throws IOException {
+        return _createGraph(file, mediaType);
+    }
+
+    private URI _createGraph(final File file, final MediaType mediaType) throws IOException {
+        final InputStream in = new BufferedInputStream(new FileInputStream(file));
+        try {
+            return _createGraph(in, mediaType);
+        }
+        finally {
+            in.close();
+        }
+    }
+
+    private URI _createGraph(final InputStream in, final MediaType mediaType) throws IOException {
+        if (mediaType == null) {
+            throw new IllegalArgumentException("The media type must not be null");
+        }
+        if (_graphsEndpoint == null) {
+            throw new IllegalStateException("The endpoint for graphs is unknown.");
+        }
+        final HttpPost request = new HttpPost(_graphsEndpoint);
+        final InputStreamEntity entity = new InputStreamEntity(in, -1);
+        entity.setContentType(mediaType.toString());
+        request.setEntity(entity);
+        final HttpResponse response = _client.execute(request);
+        URI graphURI = null;
+        if (response.getStatusLine().getStatusCode() == 201) {
+            final Header location = response.getFirstHeader("location");
+            graphURI = location != null ? URI.create(location.getValue()) : null;
+        }
+        request.abort();
+        return graphURI;
+    }
+
+    /**
+     * Creates a graph using the content of the stream.
+     * 
+     * Note: This method does not close the input stream. The caller should
+     * close it.
+     *
+     * @param in The input stream to read the graph from.
+     * @return The URI of the created graph or {@code null} if the graph was not created.
+     * @throws IOException In case of an error.
+     */
+    public URI createGraph(final InputStream in) throws IOException {
+        return createGraph(in, _mediaType);
+    }
+
+    /**
+     * Creates a graph using the content of the stream.
+     *
+     * Note: This method does not close the input stream. The caller should
+     * close it.
+     *
+     * @param graphURI The graph URI.
+     * @param in The input stream to read the graph from.
+     * @param mediaType The content type of the input stream.
+     * @return The URI of the created graph or {@code null} if the graph was not created.
+     * @throws IOException In case of an error.
+     */
+    public URI createGraph(final InputStream in, final MediaType mediaType) throws IOException {
+        return _createGraph(in, mediaType);
     }
 
     /**
@@ -453,7 +547,7 @@ public final class GraphClient {
     }
 
     private int getStatusCode(final HttpUriRequest request) throws IOException {
-        HttpResponse response = _client.execute(request);
+        final HttpResponse response = _client.execute(request);
         final int status = response.getStatusLine().getStatusCode();
         request.abort();
         return status;

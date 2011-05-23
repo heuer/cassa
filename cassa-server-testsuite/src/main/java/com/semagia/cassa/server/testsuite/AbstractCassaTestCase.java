@@ -118,7 +118,9 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
     }
 
     public void assertGraphGET(final URI graphURI, final MediaType mediaType) throws Exception {
-        assertNotNull(_client.getGraph(graphURI, mediaType));
+        final Graph graph = _client.getGraph(graphURI, mediaType);
+        assertNotNull(graph);
+        graph.close();
     }
 
     public void assertGraphNotExists(final URI graphURI) throws Exception {
@@ -142,6 +144,7 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
     public void createGraph(final URI graphURI, final String file) throws Exception {
         assertTrue(_client.createGraph(graphURI, getFile(file)));
         assertGraphExists(graphURI);
+        assertGraphGET(graphURI);
     }
 
 }

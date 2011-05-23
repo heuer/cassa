@@ -4,6 +4,4 @@ include 'cassa-common',
         'cassa-server-jaxrs',
         'cassa-store-sesame',
         'cassa-store-tmapi',
-        'cassa-server-testsuite',
-        'cassa-server-testsuite-tm',
-        'cassa-server-testsuite-rdf'
+        'cassa-server-testsuite'

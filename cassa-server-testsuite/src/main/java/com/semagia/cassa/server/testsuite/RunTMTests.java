@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.semagia.cassa.server.testsuite.rdf;
+package com.semagia.cassa.server.testsuite;
 
 import org.junit.runner.JUnitCore;
 
@@ -22,10 +22,10 @@ import org.junit.runner.JUnitCore;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public class RunTests {
+public class RunTMTests {
 
     public static void main(String[] args) {
-        JUnitCore.main(TestRDFStore.class.getName());
+        JUnitCore.main(TestTMStore.class.getName());
     }
 
 }

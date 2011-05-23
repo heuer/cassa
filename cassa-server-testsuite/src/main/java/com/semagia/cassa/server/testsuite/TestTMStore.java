@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.semagia.cassa.server.testsuite.tm;
+package com.semagia.cassa.server.testsuite;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -24,7 +24,6 @@ import org.tinytim.mio.CXTMTopicMapWriter;
 import org.tmapi.core.TopicMap;
 
 import com.semagia.cassa.common.MediaType;
-import com.semagia.cassa.server.testsuite.AbstractCassaTestCase;
 
 /**
  * Runs tests against a Topic Maps store.

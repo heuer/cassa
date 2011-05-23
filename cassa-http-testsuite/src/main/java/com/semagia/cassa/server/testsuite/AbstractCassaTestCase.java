@@ -191,7 +191,7 @@ public abstract class AbstractCassaTestCase extends TestCase {
     }
 
     public void testEmptyGraphCreation() throws Exception {
-        final URI graphURI = URI.create("http://www.example.org/");
+        final URI graphURI = URI.create("http://www.example.org/empty");
         assertGraphNotExists(graphURI);
         _client.createGraph(graphURI, getGraphWithDefaultMediaType());
         assertGraphExists(graphURI);

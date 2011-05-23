@@ -28,7 +28,7 @@ import com.semagia.cassa.common.MediaType;
 import junit.framework.TestCase;
 
 /**
- * 
+ * Abstract test case which can be used for integration tests.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
@@ -145,6 +145,10 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
         assertTrue(_client.updateGraph(graphURI, getFile(file)));
         assertGraphExists(graphURI);
         assertGraphGET(graphURI);
+    }
+
+    public void updateGraph(final String file) throws Exception {
+        assertTrue(_client.updateGraph(getFile(file)));
     }
 
 

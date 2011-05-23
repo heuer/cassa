@@ -48,7 +48,7 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        _client = new GraphClient(TestUtils.getServiceEndpoint());
+        _client = new GraphClient(TestUtils.getServiceEndpoint(), TestUtils.getGraphBase());
         _client.setDefaultMediaType(getDefaultMediaType());
     }
 

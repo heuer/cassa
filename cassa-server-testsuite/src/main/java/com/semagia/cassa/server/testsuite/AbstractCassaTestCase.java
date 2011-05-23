@@ -155,4 +155,10 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
         assertGraphGET(graphURI);
     }
 
+    public void updateGraph(final URI graphURI, final String file) throws Exception {
+        assertTrue(_client.updateGraph(graphURI, getFile(file)));
+        assertGraphExists(graphURI);
+        assertGraphGET(graphURI);
+    }
+
 }

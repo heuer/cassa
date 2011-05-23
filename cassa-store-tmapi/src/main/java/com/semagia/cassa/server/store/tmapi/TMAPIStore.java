@@ -37,13 +37,14 @@ import com.semagia.cassa.server.store.GraphNotExistsException;
 import com.semagia.cassa.server.store.IStore;
 import com.semagia.cassa.server.store.StoreException;
 import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
+import com.semagia.cassa.server.store.impl.AbstractStore;
 
 /**
  * {@link IStore} implementation that uses a TMAPI-compatible Topic Maps engine.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public final class TMAPIStore implements IStore {
+public final class TMAPIStore extends AbstractStore {
 
     private static final String _DEFAULT_GRAPH_IRI_BASE = "urn:x-cassa-tmapi:";
     private final TopicMapSystem _sys;
@@ -160,19 +161,6 @@ public final class TMAPIStore implements IStore {
         }
         TMAPIUtils.read(makeTopicMap(loc), baseURI, in, mediaType);
         return new GraphInfo(graphURI);
-    }
-
-    /**
-     * Raises an exception if the graph URI is not in the repository.
-     *
-     * @param graphURI The graph URI to check.s
-     * @throws GraphNotExistsException In case the graph URI does not exist.
-     * @throws StoreException In case of an error.
-     */
-    private void ensureGraphExists(final URI graphURI) throws GraphNotExistsException, StoreException {
-        if (graphURI != IStore.DEFAULT_GRAPH && !containsGraph(graphURI)) {
-            throw new GraphNotExistsException(graphURI);
-        }
     }
 
     /**

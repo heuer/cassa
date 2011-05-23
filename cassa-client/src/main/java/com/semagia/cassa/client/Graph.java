@@ -44,12 +44,13 @@ public final class Graph implements IWritableRepresentation, Closeable {
     }
 
     /**
+     * Returns the input stream.
      * 
+     * The input stream or this Graph instance MUST be closed when done.
      *
-     * @return
-     * @throws IOException
+     * @return The input stream.
      */
-    public InputStream getInputStream() throws IOException {
+    public InputStream getInputStream() {
         return _in;
     }
 
@@ -78,6 +79,11 @@ public final class Graph implements IWritableRepresentation, Closeable {
         return _mediaType;
     }
 
+    /**
+     * Returns the encoding, like "utf-8".
+     *
+     * @return The encoding or {@code null} if it is unknown.
+     */
     public String getEncoding() {
         return _encoding;
     }

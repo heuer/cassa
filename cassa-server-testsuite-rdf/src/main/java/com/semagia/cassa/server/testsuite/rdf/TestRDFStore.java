@@ -73,7 +73,18 @@ public class TestRDFStore extends AbstractCassaTestCase {
     private void assertGraphEquality(final Graph g1, final IWritableRepresentation writer) throws Exception {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         writer.write(out);
-        assertGraphEquality(g1, getRDFXMLGraph(out));
+        Graph graph = null;
+        final MediaType mt = writer.getMediaType();
+        if (mt.equals(MediaType.RDF_XML)) {
+            graph = getRDFXMLGraph(out);
+        }
+        else if (mt.equals(MediaType.TURTLE)) {
+            graph = getTurtleGraph(out);
+        }
+        else {
+            fail("Cannot handle media type: " + mt);
+        }
+        assertGraphEquality(g1, graph);
     }
 
     private void assertGraphEquality(final Graph g1, final Graph g2) {
@@ -97,6 +108,7 @@ public class TestRDFStore extends AbstractCassaTestCase {
         final String fileName = "/test.rdf";
         createGraph(uri, fileName);
         assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri));
+        assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri, MediaType.TURTLE));
     }
 
 }

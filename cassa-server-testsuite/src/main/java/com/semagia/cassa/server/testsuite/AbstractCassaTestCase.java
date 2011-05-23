@@ -95,28 +95,6 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
         return graph.getInputStream();
     }
 
-    public void testDefaultGraphExists() throws Exception {
-        assertTrue(_client.existsGraph());
-    }
-
-    public void testDefaultGraphDeleteExists() throws Exception {
-        assertTrue(_client.existsGraph());
-        assertTrue(_client.deleteGraph() != null);
-        assertTrue(_client.existsGraph());
-    }
-
-    public void testGetDefaultGraph() throws Exception {
-        assertNotNull(_client.getGraph(MEDIATYPE_ANY));
-    }
-
-    public void testEmptyGraphCreation() throws Exception {
-        final URI graphURI = URI.create("http://www.example.org/");
-        assertGraphNotExists(graphURI);
-        _client.createGraph(graphURI, getGraphWithDefaultMediaType());
-        assertGraphExists(graphURI);
-        assertGraphGET(graphURI, getDefaultMediaType());
-    }
-
     public void assertGraphGET(final URI graphURI) throws Exception {
         assertGraphGET(graphURI, MEDIATYPE_ANY);
     }
@@ -155,10 +133,46 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
         assertGraphGET(graphURI);
     }
 
+    public URI createGraph(final String file) throws Exception {
+        final URI uri = _client.createGraph(getFile(file));
+        assertNotNull(uri);
+        assertGraphExists(uri);
+        assertGraphGET(uri);
+        return uri;
+    }
+
     public void updateGraph(final URI graphURI, final String file) throws Exception {
         assertTrue(_client.updateGraph(graphURI, getFile(file)));
         assertGraphExists(graphURI);
         assertGraphGET(graphURI);
+    }
+
+
+    /*
+     * Default tests, indepentently of serializations.
+     */
+
+    public void testDefaultGraphExists() throws Exception {
+        assertTrue(_client.existsGraph());
+    }
+
+    public void testDefaultGraphDeleteExists() throws Exception {
+        assertTrue(_client.existsGraph());
+        assertTrue(_client.deleteGraph() != null);
+        assertTrue(_client.existsGraph());
+    }
+
+    public void testGetDefaultGraph() throws Exception {
+        assertNotNull(_client.getGraph(MEDIATYPE_ANY));
+    }
+
+    public void testEmptyGraphCreation() throws Exception {
+        final URI graphURI = URI.create("http://www.example.org/");
+        assertGraphNotExists(graphURI);
+        _client.createGraph(graphURI, getGraphWithDefaultMediaType());
+        assertGraphExists(graphURI);
+        assertGraphGET(graphURI, getDefaultMediaType());
+        assertGraphDelete(graphURI);
     }
 
 }

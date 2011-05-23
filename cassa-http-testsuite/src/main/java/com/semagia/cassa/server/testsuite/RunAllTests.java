@@ -18,14 +18,15 @@ package com.semagia.cassa.server.testsuite;
 import org.junit.runner.JUnitCore;
 
 /**
- * Runs the Topic Maps server tests.
+ * Runs all server tests.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public class RunTMTests {
+public class RunAllTests {
 
     public static void main(String[] args) {
-        JUnitCore.main(TestTMStore.class.getName());
+        JUnitCore.main(TestRDFStore.class.getName(),
+                        TestTMStore.class.getName());
     }
 
 }

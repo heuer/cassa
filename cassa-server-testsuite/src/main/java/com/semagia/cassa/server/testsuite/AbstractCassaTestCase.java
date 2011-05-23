@@ -77,6 +77,10 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
         return _client.getGraph(graphURI);
     }
 
+    protected Graph getGraph(final URI graphURI, final MediaType mediaType) throws Exception {
+        return _client.getGraph(graphURI, mediaType);
+    }
+
     protected Graph getGraph() throws Exception {
         return _client.getGraph();
     }
@@ -120,6 +124,9 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
     public void assertGraphGET(final URI graphURI, final MediaType mediaType) throws Exception {
         final Graph graph = _client.getGraph(graphURI, mediaType);
         assertNotNull(graph);
+        if (!MEDIATYPE_ANY.equals(mediaType)) {
+            assertEquals(mediaType, graph.getMediaType());
+        }
         graph.close();
     }
 
@@ -135,6 +142,7 @@ public abstract class AbstractCassaTestCase extends TestCase implements IConstan
         final Graph graph = _client.getGraph(graphURI, mediaType);
         assertNotNull(graph);
         assertEquals(mediaType, graph.getMediaType());
+        graph.close();
     }
 
     public void assertGraphDelete(final URI graphURI) throws Exception {

@@ -179,7 +179,7 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         return tm;
     }
 
-    private void assertGraphEquality(final String cxtmReferenceFile, final TopicMap g2, URI base) throws Exception {
+    private void assertGraphEquality(final String cxtmReferenceFile, final TopicMap tm, URI base) throws Exception {
         final InputStream in = this.getInputStream(cxtmReferenceFile);
         final ByteArrayOutputStream expected = new ByteArrayOutputStream();
         int b;
@@ -188,7 +188,7 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         }
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final CXTMTopicMapWriter writer = new CXTMTopicMapWriter(out, base.toString());
-        writer.write(g2);
+        writer.write(tm);
         final byte[] reference = expected.toByteArray();
         final byte[] result = out.toByteArray();
         if (!Arrays.equals(reference, result)) {

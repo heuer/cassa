@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.semagia.cassa.server.testsuite;
+package com.semagia.cassa.http.testsuite;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -38,7 +38,7 @@ import com.semagia.mio.Syntax;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public class TestTMStore extends AbstractCassaTestCase {
+public class TestTMStore extends AbstractHTTPTestCase {
 
     /* (non-Javadoc)
      * @see com.semagia.cassa.server.testsuite.AbstractCassaTestCase#getDefaultMediaType()

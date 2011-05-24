@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.semagia.cassa.server.testsuite;
+package com.semagia.cassa.http.testsuite;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +32,7 @@ import junit.framework.TestCase;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public abstract class AbstractCassaTestCase extends TestCase {
+public abstract class AbstractHTTPTestCase extends TestCase {
 
     public static final String 
             SERVICE_ENDPOINT = "cassa-service-endpoint",

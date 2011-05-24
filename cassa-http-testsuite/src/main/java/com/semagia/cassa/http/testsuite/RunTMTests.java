@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.semagia.cassa.server.testsuite;
+package com.semagia.cassa.http.testsuite;
 
 import org.junit.runner.JUnitCore;
 
 /**
- * Runs the RDF server tests.
+ * Runs the Topic Maps server tests.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public class RunRDFTests {
+public class RunTMTests {
 
     public static void main(String[] args) {
-        JUnitCore.main(TestRDFStore.class.getName());
+        JUnitCore.main(TestTMStore.class.getName());
     }
 
 }

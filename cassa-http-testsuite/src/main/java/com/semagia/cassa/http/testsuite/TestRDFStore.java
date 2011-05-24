@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.semagia.cassa.server.testsuite;
+package com.semagia.cassa.http.testsuite;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,7 +37,7 @@ import com.semagia.cassa.common.dm.IWritableRepresentation;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public class TestRDFStore extends AbstractCassaTestCase {
+public class TestRDFStore extends AbstractHTTPTestCase {
 
     @Override
     protected MediaType getDefaultMediaType() {

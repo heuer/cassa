@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.semagia.cassa.server.testsuite;
+package com.semagia.cassa.http.testsuite;
 
 import org.junit.runner.JUnitCore;
 

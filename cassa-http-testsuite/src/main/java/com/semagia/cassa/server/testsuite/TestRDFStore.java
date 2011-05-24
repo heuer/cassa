@@ -120,6 +120,13 @@ public class TestRDFStore extends AbstractCassaTestCase {
         assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri, MediaType.TURTLE));
     }
 
+    public void testCreationIllegal() throws Exception {
+        final URI uri = URI.create("http://www.example.org/");
+        final String fileName = "/test.rdf";
+        createGraph(uri, fileName, INVALID_MEDIATYPE);
+        assertGraphNotExists(uri);
+    }
+
     public void testDeletion() throws Exception {
         final URI uri = URI.create("http://www.example.org/graph");
         final String fileName = "/test.rdf";
@@ -129,6 +136,12 @@ public class TestRDFStore extends AbstractCassaTestCase {
         assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri));
         assertGraphDelete(uri);
         assertGraphNotExists(uri);
+    }
+
+    public void testDeletionIllegal() throws Exception {
+        final URI uri = URI.create("http://www.example.org/non-existing");
+        assertGraphNotExists(uri);
+        assertFalse(deleteGraph(uri));
     }
 
     public void testCreateUpdate() throws Exception {
@@ -163,6 +176,12 @@ public class TestRDFStore extends AbstractCassaTestCase {
         final URI uri = createGraph(fileName);
         assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri));
         assertGraphDelete(uri);
+    }
+
+    public void testCreateLocalGraphIllegal() throws Exception {
+        final String fileName = "/test.rdf";
+        final URI uri = createGraph(fileName, INVALID_MEDIATYPE);
+        assertNull(uri);
     }
 
 }

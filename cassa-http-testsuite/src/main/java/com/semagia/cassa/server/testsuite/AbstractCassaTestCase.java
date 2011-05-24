@@ -146,20 +146,29 @@ public abstract class AbstractCassaTestCase extends TestCase {
     }
 
     protected void assertGraphDelete(final URI graphURI) throws Exception {
-        assertTrue(_client.deleteGraph(graphURI) != null);
+        assertTrue(deleteGraph(graphURI));
     }
 
     protected void createGraph(final URI graphURI, final String file) throws Exception {
-        assertTrue(_client.createGraph(graphURI, getFile(file)));
+        createGraph(graphURI, file, getDefaultMediaType());
+    }
+
+    protected void createGraph(final URI graphURI, final String file, final MediaType mediaType) throws Exception {
+        assertTrue(_client.createGraph(graphURI, getFile(file), mediaType));
         assertGraphExists(graphURI);
         assertGraphGET(graphURI);
     }
 
     protected URI createGraph(final String file) throws Exception {
-        final URI uri = _client.createGraph(getFile(file));
-        assertNotNull(uri);
-        assertGraphExists(uri);
-        assertGraphGET(uri);
+        return createGraph(file, getDefaultMediaType());
+    }
+
+    protected URI createGraph(final String file, final MediaType mediaType) throws Exception {
+        final URI uri = _client.createGraph(getFile(file), mediaType);
+        if (uri != null) {
+            assertGraphExists(uri);
+            assertGraphGET(uri);
+        }
         return uri;
     }
 
@@ -182,6 +191,10 @@ public abstract class AbstractCassaTestCase extends TestCase {
 
     protected boolean modifyGraph(final URI graphURI, final String query, final MediaType mediaType) throws Exception {
         return _client.modifyGraph(graphURI, query, mediaType);
+    }
+
+    protected boolean deleteGraph(final URI graphURI) throws Exception {
+        return _client.deleteGraph(graphURI) != null;
     }
 
 

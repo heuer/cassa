@@ -569,7 +569,9 @@ public final class GraphClient {
      */
     public boolean modifyGraph(final URI graphURI, final String query, final MediaType mediaType) throws IOException {
         final HttpPatch request = new HttpPatch(getGraphURI(graphURI));
-        request.setEntity(new StringEntity(query, mediaType.toString()));
+        final StringEntity entity = new StringEntity(query);
+        entity.setContentType(mediaType.toString());
+        request.setEntity(entity);
         final int status = getStatusCode(request);
         // TODO: Accept other status codes, like HTTP Accepted?!? 
         return status == 200;

@@ -115,11 +115,11 @@ public abstract class AbstractCassaTestCase extends TestCase {
         return graph.getInputStream();
     }
 
-    public void assertGraphGET(final URI graphURI) throws Exception {
+    protected void assertGraphGET(final URI graphURI) throws Exception {
         assertGraphGET(graphURI, MEDIATYPE_ANY);
     }
 
-    public void assertGraphGET(final URI graphURI, final MediaType mediaType) throws Exception {
+    protected void assertGraphGET(final URI graphURI, final MediaType mediaType) throws Exception {
         final Graph graph = _client.getGraph(graphURI, mediaType);
         assertNotNull(graph);
         if (!MEDIATYPE_ANY.equals(mediaType)) {
@@ -128,32 +128,32 @@ public abstract class AbstractCassaTestCase extends TestCase {
         graph.close();
     }
 
-    public void assertGraphNotExists(final URI graphURI) throws Exception {
+    protected void assertGraphNotExists(final URI graphURI) throws Exception {
         assertFalse(_client.existsGraph(graphURI));
     }
 
-    public void assertGraphExists(final URI graphURI) throws Exception {
+    protected void assertGraphExists(final URI graphURI) throws Exception {
         assertTrue(_client.existsGraph(graphURI));
     }
 
-    public void assertGraphGetMediaType(final URI graphURI, final MediaType mediaType) throws Exception {
+    protected void assertGraphGetMediaType(final URI graphURI, final MediaType mediaType) throws Exception {
         final Graph graph = _client.getGraph(graphURI, mediaType);
         assertNotNull(graph);
         assertEquals(mediaType, graph.getMediaType());
         graph.close();
     }
 
-    public void assertGraphDelete(final URI graphURI) throws Exception {
+    protected void assertGraphDelete(final URI graphURI) throws Exception {
         assertTrue(_client.deleteGraph(graphURI) != null);
     }
 
-    public void createGraph(final URI graphURI, final String file) throws Exception {
+    protected void createGraph(final URI graphURI, final String file) throws Exception {
         assertTrue(_client.createGraph(graphURI, getFile(file)));
         assertGraphExists(graphURI);
         assertGraphGET(graphURI);
     }
 
-    public URI createGraph(final String file) throws Exception {
+    protected URI createGraph(final String file) throws Exception {
         final URI uri = _client.createGraph(getFile(file));
         assertNotNull(uri);
         assertGraphExists(uri);
@@ -161,13 +161,13 @@ public abstract class AbstractCassaTestCase extends TestCase {
         return uri;
     }
 
-    public void updateGraph(final URI graphURI, final String file) throws Exception {
+    protected void updateGraph(final URI graphURI, final String file) throws Exception {
         assertTrue(_client.updateGraph(graphURI, getFile(file)));
         assertGraphExists(graphURI);
         assertGraphGET(graphURI);
     }
 
-    public void updateGraph(final String file) throws Exception {
+    protected void updateGraph(final String file) throws Exception {
         assertTrue(_client.updateGraph(getFile(file)));
     }
 

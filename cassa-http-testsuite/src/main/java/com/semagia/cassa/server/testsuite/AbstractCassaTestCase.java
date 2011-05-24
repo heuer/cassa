@@ -34,9 +34,11 @@ import junit.framework.TestCase;
  */
 public abstract class AbstractCassaTestCase extends TestCase {
 
-    public static String 
+    public static final String 
             SERVICE_ENDPOINT = "cassa-service-endpoint",
             GRAPH_BASE = "cassa-graph-base";
+
+    public static final MediaType INVALID_MEDIATYPE = MediaType.valueOf("foo/bar");
 
     protected static final MediaType MEDIATYPE_ANY = MediaType.valueOf("*/*");
 
@@ -161,14 +163,25 @@ public abstract class AbstractCassaTestCase extends TestCase {
         return uri;
     }
 
-    protected void updateGraph(final URI graphURI, final String file) throws Exception {
-        assertTrue(_client.updateGraph(graphURI, getFile(file)));
-        assertGraphExists(graphURI);
-        assertGraphGET(graphURI);
+    protected boolean updateGraph(final URI graphURI, final String file) throws Exception {
+        final boolean success = _client.updateGraph(graphURI, getFile(file));
+        if (success) {
+            assertGraphExists(graphURI);
+            assertGraphGET(graphURI);
+        }
+        return success;
     }
 
-    protected void updateGraph(final String file) throws Exception {
-        assertTrue(_client.updateGraph(getFile(file)));
+    protected boolean updateGraph(final String file) throws Exception {
+        return _client.updateGraph(getFile(file));
+    }
+
+    protected boolean modifyGraph(final String query, final MediaType mediaType) throws Exception {
+        return _client.modifyGraph(query, mediaType);
+    }
+
+    protected boolean modifyGraph(final URI graphURI, final String query, final MediaType mediaType) throws Exception {
+        return _client.modifyGraph(graphURI, query, mediaType);
     }
 
 
@@ -197,6 +210,13 @@ public abstract class AbstractCassaTestCase extends TestCase {
         assertGraphExists(graphURI);
         assertGraphGET(graphURI, getDefaultMediaType());
         assertGraphDelete(graphURI);
+    }
+
+    public void testIllegalGraphCreation() throws Exception {
+        final URI graphURI = URI.create("http://www.example.org/illegal");
+        assertGraphNotExists(graphURI);
+        _client.createGraph(graphURI, getGraphWithDefaultMediaType(), INVALID_MEDIATYPE);
+        assertGraphNotExists(graphURI);
     }
 
 }

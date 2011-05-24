@@ -26,8 +26,8 @@ import org.tinytim.mio.TinyTimMapInputHandler;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystemFactory;
 
-import com.semagia.cassa.client.Graph;
 import com.semagia.cassa.common.MediaType;
+import com.semagia.cassa.common.dm.IWritableRepresentation;
 import com.semagia.mio.DeserializerRegistry;
 import com.semagia.mio.IDeserializer;
 import com.semagia.mio.Source;
@@ -72,12 +72,12 @@ public class TestTMStore extends AbstractCassaTestCase {
         return tm;
     }
 
-    private void assertGraphEquality(final String tmFile, final Graph graph) throws Exception {
+    private void assertGraphEquality(final String tmFile, final IWritableRepresentation writer) throws Exception {
         TopicMap tm = null;
-        final MediaType mt = graph.getMediaType();
+        final MediaType mt = writer.getMediaType();
         final URI base = URI.create("http://www.example.org");
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        graph.write(out);
+        writer.write(out);
         if (MediaType.XTM.equals(mt)) {
             tm = getXTMGraph(out, base);
         }

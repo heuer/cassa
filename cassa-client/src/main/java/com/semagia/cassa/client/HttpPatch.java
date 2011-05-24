@@ -15,6 +15,8 @@
  */
 package com.semagia.cassa.client;
 
+import java.net.URI;
+
 import org.apache.http.client.methods.HttpPost;
 
 /**
@@ -26,6 +28,30 @@ import org.apache.http.client.methods.HttpPost;
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 final class HttpPatch extends HttpPost {
+
+    /**
+     * 
+     */
+    public HttpPatch() {
+        super();
+    }
+
+    /**
+     * 
+     * @param uri The URI for the request.
+     */
+    public HttpPatch(String uri) {
+        super(uri);
+    }
+
+    /**
+     * 
+     * @param uri The URI for the request.
+     * @throws IllegalArgumentException If the URI is invalid.
+     */
+    public HttpPatch(URI uri) throws IllegalArgumentException {
+        super(uri);
+    }
 
     /* (non-Javadoc)
      * @see org.apache.http.client.methods.HttpPost#getMethod()

@@ -33,6 +33,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.semagia.cassa.common.MediaType;
@@ -543,6 +544,37 @@ public final class GraphClient {
         return status == 201 || status == 204;
     }
 
+    /**
+     * Modifies the default graph using a query.
+     * 
+     * @param query A query, i.e. SPARQL 1.1 Update.
+     * @param mediaType The the content type of the query.
+     * @return {@code true} indicating that the graph was updated sucessfully,
+     *          otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
+    public boolean modifyGraph(final String query, final MediaType mediaType) throws IOException {
+        return modifyGraph(_DEFAULT_GRAPH, query, mediaType);
+    }
+
+    /**
+     * Modifies a graph on the server using a query.
+     * 
+     * @param graphURI The graph URI.
+     * @param query A query, i.e. SPARQL 1.1 Update.
+     * @param mediaType The the content type of the query.
+     * @return {@code true} indicating that the graph was updated sucessfully,
+     *          otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
+    public boolean modifyGraph(final URI graphURI, final String query, final MediaType mediaType) throws IOException {
+        final HttpPatch request = new HttpPatch(getGraphURI(graphURI));
+        request.setEntity(new StringEntity(query, mediaType.toString()));
+        final int status = getStatusCode(request);
+        // TODO: Accept other status codes, like HTTP Accepted?!? 
+        return status == 200;
+    }
+
     private String getGraphURI(final URI graphURI) {
         return _endpoint + (graphURI == _DEFAULT_GRAPH ? "?default" : "?graph=" + graphURI.toASCIIString());
     }
@@ -561,7 +593,7 @@ public final class GraphClient {
     private static MediaType guessMediaType(final URI uri) {
         final String uri_ = uri.toString();
         final int dotIdx = uri_.lastIndexOf('.');
-        final String ext = dotIdx > -1 ? uri_.substring(dotIdx+1).toLowerCase() : null;
+        final String ext = dotIdx > -1 ? uri_.substring(dotIdx+1) : null;
         if (ext == null) {
             return null;
         }

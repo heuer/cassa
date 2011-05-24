@@ -121,7 +121,7 @@ public class TestRDFStore extends AbstractHTTPTestCase {
     }
 
     public void testCreationIllegal() throws Exception {
-        final URI uri = URI.create("http://www.example.org/");
+        final URI uri = URI.create("http://www.example.org/create-illegal");
         final String fileName = "/test.rdf";
         createGraph(uri, fileName, INVALID_MEDIATYPE);
         assertGraphNotExists(uri);

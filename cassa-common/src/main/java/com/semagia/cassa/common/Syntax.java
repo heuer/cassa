@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Represents a syntax which can be used to encode/decode topic maps.
+ * Represents a serialization syntax.
  * 
  * A syntax has a default file extension and a default MIME type.
  * 

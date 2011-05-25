@@ -131,7 +131,8 @@ public abstract class AbstractHTTPTestCase extends TestCase {
     }
 
     protected void assertGraphNotExists(final URI graphURI) throws Exception {
-        assertFalse(_client.existsGraph(graphURI));
+        assertFalse("The graph " + graphURI + " should not exist",
+                    _client.existsGraph(graphURI));
     }
 
     protected void assertGraphExists(final URI graphURI) throws Exception {
@@ -154,9 +155,10 @@ public abstract class AbstractHTTPTestCase extends TestCase {
     }
 
     protected void createGraph(final URI graphURI, final String file, final MediaType mediaType) throws Exception {
-        assertTrue(_client.createGraph(graphURI, getFile(file), mediaType));
-        assertGraphExists(graphURI);
-        assertGraphGET(graphURI);
+        if (_client.createGraph(graphURI, getFile(file), mediaType)) {
+            assertGraphExists(graphURI);
+            assertGraphGET(graphURI);
+        }
     }
 
     protected URI createGraph(final String file) throws Exception {
@@ -173,7 +175,11 @@ public abstract class AbstractHTTPTestCase extends TestCase {
     }
 
     protected boolean updateGraph(final URI graphURI, final String file) throws Exception {
-        final boolean success = _client.updateGraph(graphURI, getFile(file));
+        return updateGraph(graphURI, file, getDefaultMediaType());
+    }
+
+    protected boolean updateGraph(final URI graphURI, final String file, final MediaType mediaType) throws Exception {
+        final boolean success = _client.updateGraph(graphURI, getFile(file), mediaType);
         if (success) {
             assertGraphExists(graphURI);
             assertGraphGET(graphURI);
@@ -194,7 +200,11 @@ public abstract class AbstractHTTPTestCase extends TestCase {
     }
 
     protected boolean deleteGraph(final URI graphURI) throws Exception {
-        return _client.deleteGraph(graphURI) != null;
+        final boolean success = _client.deleteGraph(graphURI) != null;
+        if (success) {
+            assertGraphNotExists(graphURI);
+        }
+        return success;
     }
 
 

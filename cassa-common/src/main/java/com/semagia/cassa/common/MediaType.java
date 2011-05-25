@@ -48,6 +48,11 @@ public final class MediaType {
      */
     public static final MediaType TURTLE = MediaType.valueOf("text/turtle");
 
+    /**
+     * SPARQL Query media type.
+     */
+    public static final MediaType SPARQL_QUERY = MediaType.valueOf("application/sparql-query");
+
     private final String _mainType;
     private final String _subType;
     private final List<Parameter> _params;

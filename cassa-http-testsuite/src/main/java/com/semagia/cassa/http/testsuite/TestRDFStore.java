@@ -127,6 +127,13 @@ public class TestRDFStore extends AbstractHTTPTestCase {
         assertGraphNotExists(uri);
     }
 
+    public void testCreationIllega2l() throws Exception {
+        final URI uri = URI.create("http://www.example.org/create-illegal2");
+        final String fileName = "/test-invalid.rdf";
+        createGraph(uri, fileName);
+        assertGraphNotExists(uri);
+    }
+
     public void testDeletion() throws Exception {
         final URI uri = URI.create("http://www.example.org/graph");
         final String fileName = "/test.rdf";
@@ -158,6 +165,32 @@ public class TestRDFStore extends AbstractHTTPTestCase {
         assertGraphDelete(uri);
     }
 
+    public void testCreateUpdateIllegal() throws Exception {
+        final URI uri = URI.create("http://www.example.org/create-update-illegal");
+        final String fileName1 = "/test.rdf";
+        final String fileName2 = "/test2.rdf";
+        assertGraphNotExists(uri);
+        createGraph(uri, fileName1);
+        assertGraphExists(uri);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
+        updateGraph(uri, fileName2, INVALID_MEDIATYPE);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
+        assertGraphDelete(uri);
+    }
+
+    public void testCreateUpdateIllegal2() throws Exception {
+        final URI uri = URI.create("http://www.example.org/create-update-illegal2");
+        final String fileName1 = "/test.rdf";
+        final String fileName2 = "/test-invalid.rdf";
+        assertGraphNotExists(uri);
+        createGraph(uri, fileName1);
+        assertGraphExists(uri);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
+        updateGraph(uri, fileName2);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
+        assertGraphDelete(uri);
+    }
+
     public void testReplace() throws Exception {
         final URI uri = URI.create("http://www.example.org/create-replace");
         final String fileName1 = "/test.rdf";
@@ -168,6 +201,32 @@ public class TestRDFStore extends AbstractHTTPTestCase {
         assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
         createGraph(uri, fileName2);
         assertGraphEquality(getRDFXMLGraph(fileName2), getGraph(uri));
+        assertGraphDelete(uri);
+    }
+
+    public void testReplaceIllegal() throws Exception {
+        final URI uri = URI.create("http://www.example.org/create-replace-illegal");
+        final String fileName1 = "/test.rdf";
+        final String fileName2 = "/test2.rdf";
+        assertGraphNotExists(uri);
+        createGraph(uri, fileName1);
+        assertGraphExists(uri);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
+        createGraph(uri, fileName2, INVALID_MEDIATYPE);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
+        assertGraphDelete(uri);
+    }
+
+    public void testReplaceIllegal2() throws Exception {
+        final URI uri = URI.create("http://www.example.org/create-replace-illegal2");
+        final String fileName1 = "/test.rdf";
+        final String fileName2 = "/test-invalid.rdf";
+        assertGraphNotExists(uri);
+        createGraph(uri, fileName1);
+        assertGraphExists(uri);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
+        createGraph(uri, fileName2);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
         assertGraphDelete(uri);
     }
 

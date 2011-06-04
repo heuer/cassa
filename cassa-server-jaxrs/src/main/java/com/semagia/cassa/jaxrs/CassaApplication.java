@@ -20,11 +20,13 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
+import com.semagia.cassa.jaxrs.providers.GraphMismatchExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.GraphNotExistsExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.IOExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.IllegalArgumentExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.IllegalStateExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.NullPointerExceptionMapper;
+import com.semagia.cassa.jaxrs.providers.QueryExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.StoreExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.UnsupportedMediaTypeExceptionMapper;
 
@@ -60,6 +62,8 @@ public final class CassaApplication extends Application {
         singletons.add(new UnsupportedMediaTypeExceptionMapper());
         singletons.add(new IOExceptionMapper());
         singletons.add(new GraphNotExistsExceptionMapper());
+        singletons.add(new GraphMismatchExceptionMapper());
+        singletons.add(new QueryExceptionMapper());
         return singletons;
     }
 

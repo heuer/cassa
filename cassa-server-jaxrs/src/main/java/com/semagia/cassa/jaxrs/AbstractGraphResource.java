@@ -15,11 +15,11 @@
  */
 package com.semagia.cassa.jaxrs;
 
-import static com.semagia.cassa.jaxrs.ResponseUtils.badRequest;
 import static com.semagia.cassa.jaxrs.ResponseUtils.accepted;
 import static com.semagia.cassa.jaxrs.ResponseUtils.buildStreamingEntity;
 import static com.semagia.cassa.jaxrs.ResponseUtils.created;
 import static com.semagia.cassa.jaxrs.ResponseUtils.noContent;
+import static com.semagia.cassa.jaxrs.ResponseUtils.badRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -152,8 +152,10 @@ public abstract class AbstractGraphResource extends AbstractResource {
      */
     @PATCH
     public Response modifyGraph(InputStream in, @Context HttpHeaders header) throws IOException, StoreException {
-        // TODO: Implement me :)
-        return badRequest();
+        final URI graphURI = getGraphURI();
+        final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
+        return getStore().modifyGraph(graphURI, in, getBaseURI(graphURI), mt) ? noContent()
+                                                                              : badRequest();
     }
 
     /**

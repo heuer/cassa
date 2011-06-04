@@ -94,11 +94,27 @@ public interface IStore {
      * @param baseURI The base URI to resolve relative URIs against (in most cases identical to the graph IRI).
      * @param mediaType The media type of the input stream.
      * @return Metadata of the created/updated graph.
-     * @throws UnsupportedMediaTypeException
+     * @throws UnsupportedMediaTypeException In case the media type isn't supported.
      * @throws IOException In case of an I/O error.
      * @throws StoreException In case of an error.
      */
     public IGraphInfo updateGraph(URI graphURI, InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, IOException, StoreException;
+
+    /**
+     * Modifies a graph with a query.
+     *
+     * @param graphURI The graph URI.
+     * @param in The input stream to read the query from.
+     * @param baseURI The base URI to resolve relative URIs against (in most cases identical to the graph IRI).
+     * @param mediaType The media type of the input stream.
+     * @return Metadata of the modified graph.
+     * @throws UnsupportedMediaTypeException In case the media type isn't supported.
+     * @throws IOException In case of an I/O error.
+     * @throws QueryException In case of a syntax error or any other query-related error.
+     * @throws GraphMismatchException If the {@code graphURI} is not identitical with graph which is referenced by the query.
+     * @throws StoreException In case of an error.
+     */
+    public IGraphInfo modifyGraph(URI graphURI, InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, IOException, QueryException, GraphMismatchException, StoreException;
 
     /**
      * Creates a graph.

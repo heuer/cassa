@@ -33,8 +33,10 @@ import com.semagia.cassa.common.dm.IGraphInfo;
 import com.semagia.cassa.common.dm.IWritableRepresentation;
 import com.semagia.cassa.common.dm.RemovalStatus;
 import com.semagia.cassa.common.dm.impl.DefaultGraphInfo;
+import com.semagia.cassa.server.store.GraphMismatchException;
 import com.semagia.cassa.server.store.GraphNotExistsException;
 import com.semagia.cassa.server.store.IStore;
+import com.semagia.cassa.server.store.QueryException;
 import com.semagia.cassa.server.store.StoreException;
 import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
 import com.semagia.cassa.server.store.impl.AbstractStore;
@@ -161,6 +163,17 @@ public final class TMAPIStore extends AbstractStore {
         }
         TMAPIUtils.read(makeTopicMap(loc), baseURI, in, mediaType);
         return new GraphInfo(graphURI);
+    }
+
+    /* (non-Javadoc)
+     * @see com.semagia.cassa.server.store.IStore#modifyGraph(java.net.URI, java.io.InputStream, java.net.URI, com.semagia.cassa.common.MediaType)
+     */
+    @Override
+    public boolean modifyGraph(URI graphURI, InputStream in, URI baseURI,
+            MediaType mediaType) throws UnsupportedMediaTypeException,
+            IOException, QueryException, GraphMismatchException, StoreException {
+        // TODO Auto-generated method stub
+        return false;
     }
 
     /**

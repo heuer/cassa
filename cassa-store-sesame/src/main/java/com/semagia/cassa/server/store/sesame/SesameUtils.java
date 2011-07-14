@@ -100,9 +100,6 @@ final class SesameUtils {
      */
     public static RDFFormat asReadableRDFFormat(final MediaType mediaType) throws UnsupportedMediaTypeException {
         RDFFormat format = Rio.getParserFormatForMIMEType(mediaType.toStringWithoutParameters());
-        if (format == null && MediaType.TURTLE.equals(mediaType)) {
-            format = RDFFormat.TURTLE;
-        }
         if (format == null) {
             throw new UnsupportedMediaTypeException("The media type " + mediaType + " cannot be read", getReadableMediaTypes());
         }
@@ -118,9 +115,6 @@ final class SesameUtils {
      */
     public static RDFFormat asWritableRDFFormat(final MediaType mediaType) throws UnsupportedMediaTypeException {
         RDFFormat format = Rio.getWriterFormatForMIMEType(mediaType.toStringWithoutParameters());
-        if (format == null && MediaType.TURTLE.equals(mediaType)) {
-            format = RDFFormat.TURTLE;
-        }
         if (format == null) {
             throw new UnsupportedMediaTypeException("The media type " + mediaType + " cannot be written", getWritableMediaTypes());
         }

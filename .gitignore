@@ -1,0 +1,17 @@
+*.class
+
+dist
+build
+bin
+.gradle
+
+*~
+*.lock
+*.DS_Store
+*.swp
+*.out
+
+# Eclipse stuff
+.classpath
+.settings
+.project

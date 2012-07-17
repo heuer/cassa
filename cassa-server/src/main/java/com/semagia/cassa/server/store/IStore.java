@@ -79,8 +79,8 @@ public interface IStore {
      * Deletes a graph.
      *
      * @param graphURI The graph URI.
-     * @return {@link RemovalStatus#IMMEDIATELY} if the graph was deleted, {@link RemovalStatus#DELAYED}
-     *          if graph removal is sheduled.
+     * @return {@link RemovalStatus#IMMEDIATELY} if the graph was deleted, 
+     *          {@link RemovalStatus#DELAYED} if graph removal is scheduled.
      * @throws GraphNotExistsException In case the graph does not exist.
      * @throws StoreException In case of an error.
      */

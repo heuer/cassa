@@ -15,7 +15,7 @@ configurations {
 
 dependencies {
     compile project(':cassa-common'),
-            'org.apache.httpcomponents:httpclient:4.1.1',
+            'org.apache.httpcomponents:httpclient:4.2.1',
             'org.slf4j:slf4j-api:(1.5.8,)'
     runtime 'org.slf4j:jcl-over-slf4j:(1.5.8,)'
     testRuntime 'org.slf4j:slf4j-jdk14:(1.5.8,)'

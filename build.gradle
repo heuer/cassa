@@ -34,16 +34,13 @@ configure(javaProjects()) {
 
   repositories {
       mavenCentral()
-      maven { 
-        url 'http://download.java.net/maven/2/'
-        url 'http://www.tmapi.org/maven-repository/'
-        url 'http://tinytim.sourceforge.net/maven-repository/snapshots/'
-        url 'http://repository.semagia.com/snapshots/'
-        url 'http://repository.semagia.com/releases/'
-        url 'https://repository.apache.org/content/groups/public/'
-        url 'https://oss.sonatype.org/content/groups/public/'
-      }
-
+      maven { url 'http://download.java.net/maven/2/' }
+      maven { url 'http://www.tmapi.org/maven-repository/' }
+      maven { url 'http://tinytim.sourceforge.net/maven-repository/snapshots/' }
+      maven { url 'http://repository.semagia.com/snapshots/' }
+      maven { url 'http://repository.semagia.com/releases/' }
+      maven { url 'https://repository.apache.org/content/groups/public/' }
+      maven { url 'https://oss.sonatype.org/content/groups/public/' }
   }
 
   dependencies {

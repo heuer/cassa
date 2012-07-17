@@ -593,14 +593,18 @@ public final class GraphClient {
    }
 
     private static MediaType guessMediaType(final URI uri) {
+        MediaType result = null;
         final String uri_ = uri.toString();
         final int dotIdx = uri_.lastIndexOf('.');
         final String ext = dotIdx > -1 ? uri_.substring(dotIdx+1) : null;
-        if (ext == null) {
-            return null;
+        if (ext != null) {
+            final Syntax syntax = Syntax.forFileExtension(ext);
+            result = syntax != null ? MediaType.valueOf(syntax.getDefaultMIMEType()) : null;
         }
-        final Syntax syntax = Syntax.forFileExtension(ext);
-        return syntax != null ? MediaType.valueOf(syntax.getDefaultMIMEType()) : null;
+        if (result == null) {
+            throw new RuntimeException("Cannot determine media type for " + uri.toASCIIString());
+        }
+        return result;
    }
 
 }

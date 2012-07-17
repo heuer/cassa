@@ -43,6 +43,7 @@ public final class CassaApplication extends Application {
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<Class<?>>();
+        classes.add(ServiceResource.class);
         classes.add(GraphsResource.class);
         classes.add(LocalGraphResource.class);
         return classes;

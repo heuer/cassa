@@ -17,7 +17,7 @@ package com.semagia.cassa.common.dm;
 
 /**
  * The removal status indicates if a graph removal was done immediately or
- * if the removal will be sheduled.
+ * if the removal will be scheduled.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */

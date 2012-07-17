@@ -118,7 +118,7 @@ public final class SesameStore implements IStore {
      * @see com.semagia.cassa.server.store.IStore#getGraph(java.net.URI, com.semagia.cassa.common.MediaType)
      */
     @Override
-    public IWritableRepresentation getGraph(URI graphURI, MediaType mediaType)
+    public IWritableRepresentation getGraph(final URI graphURI, final MediaType mediaType)
             throws GraphNotExistsException, UnsupportedMediaTypeException,
             StoreException {
         final RepositoryConnection conn = getConnection();
@@ -138,7 +138,7 @@ public final class SesameStore implements IStore {
      * @see com.semagia.cassa.server.store.IStore#containsGraph(java.net.URI)
      */
     @Override
-    public boolean containsGraph(URI graphURI) throws StoreException {
+    public boolean containsGraph(final URI graphURI) throws StoreException {
         if (graphURI == IStore.DEFAULT_GRAPH) {
             return true;
         }
@@ -155,7 +155,7 @@ public final class SesameStore implements IStore {
     }
 
     private boolean containsGraph(final RepositoryConnection conn, 
-            URI graphURI) throws OpenRDFException {
+            final URI graphURI) throws OpenRDFException {
         if (graphURI == IStore.DEFAULT_GRAPH) {
             return true;
         }
@@ -171,7 +171,7 @@ public final class SesameStore implements IStore {
      * @see com.semagia.cassa.server.store.IStore#getGraphInfo(java.net.URI)
      */
     @Override
-    public IGraphInfo getGraphInfo(URI graphURI)
+    public IGraphInfo getGraphInfo(final URI graphURI)
             throws GraphNotExistsException, StoreException {
         final RepositoryConnection conn = getConnection();
         try {
@@ -190,7 +190,7 @@ public final class SesameStore implements IStore {
      * @see com.semagia.cassa.server.store.IStore#deleteGraph(java.net.URI)
      */
     @Override
-    public RemovalStatus deleteGraph(URI graphURI)
+    public RemovalStatus deleteGraph(final URI graphURI)
             throws GraphNotExistsException, StoreException {
         final RepositoryConnection conn = getConnection();
         try {
@@ -213,8 +213,8 @@ public final class SesameStore implements IStore {
      * @see com.semagia.cassa.server.store.IStore#updateGraph(java.net.URI, java.io.InputStream, java.net.URI, com.semagia.cassa.common.MediaType)
      */
     @Override
-    public IGraphInfo updateGraph(URI graphURI, InputStream in, URI baseURI,
-            MediaType mediaType) throws UnsupportedMediaTypeException,
+    public IGraphInfo updateGraph(final URI graphURI, final InputStream in, final URI baseURI,
+            final MediaType mediaType) throws UnsupportedMediaTypeException,
             IOException, StoreException {
         final RepositoryConnection conn = getConnection();
         try {
@@ -237,8 +237,8 @@ public final class SesameStore implements IStore {
      * @see com.semagia.cassa.server.store.IStore#createGraph(java.io.InputStream, java.net.URI, com.semagia.cassa.common.MediaType)
      */
     @Override
-    public IGraphInfo createGraph(InputStream in, URI baseURI,
-            MediaType mediaType) throws UnsupportedMediaTypeException,
+    public IGraphInfo createGraph(final InputStream in, final URI baseURI,
+            final MediaType mediaType) throws UnsupportedMediaTypeException,
             IOException, StoreException {
         final URI graphURI = baseURI.resolve(UUID.randomUUID().toString());
         final RepositoryConnection conn = getConnection();
@@ -261,8 +261,8 @@ public final class SesameStore implements IStore {
      * @see com.semagia.cassa.server.store.IStore#createOrReplaceGraph(java.net.URI, java.io.InputStream, java.net.URI, com.semagia.cassa.common.MediaType)
      */
     @Override
-    public IGraphInfo createOrReplaceGraph(URI graphURI, InputStream in,
-            URI baseURI, MediaType mediaType)
+    public IGraphInfo createOrReplaceGraph(final URI graphURI, final InputStream in,
+            final URI baseURI, final MediaType mediaType)
             throws UnsupportedMediaTypeException, IOException, StoreException {
         final RDFFormat format = SesameUtils.asReadableRDFFormat(mediaType);
         final Resource[] contexts = getContext(graphURI);
@@ -287,8 +287,8 @@ public final class SesameStore implements IStore {
      * @see com.semagia.cassa.server.store.IStore#modifyGraph(java.net.URI, java.io.InputStream, java.net.URI, com.semagia.cassa.common.MediaType)
      */
     @Override
-    public boolean modifyGraph(URI graphURI, InputStream in, URI baseURI,
-            MediaType mediaType) throws UnsupportedMediaTypeException,
+    public boolean modifyGraph(final URI graphURI, final InputStream in, final URI baseURI,
+            final MediaType mediaType) throws UnsupportedMediaTypeException,
             IOException, StoreException, QueryException, GraphMismatchException {
         // TODO Auto-generated method stub
         return false;
@@ -331,7 +331,7 @@ public final class SesameStore implements IStore {
 
     private static class GraphInfo extends DefaultGraphInfo {
        
-        public GraphInfo(URI uri) {
+        public GraphInfo(final URI uri) {
             super(uri);
         }
 

@@ -9,7 +9,7 @@ version = '0.0.1'
 projectName = 'Semagia Cassa Store Sesame'
 projectDescription = projectName
 
-libs = ['lib/openrdf-sesame-2.6.8-onejar.jar']
+ext.libs = ['lib/openrdf-sesame-2.6.8-onejar.jar']
 
 dependencies {
     compile files(libs)

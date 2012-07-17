@@ -147,7 +147,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
     /**
      * Modifies a graph.
      *
-     * @return 
+     * @return A response indicating if the graph was modified successfully.
      * @throws StorageException In case of an error.
      */
     @PATCH

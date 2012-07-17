@@ -24,7 +24,7 @@ dependencies {
 }
 
 task testJar(type: Jar, dependsOn: compileTestJava) {
-    from sourceSets.test.classesDir
+    from sourceSets.test.output.classesDir
     from sourceSets.test.resources.srcDirs
     baseName = jar.baseName + '-tests'
 }

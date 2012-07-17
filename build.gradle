@@ -13,10 +13,7 @@ configure(javaProjects()) {
   apply plugin: 'eclipse'
   apply from: 'https://github.com/breskeby/gradleplugins/raw/master/emmaPlugin/emma.gradle'
   
-  //TODO: Remove me once <http://jira.codehaus.org/browse/GRADLE-1079> is fixed
-  eclipseClasspath.variables = [:]
-
-  eclipseClasspath.downloadSources = false
+  eclipse.classpath.downloadSources = false
 
   sourceCompatibility = '1.6'
 

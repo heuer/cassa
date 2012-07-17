@@ -22,7 +22,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 /**
- * Converts a {@link IOException} into a HTTP HTTP Internal Server error.
+ * Converts a {@link IOException} into a HTTP Internal Server error.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */

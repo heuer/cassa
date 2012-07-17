@@ -366,7 +366,7 @@ public final class SesameStore implements IStore {
          * @see com.semagia.cassa.common.dm.IWritable#write(java.io.OutputStream)
          */
         @Override
-        public void write(OutputStream out) throws IOException {
+        public void write(final OutputStream out) throws IOException {
             final RDFWriter writer = Rio.createWriter(_format, out);
             try {
                 _conn.export(writer, _resources);

@@ -33,6 +33,8 @@ public interface IStore {
 
     /**
      * Constant for the default graph.
+     * 
+     * This constant is meant to be compared by reference NOT by equality.
      */
     public static final URI DEFAULT_GRAPH = URI.create("");
 
@@ -47,7 +49,7 @@ public interface IStore {
     /**
      * Returns a serialization of the graph.
      *
-     * @param graphURI The URI of the graph.
+     * @param graphURI The URI of the graph ({@link IStore.DEFAULT_GRAPH} indicates the default graph)
      * @param mediaType The requested media type of the serialization. 
      * @return A {@link IWritableRepresentation} that serializes the graph into the provided media type.
      * @throws GraphNotExistsException In case the graph does not exist.
@@ -59,7 +61,7 @@ public interface IStore {
     /**
      * Returns if the graph is part of this store.
      *
-     * @param graphURI The graph URI.
+     * @param graphURIThe URI of the graph ({@link IStore.DEFAULT_GRAPH} indicates the default graph)
      * @return {@code true} if the graph exists, otherwise {@code false}.
      * @throws StoreException In case of an error.
      */
@@ -68,7 +70,7 @@ public interface IStore {
     /**
      * Returns the metadata about the graph.
      *
-     * @param graphURI The graph URI.
+     * @param graphURI The URI of the graph ({@link IStore.DEFAULT_GRAPH} indicates the default graph)
      * @return The metadata.
      * @throws GraphNotExistsException In case the graph does not exist.
      * @throws StoreException In case of an error.
@@ -78,7 +80,7 @@ public interface IStore {
     /**
      * Deletes a graph.
      *
-     * @param graphURI The graph URI.
+     * @param graphURI The URI of the graph ({@link IStore.DEFAULT_GRAPH} indicates the default graph)
      * @return {@link RemovalStatus#IMMEDIATELY} if the graph was deleted, 
      *          {@link RemovalStatus#DELAYED} if graph removal is scheduled.
      * @throws GraphNotExistsException In case the graph does not exist.
@@ -89,7 +91,7 @@ public interface IStore {
     /**
      * Updates a graph.
      * 
-     * @param graphURI The graph URI.
+     * @param graphURI The URI of the graph ({@link IStore.DEFAULT_GRAPH} indicates the default graph)
      * @param in The input stream to read the graph from.
      * @param baseURI The base URI to resolve relative URIs against (in most cases identical to the graph IRI).
      * @param mediaType The media type of the input stream.
@@ -103,7 +105,7 @@ public interface IStore {
     /**
      * Modifies a graph with a query.
      *
-     * @param graphURI The graph URI.
+     * @param graphURI The URI of the graph ({@link IStore.DEFAULT_GRAPH} indicates the default graph)
      * @param in The input stream to read the query from.
      * @param baseURI The base URI to resolve relative URIs against (in most cases identical to the graph IRI).
      * @param mediaType The media type of the input stream.
@@ -132,7 +134,7 @@ public interface IStore {
     /**
      * Creates or updates the graph with the specified URI.
      *
-     * @param graphURI The graph URI.
+     * @param graphURI The URI of the graph ({@link IStore.DEFAULT_GRAPH} indicates the default graph)
      * @param in The input stream to read the graph from.
      * @param baseURI The base URI to resolve relative URIs against (in most cases identical to the graph IRI).
      * @param mediaType The media type of the input stream.

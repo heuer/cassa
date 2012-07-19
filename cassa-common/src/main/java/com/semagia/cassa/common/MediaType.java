@@ -53,6 +53,11 @@ public final class MediaType {
      */
     public static final MediaType SPARQL_QUERY = MediaType.valueOf("application/sparql-query");
 
+    /**
+     * tolog Topic Maps Query Language media type.
+     */
+    public static final MediaType TOLOG_QUERY = MediaType.valueOf("application/x-tolog");
+
     private final String _mainType;
     private final String _subType;
     private final List<Parameter> _params;

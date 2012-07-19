@@ -60,6 +60,7 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
     private static final InputStream _INVALID_INPUTSTREAM = new ByteArrayInputStream("hello, i'm invalid".getBytes());
 
     private static final MediaType _INVALID_MEDIATYPE = MediaType.valueOf("foo/bar");
+    private static final MediaType _ANY_MEDIATYPE = MediaType.valueOf("*/*");
     
     protected T _store;
 
@@ -118,10 +119,9 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         createGraph(_store, _VALID_GRAPH);
     }
 
-    @SuppressWarnings("unused")
     private int graphCount() throws StoreException {
         int i = 0;
-        for (IGraphInfo info: _store.getGraphInfos()) {
+        for (@SuppressWarnings("unused") IGraphInfo info: _store.getGraphInfos()) {
             i++;
         }
         return i;

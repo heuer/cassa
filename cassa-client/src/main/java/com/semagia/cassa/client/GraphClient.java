@@ -581,6 +581,13 @@ public final class GraphClient {
         return _endpoint + (graphURI == _DEFAULT_GRAPH ? "?default" : "?graph=" + graphURI.toASCIIString());
     }
 
+    /**
+     * Executes the request and returns the status code.
+     * 
+     * @param request The request to execute.
+     * @return The status code.
+     * @throws IOException In case of an error.
+     */
     private int getStatusCode(final HttpUriRequest request) throws IOException {
         final HttpResponse response = _client.execute(request);
         final int status = response.getStatusLine().getStatusCode();

@@ -242,4 +242,17 @@ public abstract class AbstractHTTPTestCase extends TestCase {
         assertGraphNotExists(graphURI);
     }
 
+    /**
+     * Acc. to spec the server should try to parse the submitted graph assuming
+     * an approbiate media type. 
+     * 
+     * @throws Exception In case of an error.
+     */
+    public void testGraphCreationNoMediaType() throws Exception {
+        final URI graphURI = URI.create("http://www.example.org/graph");
+        assertGraphNotExists(graphURI);
+        _client.createGraph(graphURI, getGraphWithDefaultMediaType());
+        assertGraphExists(graphURI);
+    }
+
 }

@@ -40,7 +40,17 @@ public class UnsupportedMediaTypeException extends StoreException {
      * @param msg The message.
      */
     public UnsupportedMediaTypeException(String msg) {
-        this(msg, null);
+        this(msg, (MediaType) null);
+    }
+
+    /**
+     * Creates an instance with an optional, supported media type.
+     *
+     * @param msg The message.
+     * @param acceptedMediaType A supported media type or {@code null}.
+     */
+    public UnsupportedMediaTypeException(String msg, MediaType acceptedMediaType) {
+        this(msg, acceptedMediaType != null ? Collections.singletonList(acceptedMediaType) : (List<MediaType>)null);
     }
 
     /**

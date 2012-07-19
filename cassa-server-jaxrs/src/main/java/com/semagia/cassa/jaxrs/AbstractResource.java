@@ -15,6 +15,8 @@
  */
 package com.semagia.cassa.jaxrs;
 
+import static com.semagia.cassa.jaxrs.ResponseUtils.notAcceptable;
+
 import java.util.Date;
 import java.util.List;
 
@@ -82,7 +84,7 @@ abstract class AbstractResource {
     protected final MediaType getMediaType(final List<MediaType> supportedMediaTypes) throws WebApplicationException {
         final Variant variant = _request.selectVariant(MediaTypeUtils.asVariants(supportedMediaTypes));
         if (variant == null) {
-            throw new WebApplicationException(ResponseUtils.notAcceptable(supportedMediaTypes));
+            throw new WebApplicationException(notAcceptable(supportedMediaTypes));
         }
         return MediaTypeUtils.toMediaType(variant.getMediaType());
     }

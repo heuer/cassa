@@ -144,11 +144,10 @@ public final class GraphClient {
     }
 
     private Graph _getGraph(URI graphURI, MediaType mediaType) throws IOException {
-        if (mediaType == null) {
-            throw new IllegalArgumentException("The media type must not be null");
+        final HttpGet request = new HttpGet(getGraphURI(graphURI));
+        if (mediaType != null) {
+            request.setHeader("Accept", mediaType.toString());
         }
-        final HttpGet request = new HttpGet(this.getGraphURI(graphURI));
-        request.setHeader("Accept", mediaType.toString());
         final HttpResponse response = _client.execute(request);
         if (response.getStatusLine().getStatusCode() != 200) {
             request.abort();

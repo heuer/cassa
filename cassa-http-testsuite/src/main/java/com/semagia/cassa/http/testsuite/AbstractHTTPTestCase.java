@@ -239,6 +239,10 @@ public abstract class AbstractHTTPTestCase extends TestCase {
         assertNotNull(_client.getGraph(MEDIATYPE_ANY));
     }
 
+    public void testGetDefaultGraphNoMediaType() throws Exception {
+        assertNotNull(_client.getGraph());
+    }
+
     public void testEmptyGraphCreation() throws Exception {
         final URI graphURI = URI.create("http://www.example.org/empty");
         assertGraphNotExists(graphURI);

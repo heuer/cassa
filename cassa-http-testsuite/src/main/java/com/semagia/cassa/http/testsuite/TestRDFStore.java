@@ -303,94 +303,86 @@ public class TestRDFStore extends AbstractHTTPTestCase {
     }
 
     public void testModificationNoMediaType() throws Exception {
-        final URI uri = URI.create("http://www.example.org/modification");
+        assertGraphDelete();
         final String fileName1 = "/test.rdf";
         final String fileName2 = "/test2.rdf";
         final String filesMerged = "/test+test2.rdf";
-        assertGraphNotExists(uri);
-        createGraph(uri, fileName1);
-        assertGraphExists(uri);
-        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
-        updateGraph(uri, fileName2);
-        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph(uri));
+        createGraph(fileName1, MediaType.RDF_XML);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph());
+        updateGraph(fileName2, MediaType.RDF_XML);
+        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph());
         // Delete statements which come from graph 2
-        final String query = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
-                             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
-                             "DELETE DATA {" +
-                             "<http://psi.example.org/P2> rdf:type foaf:Person;" +
-                             "                            foaf:name \"Name2\"." +
-                             "}";
-        assertTrue(modifyGraph(uri, query));
+        final String query = "PREFIX foaf: <http://xmlns.com/foaf/0.1/> \n" +
+                             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
+                             "DELETE DATA {\n" +
+                             "<http://psi.example.org/P2> rdf:type foaf:Person ;\n" +
+                             "                            foaf:name \"Name2\" .\n" +
+                             "}\n";
+        assertTrue("Expected a sucessfull graph modification", modifyGraph(query));
         // Result: Only statements from graph 1 should be available on the server
-        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
-        assertGraphDelete(uri);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph());
+        assertGraphDelete();
     }
 
     public void testModification() throws Exception {
-        final URI uri = URI.create("http://www.example.org/modification");
+        assertGraphDelete();
         final String fileName1 = "/test.rdf";
         final String fileName2 = "/test2.rdf";
         final String filesMerged = "/test+test2.rdf";
-        assertGraphNotExists(uri);
-        createGraph(uri, fileName1, MediaType.RDF_XML);
-        assertGraphExists(uri);
-        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
-        updateGraph(uri, fileName2, MediaType.RDF_XML);
-        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph(uri));
+        createGraph(fileName1, MediaType.RDF_XML);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph());
+        updateGraph(fileName2, MediaType.RDF_XML);
+        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph());
         // Delete statements which come from graph 2
-        final String query = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
-                             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
-                             "DELETE DATA {" +
-                             "<http://psi.example.org/P2> rdf:type foaf:Person;" +
-                             "                            foaf:name \"Name2\"." +
-                             "}";
-        assertTrue(modifyGraph(uri, query, MediaType.SPARQL_UPDATE));
+        final String query = "PREFIX foaf: <http://xmlns.com/foaf/0.1/> \n" +
+                             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
+                             "DELETE DATA {\n" +
+                             "<http://psi.example.org/P2> rdf:type foaf:Person ;\n" +
+                             "                            foaf:name \"Name2\" .\n" +
+                             "}\n";
+        assertTrue("Expected a sucessfull graph modification", modifyGraph(query, MediaType.SPARQL_UPDATE));
         // Result: Only statements from graph 1 should be available on the server
-        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
-        assertGraphDelete(uri);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph());
+        assertGraphDelete();
     }
 
     public void testModificationInvalidSyntax() throws Exception {
-        final URI uri = URI.create("http://www.example.org/modification");
+        assertGraphDelete();
         final String fileName1 = "/test.rdf";
         final String fileName2 = "/test2.rdf";
         final String filesMerged = "/test+test2.rdf";
-        assertGraphNotExists(uri);
-        createGraph(uri, fileName1, MediaType.RDF_XML);
-        assertGraphExists(uri);
-        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
-        updateGraph(uri, fileName2, MediaType.RDF_XML);
-        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph(uri));
-        final String query = "PREIX foaf: <http://xmlns.com/foaf/0.1/>" +
-                             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
-                             "DELETE DATA {" +
-                             "<http://psi.example.org/P2> rdf:type foaf:Person;" +
-                             "                            foaf:name \"Name2\"." +
-                             "}";
-        assertFalse(modifyGraph(uri, query, MediaType.SPARQL_UPDATE));
-        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph(uri));
-        assertGraphDelete(uri);
+        createGraph(fileName1, MediaType.RDF_XML);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph());
+        updateGraph(fileName2, MediaType.RDF_XML);
+        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph());
+        final String query = "PRFIX foaf: <http://xmlns.com/foaf/0.1/> \n" +
+                             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
+                             "DELETE DATA {\n" +
+                             "<http://psi.example.org/P2> rdf:type foaf:Person ;\n" +
+                             "                            foaf:name \"Name2\" .\n" +
+                             "}\n";
+        assertFalse(modifyGraph(query, MediaType.SPARQL_UPDATE));
+        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph());
+        assertGraphDelete();
     }
 
     public void testModificationUnknownMediaType() throws Exception {
-        final URI uri = URI.create("http://www.example.org/modification");
+        assertGraphDelete();
         final String fileName1 = "/test.rdf";
         final String fileName2 = "/test2.rdf";
         final String filesMerged = "/test+test2.rdf";
-        assertGraphNotExists(uri);
-        createGraph(uri, fileName1, MediaType.RDF_XML);
-        assertGraphExists(uri);
-        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
-        updateGraph(uri, fileName2, MediaType.RDF_XML);
-        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph(uri));
-        final String query = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
-                             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
-                             "DELETE DATA {" +
-                             "<http://psi.example.org/P2> rdf:type foaf:Person;" +
-                             "                            foaf:name \"Name2\"." +
-                             "}";
-        assertFalse(modifyGraph(uri, query, INVALID_MEDIATYPE));
-        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph(uri));
-        assertGraphDelete(uri);
+        createGraph(fileName1, MediaType.RDF_XML);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph());
+        updateGraph(fileName2, MediaType.RDF_XML);
+        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph());
+        final String query = "PREFIX foaf: <http://xmlns.com/foaf/0.1/> \n" +
+                             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
+                             "DELETE DATA {\n" +
+                             "<http://psi.example.org/P2> rdf:type foaf:Person ;\n" +
+                             "                            foaf:name \"Name2\" .\n" +
+                             "}\n";
+        assertFalse(modifyGraph(query, INVALID_MEDIATYPE));
+        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph());
+        assertGraphDelete();
     }
 }

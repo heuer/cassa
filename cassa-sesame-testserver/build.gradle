@@ -16,17 +16,22 @@ dependencies {
     compile project(':cassa-store-sesame')
     runtime 'org.slf4j:slf4j-api:(1.5.8,)'
     testCompile project(path: ':cassa-server', configuration: 'testsuite')
-    testRuntime 'org.slf4j:slf4j-jdk14:(1.5.8,)'
     testRuntime project(':cassa-client')
     httpTests project(':cassa-server-jaxrs')
     httpTests project(':cassa-http-testsuite')
+    httpTests 'org.slf4j:slf4j-jdk14:(1.5.8,)'
     httpTests 'com.sun.jersey:jersey-server:(1.12,)'
     httpTests 'com.sun.jersey:jersey-servlet:(1.12,)'
     httpTests 'com.sun.jersey:jersey-core:(1.12,)'
 }
 
 jettyRun.classpath += configurations.httpTests
-jettyRun.httpPort = 5001
+
+[jettyRun, jettyRunWar, jettyStop]*.with {
+  httpPort = 5001
+  stopPort = 19742
+  stopKey = 'killme'
+}
 
 test {
     systemProperties 'cassa-service-endpoint': 'http://localhost:'+ jettyRun.httpPort + '/cassa-sesame-testserver/service/'

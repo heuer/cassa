@@ -63,6 +63,7 @@ import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
 public final class SesameStore implements IStore {
 
     private static Resource[] _ALL_CONTEXTS = new Resource[0];
+    private static MediaType _TEXT_PLAIN = MediaType.valueOf("text/plain");
 
     private final Repository _repository;
 
@@ -303,7 +304,7 @@ public final class SesameStore implements IStore {
     public boolean modifyGraph(final URI graphURI, final InputStream in, final URI baseURI,
             final MediaType mediaType) throws UnsupportedMediaTypeException,
             IOException, StoreException, QueryException, GraphMismatchException {
-        if (mediaType != null && !MediaType.SPARQL_UPDATE.equals(mediaType)) {
+        if (mediaType != null && !(MediaType.SPARQL_UPDATE.equals(mediaType) || _TEXT_PLAIN.isCompatible(mediaType))) {
             throw new UnsupportedMediaTypeException("The media type " + mediaType + " is not supported", MediaType.SPARQL_QUERY);
         }
         final Writer writer = new StringWriter();
@@ -316,6 +317,7 @@ public final class SesameStore implements IStore {
         boolean result = false;
         final RepositoryConnection conn = getConnection();
         try {
+            conn.setAutoCommit(false);
             final Update update = conn.prepareUpdate(QueryLanguage.SPARQL, writer.toString(), baseURI.toASCIIString());
             if (graphURI != IStore.DEFAULT_GRAPH) {
                 final DatasetImpl ds = new DatasetImpl();
@@ -323,6 +325,7 @@ public final class SesameStore implements IStore {
                 update.setDataset(ds);
             }
             update.execute();
+            conn.commit();
             result = true;
         }
         catch (RepositoryException ex) {

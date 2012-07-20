@@ -201,11 +201,11 @@ public abstract class AbstractHTTPTestCase extends TestCase {
     }
 
     protected boolean modifyGraph(final String query) throws Exception {
-        return _client.modifyGraph(query, null);
+        return modifyGraph(query, null);
     }
 
     protected boolean modifyGraph(final URI graphURI, final String query) throws Exception {
-        return _client.modifyGraph(graphURI, query, null);
+        return modifyGraph(graphURI, query, null);
     }
 
     protected boolean modifyGraph(final String query, final MediaType mediaType) throws Exception {

@@ -48,6 +48,11 @@ final class SesameUtils {
         for (RDFFormat format: RDFWriterRegistry.getInstance().getKeys()) {
             _WRITABLE_MEDIATYPES.add(asMediaType(format));
         }
+        int i = _WRITABLE_MEDIATYPES.indexOf(MediaType.RDF_XML);
+        if (i > -1) {
+            _WRITABLE_MEDIATYPES.remove(i);
+            _WRITABLE_MEDIATYPES.add(0, MediaType.RDF_XML);
+        }
         _WRITABLE_MEDIATYPES = Collections.unmodifiableList(_WRITABLE_MEDIATYPES);
     }
 

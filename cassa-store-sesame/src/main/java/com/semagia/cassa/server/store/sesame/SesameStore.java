@@ -128,7 +128,7 @@ public final class SesameStore implements IStore {
      * @see com.semagia.cassa.server.store.IStore#getGraph(java.net.URI, com.semagia.cassa.common.MediaType)
      */
     @Override
-    public IWritableRepresentation getGraph(final URI graphURI, final MediaType mediaType)
+    public IWritableRepresentation getGraph(final URI graphURI, MediaType mediaType)
             throws GraphNotExistsException, UnsupportedMediaTypeException,
             StoreException {
         final RepositoryConnection conn = getConnection();
@@ -138,6 +138,9 @@ public final class SesameStore implements IStore {
         catch (OpenRDFException ex) {
             closeConnection(conn);
             throw new StoreException(ex);
+        }
+        if (mediaType == null) {
+            mediaType = MediaType.RDF_XML;
         }
         return new WritableRepresentation(conn, 
                 SesameUtils.asWritableRDFFormat(mediaType),

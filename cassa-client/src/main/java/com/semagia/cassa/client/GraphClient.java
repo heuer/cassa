@@ -29,6 +29,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -560,7 +561,7 @@ public final class GraphClient {
      * @throws IOException In case of an error.
      */
     public boolean modifyGraph(final String query) throws IOException {
-        return modifyGraph(_DEFAULT_GRAPH, query, null);
+        return modifyGraph(query, null);
     }
 
     /**
@@ -611,8 +612,7 @@ public final class GraphClient {
         }
         request.setEntity(entity);
         final int status = getStatusCode(request);
-        // TODO: Accept other status codes, like HTTP Accepted?!? 
-        return status == 200;
+        return status == 200 || status == 204;
     }
 
     private String getGraphURI(final URI graphURI) {

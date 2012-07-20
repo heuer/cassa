@@ -53,6 +53,14 @@ public class UnsupportedMediaTypeException extends StoreException {
         this(msg, acceptedMediaType != null ? Collections.singletonList(acceptedMediaType) : (List<MediaType>)null);
     }
 
+    public UnsupportedMediaTypeException(final MediaType unsupportedMediaType, MediaType acceptedMediaType) {
+        this(unsupportedMediaType, acceptedMediaType != null ? Collections.singletonList(acceptedMediaType) : (List<MediaType>)null);
+    }
+
+    public UnsupportedMediaTypeException(final MediaType unsupportedMediaType, List<MediaType> acceptedMediaTypes) {
+        this("Unsupported media type: " + unsupportedMediaType, acceptedMediaTypes);
+    }
+
     /**
      * Creates an instance with an optional list of supported media types.
      *

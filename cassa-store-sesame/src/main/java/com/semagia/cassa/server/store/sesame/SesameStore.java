@@ -305,7 +305,7 @@ public final class SesameStore implements IStore {
             final MediaType mediaType) throws UnsupportedMediaTypeException,
             IOException, StoreException, QueryException, GraphMismatchException {
         if (mediaType != null && !(MediaType.SPARQL_UPDATE.equals(mediaType) || _TEXT_PLAIN.isCompatible(mediaType))) {
-            throw new UnsupportedMediaTypeException("The media type " + mediaType + " is not supported", MediaType.SPARQL_QUERY);
+            throw new UnsupportedMediaTypeException(mediaType, MediaType.SPARQL_QUERY);
         }
         final Writer writer = new StringWriter();
         char[] buffer = new char[1024];

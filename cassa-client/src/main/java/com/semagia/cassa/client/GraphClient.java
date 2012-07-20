@@ -556,6 +556,18 @@ public final class GraphClient {
      * Modifies the default graph using a query.
      * 
      * @param query A query, i.e. SPARQL 1.1 Update.
+     * @return {@code true} indicating that the graph was updated sucessfully,
+     *          otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
+    public boolean modifyGraph(final String query) throws IOException {
+        return modifyGraph(_DEFAULT_GRAPH, query, null);
+    }
+
+    /**
+     * Modifies the default graph using a query.
+     * 
+     * @param query A query, i.e. SPARQL 1.1 Update.
      * @param mediaType The the content type of the query.
      * @return {@code true} indicating that the graph was updated sucessfully,
      *          otherwise {@code false}.
@@ -563,6 +575,19 @@ public final class GraphClient {
      */
     public boolean modifyGraph(final String query, final MediaType mediaType) throws IOException {
         return modifyGraph(_DEFAULT_GRAPH, query, mediaType);
+    }
+
+    /**
+     * Modifies a graph on the server using a query.
+     * 
+     * @param graphURI The graph URI.
+     * @param query A query, i.e. SPARQL 1.1 Update.
+     * @return {@code true} indicating that the graph was updated sucessfully,
+     *          otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
+    public boolean modifyGraph(final URI graphURI, final String query) throws IOException {
+        return modifyGraph(graphURI, query, null);
     }
 
     /**

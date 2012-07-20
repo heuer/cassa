@@ -46,6 +46,8 @@ public abstract class AbstractHTTPTestCase extends TestCase {
 
     protected abstract MediaType getDefaultMediaType() throws Exception;
 
+    protected abstract MediaType getDefaultUpdateMediaType() throws Exception;
+
     protected abstract InputStream getGraphWithDefaultMediaType() throws Exception;
 
     /* (non-Javadoc)
@@ -55,7 +57,6 @@ public abstract class AbstractHTTPTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         _client = new GraphClient(getServiceEndpoint(), getGraphBase());
-        _client.setDefaultMediaType(getDefaultMediaType());
     }
 
     /* (non-Javadoc)
@@ -151,7 +152,7 @@ public abstract class AbstractHTTPTestCase extends TestCase {
     }
 
     protected void createGraph(final URI graphURI, final String file) throws Exception {
-        createGraph(graphURI, file, getDefaultMediaType());
+        createGraph(graphURI, file, null);
     }
 
     protected void createGraph(final URI graphURI, final String file, final MediaType mediaType) throws Exception {
@@ -162,7 +163,7 @@ public abstract class AbstractHTTPTestCase extends TestCase {
     }
 
     protected URI createGraph(final String file) throws Exception {
-        return createGraph(file, getDefaultMediaType());
+        return createGraph(file, null);
     }
 
     protected URI createGraph(final String file, final MediaType mediaType) throws Exception {
@@ -175,7 +176,7 @@ public abstract class AbstractHTTPTestCase extends TestCase {
     }
 
     protected boolean updateGraph(final URI graphURI, final String file) throws Exception {
-        return updateGraph(graphURI, file, getDefaultMediaType());
+        return updateGraph(graphURI, file, null);
     }
 
     protected boolean updateGraph(final URI graphURI, final String file, final MediaType mediaType) throws Exception {
@@ -188,7 +189,19 @@ public abstract class AbstractHTTPTestCase extends TestCase {
     }
 
     protected boolean updateGraph(final String file) throws Exception {
-        return _client.updateGraph(getFile(file));
+        return updateGraph(file, null);
+    }
+
+    protected boolean updateGraph(final String file, final MediaType mediaType) throws Exception {
+        return _client.updateGraph(getFile(file), mediaType);
+    }
+
+    protected boolean modifyGraph(final String query) throws Exception {
+        return _client.modifyGraph(query, null);
+    }
+
+    protected boolean modifyGraph(final URI graphURI, final String query) throws Exception {
+        return _client.modifyGraph(graphURI, query, null);
     }
 
     protected boolean modifyGraph(final String query, final MediaType mediaType) throws Exception {
@@ -229,7 +242,7 @@ public abstract class AbstractHTTPTestCase extends TestCase {
     public void testEmptyGraphCreation() throws Exception {
         final URI graphURI = URI.create("http://www.example.org/empty");
         assertGraphNotExists(graphURI);
-        _client.createGraph(graphURI, getGraphWithDefaultMediaType());
+        _client.createGraph(graphURI, getGraphWithDefaultMediaType(), getDefaultMediaType());
         assertGraphExists(graphURI);
         assertGraphGET(graphURI, getDefaultMediaType());
         assertGraphDelete(graphURI);

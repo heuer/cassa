@@ -45,6 +45,11 @@ public class TestRDFStore extends AbstractHTTPTestCase {
     }
 
     @Override
+    protected MediaType getDefaultUpdateMediaType() throws Exception {
+        return MediaType.SPARQL_UPDATE;
+    }
+
+    @Override
     protected InputStream getGraphWithDefaultMediaType() throws Exception {
         return getInputStream("/test.rdf");
     }
@@ -102,7 +107,7 @@ public class TestRDFStore extends AbstractHTTPTestCase {
         assertGraphEquality(getRDFXMLGraph("/empty.rdf"), getGraph());
     }
 
-    public void testUpdateDefaultGraph() throws Exception {
+    public void testUpdateDefaultGraphNoMediaType() throws Exception {
         final String fileName1 = "/test.rdf";
         final String fileName2 = "/test2.rdf";
         final String filesMerged = "/test+test2.rdf";
@@ -112,10 +117,28 @@ public class TestRDFStore extends AbstractHTTPTestCase {
         assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph());
     }
 
-    public void testCreation() throws Exception {
+    public void testUpdateDefaultGraph() throws Exception {
+        final String fileName1 = "/test.rdf";
+        final String fileName2 = "/test2.rdf";
+        final String filesMerged = "/test+test2.rdf";
+        updateGraph(fileName1, MediaType.RDF_XML);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph());
+        updateGraph(fileName2, MediaType.RDF_XML);
+        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph());
+    }
+
+    public void testCreationNoMediaType() throws Exception {
         final URI uri = URI.create("http://www.example.org/");
         final String fileName = "/test.rdf";
         createGraph(uri, fileName);
+        assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri));
+        assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri, MediaType.TURTLE));
+    }
+
+    public void testCreation() throws Exception {
+        final URI uri = URI.create("http://www.example.org/");
+        final String fileName = "/test.rdf";
+        createGraph(uri, fileName, MediaType.RDF_XML);
         assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri));
         assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri, MediaType.TURTLE));
     }
@@ -138,7 +161,7 @@ public class TestRDFStore extends AbstractHTTPTestCase {
         final URI uri = URI.create("http://www.example.org/graph");
         final String fileName = "/test.rdf";
         assertGraphNotExists(uri);
-        createGraph(uri, fileName);
+        createGraph(uri, fileName, MediaType.RDF_XML);
         assertGraphExists(uri);
         assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri));
         assertGraphDelete(uri);
@@ -151,7 +174,7 @@ public class TestRDFStore extends AbstractHTTPTestCase {
         assertFalse(deleteGraph(uri));
     }
 
-    public void testCreateUpdate() throws Exception {
+    public void testCreateUpdateNoMediaType() throws Exception {
         final URI uri = URI.create("http://www.example.org/create-update");
         final String fileName1 = "/test.rdf";
         final String fileName2 = "/test2.rdf";
@@ -161,6 +184,20 @@ public class TestRDFStore extends AbstractHTTPTestCase {
         assertGraphExists(uri);
         assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
         updateGraph(uri, fileName2);
+        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph(uri));
+        assertGraphDelete(uri);
+    }
+
+    public void testCreateUpdate() throws Exception {
+        final URI uri = URI.create("http://www.example.org/create-update");
+        final String fileName1 = "/test.rdf";
+        final String fileName2 = "/test2.rdf";
+        final String filesMerged = "/test+test2.rdf";
+        assertGraphNotExists(uri);
+        createGraph(uri, fileName1, MediaType.RDF_XML);
+        assertGraphExists(uri);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
+        updateGraph(uri, fileName2, MediaType.RDF_XML);
         assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph(uri));
         assertGraphDelete(uri);
     }
@@ -191,7 +228,7 @@ public class TestRDFStore extends AbstractHTTPTestCase {
         assertGraphDelete(uri);
     }
 
-    public void testReplace() throws Exception {
+    public void testReplaceNoMediaType() throws Exception {
         final URI uri = URI.create("http://www.example.org/create-replace");
         final String fileName1 = "/test.rdf";
         final String fileName2 = "/test2.rdf";
@@ -200,6 +237,19 @@ public class TestRDFStore extends AbstractHTTPTestCase {
         assertGraphExists(uri);
         assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
         createGraph(uri, fileName2);
+        assertGraphEquality(getRDFXMLGraph(fileName2), getGraph(uri));
+        assertGraphDelete(uri);
+    }
+
+    public void testReplace() throws Exception {
+        final URI uri = URI.create("http://www.example.org/create-replace");
+        final String fileName1 = "/test.rdf";
+        final String fileName2 = "/test2.rdf";
+        assertGraphNotExists(uri);
+        createGraph(uri, fileName1, MediaType.RDF_XML);
+        assertGraphExists(uri);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
+        createGraph(uri, fileName2, MediaType.RDF_XML);
         assertGraphEquality(getRDFXMLGraph(fileName2), getGraph(uri));
         assertGraphDelete(uri);
     }
@@ -230,9 +280,16 @@ public class TestRDFStore extends AbstractHTTPTestCase {
         assertGraphDelete(uri);
     }
 
-    public void testCreateLocalGraph() throws Exception {
+    public void testCreateLocalGraphNoMediaType() throws Exception {
         final String fileName = "/test.rdf";
         final URI uri = createGraph(fileName);
+        assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri));
+        assertGraphDelete(uri);
+    }
+
+    public void testCreateLocalGraph() throws Exception {
+        final String fileName = "/test.rdf";
+        final URI uri = createGraph(fileName, MediaType.RDF_XML);
         assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri));
         assertGraphDelete(uri);
     }
@@ -243,4 +300,95 @@ public class TestRDFStore extends AbstractHTTPTestCase {
         assertNull(uri);
     }
 
+    public void testModificationNoMediaType() throws Exception {
+        final URI uri = URI.create("http://www.example.org/modification");
+        final String fileName1 = "/test.rdf";
+        final String fileName2 = "/test2.rdf";
+        final String filesMerged = "/test+test2.rdf";
+        assertGraphNotExists(uri);
+        createGraph(uri, fileName1);
+        assertGraphExists(uri);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
+        updateGraph(uri, fileName2);
+        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph(uri));
+        // Delete statements which come from graph 2
+        final String query = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
+                             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                             "DELETE DATA {" +
+                             "<http://psi.example.org/P2> rdf:type foaf:Person;" +
+                             "                            foaf:name \"Name2\"." +
+                             "}";
+        assertTrue(modifyGraph(uri, query));
+        // Result: Only statements from graph 1 should be available on the server
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
+        assertGraphDelete(uri);
+    }
+
+    public void testModification() throws Exception {
+        final URI uri = URI.create("http://www.example.org/modification");
+        final String fileName1 = "/test.rdf";
+        final String fileName2 = "/test2.rdf";
+        final String filesMerged = "/test+test2.rdf";
+        assertGraphNotExists(uri);
+        createGraph(uri, fileName1, MediaType.RDF_XML);
+        assertGraphExists(uri);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
+        updateGraph(uri, fileName2, MediaType.RDF_XML);
+        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph(uri));
+        // Delete statements which come from graph 2
+        final String query = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
+                             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                             "DELETE DATA {" +
+                             "<http://psi.example.org/P2> rdf:type foaf:Person;" +
+                             "                            foaf:name \"Name2\"." +
+                             "}";
+        assertTrue(modifyGraph(uri, query, MediaType.SPARQL_UPDATE));
+        // Result: Only statements from graph 1 should be available on the server
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
+        assertGraphDelete(uri);
+    }
+
+    public void testModificationInvalidSyntax() throws Exception {
+        final URI uri = URI.create("http://www.example.org/modification");
+        final String fileName1 = "/test.rdf";
+        final String fileName2 = "/test2.rdf";
+        final String filesMerged = "/test+test2.rdf";
+        assertGraphNotExists(uri);
+        createGraph(uri, fileName1, MediaType.RDF_XML);
+        assertGraphExists(uri);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
+        updateGraph(uri, fileName2, MediaType.RDF_XML);
+        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph(uri));
+        final String query = "PREIX foaf: <http://xmlns.com/foaf/0.1/>" +
+                             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                             "DELETE DATA {" +
+                             "<http://psi.example.org/P2> rdf:type foaf:Person;" +
+                             "                            foaf:name \"Name2\"." +
+                             "}";
+        assertFalse(modifyGraph(uri, query, MediaType.SPARQL_UPDATE));
+        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph(uri));
+        assertGraphDelete(uri);
+    }
+
+    public void testModificationUnknownMediaType() throws Exception {
+        final URI uri = URI.create("http://www.example.org/modification");
+        final String fileName1 = "/test.rdf";
+        final String fileName2 = "/test2.rdf";
+        final String filesMerged = "/test+test2.rdf";
+        assertGraphNotExists(uri);
+        createGraph(uri, fileName1, MediaType.RDF_XML);
+        assertGraphExists(uri);
+        assertGraphEquality(getRDFXMLGraph(fileName1), getGraph(uri));
+        updateGraph(uri, fileName2, MediaType.RDF_XML);
+        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph(uri));
+        final String query = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" +
+                             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                             "DELETE DATA {" +
+                             "<http://psi.example.org/P2> rdf:type foaf:Person;" +
+                             "                            foaf:name \"Name2\"." +
+                             "}";
+        assertFalse(modifyGraph(uri, query, INVALID_MEDIATYPE));
+        assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph(uri));
+        assertGraphDelete(uri);
+    }
 }

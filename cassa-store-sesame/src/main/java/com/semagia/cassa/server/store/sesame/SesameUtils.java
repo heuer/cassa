@@ -90,8 +90,10 @@ final class SesameUtils {
      * @return The supported RDFFormat.
      * @throws UnsupportedMediaTypeException In case no reader for the media type can be found.
      */
-    public static RDFFormat asReadableRDFFormat(final MediaType mediaType) throws UnsupportedMediaTypeException {
-        final RDFFormat format = Rio.getParserFormatForMIMEType(mediaType.toStringWithoutParameters());
+    public static RDFFormat asReadableRDFFormat(final MediaType mediaType, final MediaType defaultMediaType) throws UnsupportedMediaTypeException {
+        final RDFFormat format = mediaType == null 
+                                    ? Rio.getParserFormatForMIMEType(defaultMediaType.toStringWithoutParameters())
+                                    : Rio.getParserFormatForMIMEType(mediaType.toStringWithoutParameters());
         if (format == null) {
             throw new UnsupportedMediaTypeException("The media type " + mediaType + " cannot be read", getReadableMediaTypes());
         }
@@ -107,6 +109,23 @@ final class SesameUtils {
      */
     public static RDFFormat asWritableRDFFormat(final MediaType mediaType) throws UnsupportedMediaTypeException {
         final RDFFormat format = Rio.getWriterFormatForMIMEType(mediaType.toStringWithoutParameters());
+        if (format == null) {
+            throw new UnsupportedMediaTypeException("The media type " + mediaType + " cannot be written", getWritableMediaTypes());
+        }
+        return format;
+    }
+
+    /**
+     * Returns a writable RDFFormat.
+     *
+     * @param mediaType The requested media type.
+     * @return The supported RDFFormat.
+     * @throws UnsupportedMediaTypeException In case no writer for the media type can be found.
+     */
+    public static RDFFormat asWritableRDFFormat(final MediaType mediaType, final MediaType defaultMediaType) throws UnsupportedMediaTypeException {
+        final RDFFormat format = mediaType == null 
+                                    ? Rio.getWriterFormatForMIMEType(defaultMediaType.toStringWithoutParameters())
+                                    : Rio.getWriterFormatForMIMEType(mediaType.toStringWithoutParameters());
         if (format == null) {
             throw new UnsupportedMediaTypeException("The media type " + mediaType + " cannot be written", getWritableMediaTypes());
         }

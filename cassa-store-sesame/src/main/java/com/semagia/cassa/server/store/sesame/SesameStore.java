@@ -15,9 +15,14 @@
  */
 package com.semagia.cassa.server.store.sesame;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +30,11 @@ import java.util.UUID;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Resource;
+import org.openrdf.query.MalformedQueryException;
+import org.openrdf.query.QueryLanguage;
+import org.openrdf.query.Update;
+import org.openrdf.query.UpdateExecutionException;
+import org.openrdf.query.impl.DatasetImpl;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -220,7 +230,7 @@ public final class SesameStore implements IStore {
         try {
             ensureGraphExists(conn, graphURI);
             conn.setAutoCommit(false);
-            conn.add(in, baseURI.toString(), SesameUtils.asReadableRDFFormat(mediaType), getContext(graphURI));
+            conn.add(in, baseURI.toString(), SesameUtils.asReadableRDFFormat(mediaType, MediaType.RDF_XML), getContext(graphURI));
             conn.commit();
         } 
         catch (OpenRDFException ex) {
@@ -244,7 +254,7 @@ public final class SesameStore implements IStore {
         final RepositoryConnection conn = getConnection();
         try {
             conn.setAutoCommit(false);
-            conn.add(in, baseURI.toString(), SesameUtils.asReadableRDFFormat(mediaType), getContext(graphURI));
+            conn.add(in, baseURI.toString(), SesameUtils.asReadableRDFFormat(mediaType, MediaType.RDF_XML), getContext(graphURI));
             conn.commit();
         } 
         catch (OpenRDFException ex) {
@@ -264,7 +274,7 @@ public final class SesameStore implements IStore {
     public IGraphInfo createOrReplaceGraph(final URI graphURI, final InputStream in,
             final URI baseURI, final MediaType mediaType)
             throws UnsupportedMediaTypeException, IOException, StoreException {
-        final RDFFormat format = SesameUtils.asReadableRDFFormat(mediaType);
+        final RDFFormat format = SesameUtils.asReadableRDFFormat(mediaType, MediaType.RDF_XML);
         final Resource[] contexts = getContext(graphURI);
         final RepositoryConnection conn = getConnection();
         try {
@@ -290,8 +300,41 @@ public final class SesameStore implements IStore {
     public boolean modifyGraph(final URI graphURI, final InputStream in, final URI baseURI,
             final MediaType mediaType) throws UnsupportedMediaTypeException,
             IOException, StoreException, QueryException, GraphMismatchException {
-        // TODO Auto-generated method stub
-        return false;
+        if (mediaType != null && !MediaType.SPARQL_UPDATE.equals(mediaType)) {
+            throw new UnsupportedMediaTypeException("The media type " + mediaType + " is not supported", MediaType.SPARQL_QUERY);
+        }
+        final Writer writer = new StringWriter();
+        char[] buffer = new char[1024];
+        final Reader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+        int n;
+        while ((n = reader.read(buffer)) != -1) {
+            writer.write(buffer, 0, n);
+        }
+        boolean result = false;
+        final RepositoryConnection conn = getConnection();
+        try {
+            final Update update = conn.prepareUpdate(QueryLanguage.SPARQL, writer.toString(), baseURI.toASCIIString());
+            if (graphURI != IStore.DEFAULT_GRAPH) {
+                final DatasetImpl ds = new DatasetImpl();
+                ds.addDefaultGraph(_repository.getValueFactory().createURI(graphURI.toString()));
+                update.setDataset(ds);
+            }
+            update.execute();
+            result = true;
+        }
+        catch (RepositoryException ex) {
+            throw new StoreException(ex);
+        } 
+        catch (MalformedQueryException ex) {
+            throw new QueryException(ex.getMessage());
+        } 
+        catch (UpdateExecutionException ex) {
+            throw new QueryException(ex.getMessage());
+        }
+        finally {
+            closeConnection(conn);
+        }
+        return result;
     }
 
     /**

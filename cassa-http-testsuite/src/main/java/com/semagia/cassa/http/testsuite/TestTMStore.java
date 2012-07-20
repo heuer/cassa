@@ -49,6 +49,14 @@ public class TestTMStore extends AbstractHTTPTestCase {
     }
 
     /* (non-Javadoc)
+     * @see com.semagia.cassa.http.testsuite.AbstractHTTPTestCase#getDefaultQueryMediaType()
+     */
+    @Override
+    protected MediaType getDefaultUpdateMediaType() throws Exception {
+        return MediaType.TOLOG_QUERY;
+    }
+
+    /* (non-Javadoc)
      * @see com.semagia.cassa.server.testsuite.AbstractCassaTestCase#getGraphWithDefaultMediaType()
      */
     @Override

@@ -115,6 +115,7 @@ public class TestRDFStore extends AbstractHTTPTestCase {
         assertGraphEquality(getRDFXMLGraph(fileName1), getGraph());
         updateGraph(fileName2);
         assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph());
+        assertGraphDelete();
     }
 
     public void testUpdateDefaultGraph() throws Exception {
@@ -125,6 +126,7 @@ public class TestRDFStore extends AbstractHTTPTestCase {
         assertGraphEquality(getRDFXMLGraph(fileName1), getGraph());
         updateGraph(fileName2, MediaType.RDF_XML);
         assertGraphEquality(getRDFXMLGraph(filesMerged), getGraph());
+        assertGraphDelete();
     }
 
     public void testCreationNoMediaType() throws Exception {

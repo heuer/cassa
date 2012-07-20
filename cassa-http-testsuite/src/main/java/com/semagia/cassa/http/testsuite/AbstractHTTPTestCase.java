@@ -147,6 +147,10 @@ public abstract class AbstractHTTPTestCase extends TestCase {
         graph.close();
     }
 
+    protected void assertGraphDelete() throws Exception {
+        assertTrue(_client.deleteGraph() != null);
+    }
+
     protected void assertGraphDelete(final URI graphURI) throws Exception {
         assertTrue(deleteGraph(graphURI));
     }

@@ -1,0 +1,53 @@
+/*
+ * Gradle build file.
+ * 
+ * - Download Gradle from <http://www.gradle.org/>
+ * - Execute gradle build
+ */
+apply plugin: 'jetty'
+version = '0.0.1'
+
+configurations {
+   httpTests
+}
+
+dependencies {
+    compile project(':cassa-server')
+    compile project(':cassa-store-sesame')
+    runtime 'org.slf4j:slf4j-api:(1.5.8,)'
+    testCompile project(path: ':cassa-server', configuration: 'testsuite')
+    testRuntime 'org.slf4j:slf4j-jdk14:(1.5.8,)'
+    testRuntime project(':cassa-client')
+    httpTests project(':cassa-server-jaxrs')
+    httpTests project(':cassa-http-testsuite')
+    httpTests 'com.sun.jersey:jersey-server:(1.12,)'
+    httpTests 'com.sun.jersey:jersey-servlet:(1.12,)'
+    httpTests 'com.sun.jersey:jersey-core:(1.12,)'
+}
+
+jettyRun.classpath += configurations.httpTests
+jettyRun.httpPort = 5001
+
+test {
+    systemProperties 'cassa-service-endpoint': 'http://localhost:'+ jettyRun.httpPort + '/cassa-sesame-testserver/service/'
+    systemProperties 'cassa-graph-base': 'http://localhost:'+ jettyRun.httpPort + '/cassa-sesame-testserver/g/'
+}
+
+test.doFirst {
+  ant {
+    unzip(src: configurations.httpTests.find { f -> f.name.startsWith('cassa-http-') },
+          dest: "$buildDir/classes/test") {
+            exclude '**/TestTMStore*'
+          }
+  }
+  [jettyRun, jettyRunWar]*.daemon = true
+  tasks.jettyRun.execute()
+}
+
+test.doLast {
+  tasks.jettyStop.execute()
+}
+
+war {
+    classpath configurations.httpTests
+}

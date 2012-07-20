@@ -578,7 +578,13 @@ public final class GraphClient {
     public boolean modifyGraph(final URI graphURI, final String query, final MediaType mediaType) throws IOException {
         final HttpPatch request = new HttpPatch(getGraphURI(graphURI));
         final StringEntity entity = new StringEntity(query);
-        entity.setContentType(mediaType.toString());
+        // From the spec it's unclear if a media type is required
+        // <http://www.w3.org/TR/2011/WD-sparql11-http-rdf-update-20110512/#http-patch>
+        // Other methods do not require a media type and the server should guess it/assume a default
+        // so we don't mandate a media type here.
+        if (mediaType != null) {
+            entity.setContentType(mediaType.toString());
+        }
         request.setEntity(entity);
         final int status = getStatusCode(request);
         // TODO: Accept other status codes, like HTTP Accepted?!? 

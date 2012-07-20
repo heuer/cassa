@@ -52,6 +52,11 @@ public final class MediaType {
      * SPARQL Query media type.
      */
     public static final MediaType SPARQL_QUERY = MediaType.valueOf("application/sparql-query");
+    
+    /**
+     * SPARQL Update media type.
+     */
+    public static final MediaType SPARQL_UPDATE = MediaType.valueOf("application/sparql-update");
 
     /**
      * tolog Topic Maps Query Language media type.

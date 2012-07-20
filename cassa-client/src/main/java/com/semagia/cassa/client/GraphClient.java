@@ -54,10 +54,21 @@ public final class GraphClient {
     private MediaType _mediaType;
     private final HttpClient _client;
 
+    /**
+     * Creates a client which connects to the provided service endpoint.
+     * 
+     * @param endpoint The service endpoint.
+     */
     public GraphClient(final URI endpoint) {
         this(endpoint, null);
     }
 
+    /**
+     * Creates a client which connects to the provided service endpoint.
+     * 
+     * @param endpoint The service endpoint.
+     * @param graphsURI An IRI which should be used to create graphs.
+     */
     public GraphClient(final URI endpoint, final URI graphsURI) {
         if (endpoint == null) {
             throw new IllegalArgumentException("The endpoint URI must not be null");
@@ -225,12 +236,11 @@ public final class GraphClient {
     }
 
     private boolean _createGraph(final URI graphURI, final InputStream in, final MediaType mediaType) throws IOException {
-        if (mediaType == null) {
-            throw new IllegalArgumentException("The media type must not be null");
-        }
         final HttpPut put = new HttpPut(getGraphURI(graphURI));
         final InputStreamEntity entity = new InputStreamEntity(in, -1);
-        entity.setContentType(mediaType.toString());
+        if (mediaType != null) {
+            entity.setContentType(mediaType.toString());
+        }
         put.setEntity(entity);
         final int status = getStatusCode(put);
         return status == 200 || status == 201 || status == 204;
@@ -273,15 +283,14 @@ public final class GraphClient {
     }
 
     private URI _createGraph(final InputStream in, final MediaType mediaType) throws IOException {
-        if (mediaType == null) {
-            throw new IllegalArgumentException("The media type must not be null");
-        }
         if (_graphsEndpoint == null) {
             throw new IllegalStateException("The endpoint for graphs is unknown.");
         }
         final HttpPost request = new HttpPost(_graphsEndpoint);
         final InputStreamEntity entity = new InputStreamEntity(in, -1);
-        entity.setContentType(mediaType.toString());
+        if (mediaType != null) {
+            entity.setContentType(mediaType.toString());
+        }
         request.setEntity(entity);
         final HttpResponse response = _client.execute(request);
         URI graphURI = null;
@@ -533,12 +542,11 @@ public final class GraphClient {
     }
 
     private boolean _updateGraph(final URI graphURI, final InputStream in, final MediaType mediaType) throws IOException {
-        if (mediaType == null) {
-            throw new IllegalArgumentException("The media type must not be null");
-        }
         final HttpPost post = new HttpPost(getGraphURI(graphURI));
         final InputStreamEntity entity = new InputStreamEntity(in, -1);
-        entity.setContentType(mediaType.toString());
+        if (mediaType != null) {
+            entity.setContentType(mediaType.toString());
+        }
         post.setEntity(entity);
         final int status = getStatusCode(post);
         return status == 201 || status == 204;
@@ -607,9 +615,6 @@ public final class GraphClient {
         if (ext != null) {
             final Syntax syntax = Syntax.forFileExtension(ext);
             result = syntax != null ? MediaType.valueOf(syntax.getDefaultMIMEType()) : null;
-        }
-        if (result == null) {
-            throw new RuntimeException("Cannot determine media type for " + uri.toASCIIString());
         }
         return result;
    }

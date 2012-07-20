@@ -604,7 +604,7 @@ public final class GraphClient {
         final HttpPatch request = new HttpPatch(getGraphURI(graphURI));
         final StringEntity entity = new StringEntity(query);
         // From the spec it's unclear if a media type is required
-        // <http://www.w3.org/TR/2011/WD-sparql11-http-rdf-update-20110512/#http-patch>
+        // <http://www.w3.org/TR/2012/WD-sparql11-http-rdf-update-20120501/#http-patch>
         // Other methods do not require a media type and the server should guess it/assume a default
         // so we don't mandate a media type here.
         if (mediaType != null) {

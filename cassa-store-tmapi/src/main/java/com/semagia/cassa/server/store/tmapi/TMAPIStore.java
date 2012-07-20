@@ -86,7 +86,12 @@ public final class TMAPIStore extends AbstractStore {
             throws GraphNotExistsException, UnsupportedMediaTypeException,
             StoreException {
         ensureGraphExists(graphURI);
-        TMAPIUtils.ensureWritableMediaType(mediaType);
+        if (mediaType != null) {
+            TMAPIUtils.ensureWritableMediaType(mediaType);
+        }
+        else {
+            mediaType = MediaType.XTM;
+        }
         return new WritableRepresentation(_sys.getTopicMap(asLocator(graphURI)), mediaType);
     }
 
@@ -131,7 +136,12 @@ public final class TMAPIStore extends AbstractStore {
             MediaType mediaType) throws UnsupportedMediaTypeException,
             IOException, StoreException {
         ensureGraphExists(graphURI);
-        TMAPIUtils.ensureReadableMediaType(mediaType);
+        if (mediaType != null) {
+            TMAPIUtils.ensureReadableMediaType(mediaType);
+        }
+        else {
+            mediaType = MediaType.XTM;
+        }
         TMAPIUtils.read(_sys.getTopicMap(asLocator(graphURI)), baseURI, in, mediaType);
         return new GraphInfo(graphURI);
     }
@@ -143,7 +153,12 @@ public final class TMAPIStore extends AbstractStore {
     public IGraphInfo createGraph(InputStream in, URI baseURI,
             MediaType mediaType) throws UnsupportedMediaTypeException,
             IOException, StoreException {
-        TMAPIUtils.ensureReadableMediaType(mediaType);
+        if (mediaType != null) {
+            TMAPIUtils.ensureReadableMediaType(mediaType);
+        }
+        else {
+            mediaType = MediaType.XTM;
+        }
         final URI graphURI = baseURI.resolve(UUID.randomUUID().toString());
         TMAPIUtils.read(makeTopicMap(asLocator(graphURI)), baseURI, in, mediaType);
         return new GraphInfo(graphURI);
@@ -156,7 +171,12 @@ public final class TMAPIStore extends AbstractStore {
     public IGraphInfo createOrReplaceGraph(URI graphURI, InputStream in,
             URI baseURI, MediaType mediaType)
             throws UnsupportedMediaTypeException, IOException, StoreException {
-        TMAPIUtils.ensureReadableMediaType(mediaType);
+        if (mediaType != null) {
+            TMAPIUtils.ensureReadableMediaType(mediaType);
+        }
+        else {
+            mediaType = MediaType.XTM;
+        }
         final Locator loc = asLocator(graphURI);
         if (containsGraph(graphURI)) {
             _sys.getTopicMap(loc).remove();

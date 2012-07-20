@@ -117,11 +117,18 @@ public final class SesameStore implements IStore {
 
     private Iterable<IGraphInfo> getGraphInfos(final RepositoryConnection conn) throws OpenRDFException {
         final List<IGraphInfo> uris = new ArrayList<IGraphInfo>();
-        final RepositoryResult<Resource> res = conn.getContextIDs();
-        while(res.hasNext()) {
-            uris.add(new GraphInfo(URI.create(res.next().stringValue())));
+        RepositoryResult<Resource> res = null;
+        try {
+            res  = conn.getContextIDs();
+            while(res.hasNext()) {
+                uris.add(new GraphInfo(URI.create(res.next().stringValue())));
+            }
         }
-        res.close();
+        finally {
+            if (res != null) {
+                res.close();
+            }
+        }
         return uris;
     }
 
@@ -173,9 +180,18 @@ public final class SesameStore implements IStore {
         if (graphURI == IStore.DEFAULT_GRAPH) {
             return true;
         }
-        for (IGraphInfo info: getGraphInfos(conn)) {
-            if (graphURI.equals(info.getURI())) {
-                return true;
+        RepositoryResult<Resource> res = null;
+        try {
+            res  = conn.getContextIDs();
+            while(res.hasNext()) {
+                if (graphURI.equals(URI.create(res.next().stringValue()))) {
+                    return true;
+                }
+            }
+        }
+        finally {
+            if (res != null) {
+                res.close();
             }
         }
         return false;

@@ -45,9 +45,9 @@ import com.semagia.mio.Syntax;
  */
 final class TMAPIUtils {
 
-    private static final  List<MediaType> _READABLE_MEDIATYPES = Arrays.asList(MediaType.XTM, MediaType.CTM);
+    private static final List<MediaType> _READABLE_MEDIATYPES = Arrays.asList(MediaType.XTM, MediaType.CTM);
 
-    private static final  List<MediaType> _WRITABLE_MEDIATYPES = _READABLE_MEDIATYPES;
+    private static final List<MediaType> _WRITABLE_MEDIATYPES = _READABLE_MEDIATYPES;
 
     private TMAPIUtils() {
         // noop.
@@ -65,7 +65,7 @@ final class TMAPIUtils {
     /**
      * Returns all supported writable media types.
      *
-     * @return An unordered list of writable media types.
+     * @return A list of writable media types.
      */
     public static List<MediaType> getWritableMediaTypes() {
         return _WRITABLE_MEDIATYPES;
@@ -73,13 +73,13 @@ final class TMAPIUtils {
 
     public static void ensureReadableMediaType(MediaType mt) throws UnsupportedMediaTypeException {
         if (!getReadableMediaTypes().contains(mt)) {
-            throw new UnsupportedMediaTypeException("Unsupported media type " + mt, getReadableMediaTypes());
+            throw new UnsupportedMediaTypeException(mt, getReadableMediaTypes());
         }
     }
 
     public static void ensureWritableMediaType(MediaType mt) throws UnsupportedMediaTypeException {
         if (!getWritableMediaTypes().contains(mt)) {
-            throw new UnsupportedMediaTypeException("Unsupported media type " + mt, getWritableMediaTypes());
+            throw new UnsupportedMediaTypeException(mt, getWritableMediaTypes());
         }
     }
 

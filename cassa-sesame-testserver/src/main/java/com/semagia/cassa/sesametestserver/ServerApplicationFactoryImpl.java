@@ -36,7 +36,6 @@ public class ServerApplicationFactoryImpl implements ServerApplicationFactory {
 
     @Override
     public IServerApplication createServerApplication() {
-        System.out.println("Hello from serverapp");
         return _APP;
     }
     

@@ -238,9 +238,7 @@ public final class GraphClient {
     private boolean _createGraph(final URI graphURI, final InputStream in, final MediaType mediaType) throws IOException {
         final HttpPut put = new HttpPut(getGraphURI(graphURI));
         final InputStreamEntity entity = new InputStreamEntity(in, -1);
-        if (mediaType != null) {
-            entity.setContentType(mediaType.toString());
-        }
+        entity.setContentType(mediaType != null ? mediaType.toString() : null);
         put.setEntity(entity);
         final int status = getStatusCode(put);
         return status == 200 || status == 201 || status == 204;
@@ -288,9 +286,7 @@ public final class GraphClient {
         }
         final HttpPost request = new HttpPost(_graphsEndpoint);
         final InputStreamEntity entity = new InputStreamEntity(in, -1);
-        if (mediaType != null) {
-            entity.setContentType(mediaType.toString());
-        }
+        entity.setContentType(mediaType != null ? mediaType.toString() : null);
         request.setEntity(entity);
         final HttpResponse response = _client.execute(request);
         URI graphURI = null;
@@ -544,9 +540,7 @@ public final class GraphClient {
     private boolean _updateGraph(final URI graphURI, final InputStream in, final MediaType mediaType) throws IOException {
         final HttpPost post = new HttpPost(getGraphURI(graphURI));
         final InputStreamEntity entity = new InputStreamEntity(in, -1);
-        if (mediaType != null) {
-            entity.setContentType(mediaType.toString());
-        }
+        entity.setContentType(mediaType != null ? mediaType.toString() : null);
         post.setEntity(entity);
         final int status = getStatusCode(post);
         return status == 201 || status == 204;
@@ -607,9 +601,7 @@ public final class GraphClient {
         // <http://www.w3.org/TR/2012/WD-sparql11-http-rdf-update-20120501/#http-patch>
         // Other methods do not require a media type and the server should guess it/assume a default
         // so we don't mandate a media type here.
-        if (mediaType != null) {
-            entity.setContentType(mediaType.toString());
-        }
+        entity.setContentType(mediaType != null ? mediaType.toString() : null);
         request.setEntity(entity);
         final int status = getStatusCode(request);
         return status == 200 || status == 204;

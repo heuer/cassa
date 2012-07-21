@@ -24,7 +24,7 @@ import javax.ws.rs.Path;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-@Path("/g/{graph}")
+@Path("/{graph}")
 public class LocalGraphResource extends AbstractGraphResource {
 
     /* (non-Javadoc)

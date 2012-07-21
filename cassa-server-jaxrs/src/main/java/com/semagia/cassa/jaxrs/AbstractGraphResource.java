@@ -110,7 +110,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
         }
         // Not a local graph -> set the location to the service resource
         return created(_uriInfo.getBaseUriBuilder()
-                                    .path(ServiceResource.class)
+                                    .path(GraphsResource.class)
                                     .queryParam("graph", "{graph}")
                                     .build(info.getURI()));
     }

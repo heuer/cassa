@@ -15,13 +15,15 @@
  */
 package com.semagia.cassa.jaxrs;
 
-import static com.semagia.cassa.jaxrs.ResponseUtils.badRequest;
-
 import java.net.URI;
 
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
+import com.semagia.cassa.server.store.IStore;
 import com.semagia.cassa.server.store.StoreException;
 
 /**
@@ -31,15 +33,33 @@ import com.semagia.cassa.server.store.StoreException;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-@Path("/g/")
+@Path("/")
 public class GraphsResource extends AbstractGraphResource {
+
+    /**
+     * The URI of the requested graph.
+     */
+    private final URI _graph;
+    private final boolean _wantServiceDescription;
+
+    public GraphsResource(@QueryParam("default") String defaultGraph, @QueryParam("graph") URI graph) {
+        final boolean isDefaultGraph = defaultGraph != null;
+        if (isDefaultGraph && (!defaultGraph.isEmpty() || graph != null)) {
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        if (graph != null && !graph.isAbsolute()) {
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        _wantServiceDescription = !isDefaultGraph && graph == null;
+        _graph = isDefaultGraph ? IStore.DEFAULT_GRAPH : graph;
+    }
 
     /* (non-Javadoc)
      * @see com.semagia.cassa.jaxrs.AbstractGraphResource#getGraphURI()
      */
     @Override
     protected URI getGraphURI() {
-        return null;
+        return _graph;
     }
 
     /* (non-Javadoc)
@@ -47,23 +67,19 @@ public class GraphsResource extends AbstractGraphResource {
      */
     @Override
     public Response getGraph() throws StoreException {
-        return badRequest();
+        return _wantServiceDescription ? getServiceDescription() : super.getGraph();
     }
 
-    /* (non-Javadoc)
-     * @see com.semagia.cassa.jaxrs.AbstractGraphResource#getGraphInfo()
+    /**
+     * Returns the service description.
+     *
+     * @return The service description document.
+     * @throws StoreException In case of an error.
      */
-    @Override
-    public Response getGraphInfo() throws StoreException {
-        return badRequest();
-    }
-
-    /* (non-Javadoc)
-     * @see com.semagia.cassa.jaxrs.AbstractGraphResource#deleteGraph()
-     */
-    @Override
-    public Response deleteGraph() throws StoreException {
-        return badRequest();
+    @OPTIONS
+    public Response getServiceDescription() throws StoreException {
+        // Not supported yet.
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
 }

@@ -51,7 +51,6 @@ public final class GraphClient {
     private static final URI _DEFAULT_GRAPH = URI.create("");
 
     private final String _endpoint;
-    private final String _graphsEndpoint;
     private MediaType _mediaType;
     private final HttpClient _client;
 
@@ -61,21 +60,7 @@ public final class GraphClient {
      * @param endpoint The service endpoint.
      */
     public GraphClient(final URI endpoint) {
-        this(endpoint, null);
-    }
-
-    /**
-     * Creates a client which connects to the provided service endpoint.
-     * 
-     * @param endpoint The service endpoint.
-     * @param graphsURI An IRI which should be used to create graphs.
-     */
-    public GraphClient(final URI endpoint, final URI graphsURI) {
-        if (endpoint == null) {
-            throw new IllegalArgumentException("The endpoint URI must not be null");
-        }
         _endpoint = endpoint.toString();
-        _graphsEndpoint = graphsURI != null ? graphsURI.toString() : null;
         _client = new DefaultHttpClient();
     }
 
@@ -281,10 +266,7 @@ public final class GraphClient {
     }
 
     private URI _createGraph(final InputStream in, final MediaType mediaType) throws IOException {
-        if (_graphsEndpoint == null) {
-            throw new IllegalStateException("The endpoint for graphs is unknown.");
-        }
-        final HttpPost request = new HttpPost(_graphsEndpoint);
+        final HttpPost request = new HttpPost(_endpoint);
         final InputStreamEntity entity = new InputStreamEntity(in, -1);
         entity.setContentType(mediaType != null ? mediaType.toString() : null);
         request.setEntity(entity);

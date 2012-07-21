@@ -35,8 +35,7 @@ import junit.framework.TestCase;
 public abstract class AbstractHTTPTestCase extends TestCase {
 
     public static final String 
-            SERVICE_ENDPOINT = "cassa-service-endpoint",
-            GRAPH_BASE = "cassa-graph-base";
+            SERVICE_ENDPOINT = "cassa-service-endpoint";
 
     public static final MediaType INVALID_MEDIATYPE = MediaType.valueOf("foo/bar");
 
@@ -56,7 +55,7 @@ public abstract class AbstractHTTPTestCase extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        _client = new GraphClient(getServiceEndpoint(), getGraphBase());
+        _client = new GraphClient(getServiceEndpoint());
     }
 
     /* (non-Javadoc)
@@ -70,10 +69,6 @@ public abstract class AbstractHTTPTestCase extends TestCase {
 
     private static URI getServiceEndpoint() {
         return URI.create(getSystemProperty(SERVICE_ENDPOINT));
-    }
-
-    private static URI getGraphBase() {
-        return URI.create(getSystemProperty(GRAPH_BASE));
     }
 
     private static String getSystemProperty(final String name) {

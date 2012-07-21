@@ -34,8 +34,7 @@ jettyRun.classpath += configurations.httpTests
 }
 
 test {
-    systemProperties 'cassa-service-endpoint': 'http://localhost:'+ jettyRun.httpPort + '/cassa-sesame-testserver/service/'
-    systemProperties 'cassa-graph-base': 'http://localhost:'+ jettyRun.httpPort + '/cassa-sesame-testserver/g/'
+    systemProperties 'cassa-service-endpoint': 'http://localhost:'+ jettyRun.httpPort + '/cassa-sesame-testserver/'
 }
 
 test.doFirst {

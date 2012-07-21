@@ -15,12 +15,21 @@
  */
 package com.semagia.cassa.jaxrs;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
 import javax.ws.rs.OPTIONS;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import com.semagia.cassa.server.store.IStore;
@@ -28,8 +37,6 @@ import com.semagia.cassa.server.store.StoreException;
 
 /**
  * Represents the root for all graphs.
- * 
- * This resource allows HTTP POST only. Such a request creates a new graph.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
@@ -66,8 +73,62 @@ public class GraphsResource extends AbstractGraphResource {
      * @see com.semagia.cassa.jaxrs.AbstractGraphResource#getGraph()
      */
     @Override
+    @GET
     public Response getGraph() throws StoreException {
         return _wantServiceDescription ? getServiceDescription() : super.getGraph();
+    }
+
+    /* (non-Javadoc)
+     * @see com.semagia.cassa.jaxrs.AbstractGraphResource#getGraphInfo()
+     */
+    @Override
+    @HEAD
+    public Response getGraphInfo() throws StoreException {
+        notServiceDescription(); //TODO
+        return super.getGraphInfo();
+    }
+
+    /* (non-Javadoc)
+     * @see com.semagia.cassa.jaxrs.AbstractGraphResource#createGraph(java.io.InputStream, javax.ws.rs.core.HttpHeaders)
+     */
+    @Override
+    @PUT
+    public Response createGraph(InputStream in, @Context HttpHeaders header)
+            throws IOException, StoreException {
+        notServiceDescription();
+        return super.createGraph(in, header);
+    }
+
+    /* (non-Javadoc)
+     * @see com.semagia.cassa.jaxrs.AbstractGraphResource#createOrUpdateGraph(java.io.InputStream, javax.ws.rs.core.HttpHeaders)
+     */
+    @Override
+    @POST
+    public Response createOrUpdateGraph(InputStream in,
+            @Context HttpHeaders header) throws IOException, StoreException {
+        notServiceDescription();
+        return super.createOrUpdateGraph(in, header);
+    }
+
+    /* (non-Javadoc)
+     * @see com.semagia.cassa.jaxrs.AbstractGraphResource#deleteGraph()
+     */
+    @Override
+    @DELETE
+    public Response deleteGraph() throws StoreException {
+        notServiceDescription();
+        return super.deleteGraph();
+    }
+
+    /* (non-Javadoc)
+     * @see com.semagia.cassa.jaxrs.AbstractGraphResource#modifyGraph(java.io.InputStream, javax.ws.rs.core.HttpHeaders)
+     */
+    @Override
+    @PATCH
+    public Response modifyGraph(InputStream in, @Context HttpHeaders header)
+            throws IOException, StoreException {
+        notServiceDescription();
+        return super.modifyGraph(in, header);
     }
 
     /**
@@ -82,4 +143,9 @@ public class GraphsResource extends AbstractGraphResource {
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
+    private void notServiceDescription() {
+        if (_wantServiceDescription) {
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+    }
 }

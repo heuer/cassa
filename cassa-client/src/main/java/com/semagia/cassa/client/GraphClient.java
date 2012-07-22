@@ -50,7 +50,7 @@ public final class GraphClient {
 
     private static final URI _DEFAULT_GRAPH = URI.create("");
 
-    private final String _endpoint;
+    private final URI _endpoint;
     private MediaType _mediaType;
     private final HttpClient _client;
 
@@ -63,7 +63,7 @@ public final class GraphClient {
         if (endpoint == null) {
             throw new IllegalArgumentException("The endpoint URI must not be null");
         }
-        _endpoint = endpoint.toString();
+        _endpoint = endpoint;
         _client = new DefaultHttpClient();
     }
 
@@ -592,8 +592,15 @@ public final class GraphClient {
         return status == 200 || status == 204;
     }
 
-    private String getGraphURI(final URI graphURI) {
-        return _endpoint + (graphURI == _DEFAULT_GRAPH ? "?default" : "?graph=" + graphURI.toASCIIString());
+    private URI getGraphURI(final URI graphURI) {
+        if (graphURI == _DEFAULT_GRAPH) {
+            return _endpoint.resolve("?default");
+        }
+        if (!_endpoint.relativize(graphURI).isAbsolute()) {
+            // local graph
+            return graphURI;
+        }
+        return _endpoint.resolve("?graph=" + graphURI.toASCIIString());
     }
 
     /**

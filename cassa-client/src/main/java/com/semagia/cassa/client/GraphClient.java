@@ -60,6 +60,9 @@ public final class GraphClient {
      * @param endpoint The service endpoint.
      */
     public GraphClient(final URI endpoint) {
+        if (endpoint == null) {
+            throw new IllegalArgumentException("The endpoint URI must not be null");
+        }
         _endpoint = endpoint.toString();
         _client = new DefaultHttpClient();
     }

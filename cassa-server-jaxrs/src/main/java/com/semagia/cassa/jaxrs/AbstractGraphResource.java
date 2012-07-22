@@ -178,7 +178,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * @param graphInfo The graph's metadata.
      * @return A ResponseBuilder instance.
      */
-    private ResponseBuilder makeResponseBuilder(final IGraphInfo graphInfo) {
+    protected ResponseBuilder makeResponseBuilder(final IGraphInfo graphInfo) {
         final ResponseBuilder builder = super.makeResponseBuilder(graphInfo.getLastModification());
         builder.variants(MediaTypeUtils.asVariants(graphInfo.getSupportedMediaTypes()));
         return builder;

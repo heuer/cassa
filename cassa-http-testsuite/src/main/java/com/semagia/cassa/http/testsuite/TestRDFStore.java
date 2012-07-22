@@ -92,7 +92,7 @@ public class TestRDFStore extends AbstractHTTPTestCase {
     }
 
     private void assertGraphEquality(final Graph g1, final Graph g2) {
-        assertEquals(g1.size(), g2.size());
+        assertEquals("Graphs have a differnt size", g1.size(), g2.size());
         for (Triple t: g2.getTriples()) {
             SubjectNode s = t.getSubject();
             PredicateNode p = t.getPredicate();
@@ -285,6 +285,7 @@ public class TestRDFStore extends AbstractHTTPTestCase {
     public void testCreateLocalGraphNoMediaType() throws Exception {
         final String fileName = "/test.rdf";
         final URI uri = createGraph(fileName);
+        assertNotNull("Expected a local graph URI", uri);
         assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri));
         assertGraphDelete(uri);
     }
@@ -292,6 +293,7 @@ public class TestRDFStore extends AbstractHTTPTestCase {
     public void testCreateLocalGraph() throws Exception {
         final String fileName = "/test.rdf";
         final URI uri = createGraph(fileName, MediaType.RDF_XML);
+        assertNotNull("Expected a local graph URI", uri);
         assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri));
         assertGraphDelete(uri);
     }

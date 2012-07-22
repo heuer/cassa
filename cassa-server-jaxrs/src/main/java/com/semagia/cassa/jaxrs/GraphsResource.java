@@ -15,23 +15,17 @@
  */
 package com.semagia.cassa.jaxrs;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.OPTIONS;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import com.semagia.cassa.common.dm.impl.DefaultGraphInfo;
 import com.semagia.cassa.server.store.IStore;
 import com.semagia.cassa.server.store.StoreException;
 
@@ -45,9 +39,11 @@ public class GraphsResource extends AbstractGraphResource {
 
     /**
      * The URI of the requested graph.
+     * 
+     * This property may be {@code null} if the root resource is meant.
      */
     private final URI _graph;
-    private final boolean _wantServiceDescription;
+
 
     public GraphsResource(@QueryParam("default") String defaultGraph, @QueryParam("graph") URI graph) {
         final boolean isDefaultGraph = defaultGraph != null;
@@ -57,10 +53,9 @@ public class GraphsResource extends AbstractGraphResource {
         if (graph != null && !graph.isAbsolute()) {
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
-        _wantServiceDescription = !isDefaultGraph && graph == null;
         _graph = isDefaultGraph ? IStore.DEFAULT_GRAPH : graph;
     }
-
+    
     /* (non-Javadoc)
      * @see com.semagia.cassa.jaxrs.AbstractGraphResource#getGraphURI()
      */
@@ -75,7 +70,7 @@ public class GraphsResource extends AbstractGraphResource {
     @Override
     @GET
     public Response getGraph() throws StoreException {
-        return _wantServiceDescription ? getServiceDescription() : super.getGraph();
+        return _graph == null ? getServiceDescription() : super.getGraph();
     }
 
     /* (non-Javadoc)
@@ -84,51 +79,10 @@ public class GraphsResource extends AbstractGraphResource {
     @Override
     @HEAD
     public Response getGraphInfo() throws StoreException {
-        notServiceDescription(); //TODO
+        if (_graph == null) {
+            return makeResponseBuilder(new DefaultGraphInfo(_uriInfo.getAbsolutePath())).build();
+        }
         return super.getGraphInfo();
-    }
-
-    /* (non-Javadoc)
-     * @see com.semagia.cassa.jaxrs.AbstractGraphResource#createGraph(java.io.InputStream, javax.ws.rs.core.HttpHeaders)
-     */
-    @Override
-    @PUT
-    public Response createGraph(InputStream in, @Context HttpHeaders header)
-            throws IOException, StoreException {
-        notServiceDescription();
-        return super.createGraph(in, header);
-    }
-
-    /* (non-Javadoc)
-     * @see com.semagia.cassa.jaxrs.AbstractGraphResource#createOrUpdateGraph(java.io.InputStream, javax.ws.rs.core.HttpHeaders)
-     */
-    @Override
-    @POST
-    public Response createOrUpdateGraph(InputStream in,
-            @Context HttpHeaders header) throws IOException, StoreException {
-        notServiceDescription();
-        return super.createOrUpdateGraph(in, header);
-    }
-
-    /* (non-Javadoc)
-     * @see com.semagia.cassa.jaxrs.AbstractGraphResource#deleteGraph()
-     */
-    @Override
-    @DELETE
-    public Response deleteGraph() throws StoreException {
-        notServiceDescription();
-        return super.deleteGraph();
-    }
-
-    /* (non-Javadoc)
-     * @see com.semagia.cassa.jaxrs.AbstractGraphResource#modifyGraph(java.io.InputStream, javax.ws.rs.core.HttpHeaders)
-     */
-    @Override
-    @PATCH
-    public Response modifyGraph(InputStream in, @Context HttpHeaders header)
-            throws IOException, StoreException {
-        notServiceDescription();
-        return super.modifyGraph(in, header);
     }
 
     /**
@@ -143,9 +97,4 @@ public class GraphsResource extends AbstractGraphResource {
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
-    private void notServiceDescription() {
-        if (_wantServiceDescription) {
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
-        }
-    }
 }

@@ -64,6 +64,14 @@ public final class TMAPIStore extends AbstractStore {
     }
 
     /* (non-Javadoc)
+     * @see com.semagia.cassa.server.store.IStore#getLastModification()
+     */
+    @Override
+    public long getLastModification() {
+        return -1;
+    }
+
+    /* (non-Javadoc)
      * @see com.semagia.cassa.server.store.IStore#getGraphInfos()
      */
     @Override

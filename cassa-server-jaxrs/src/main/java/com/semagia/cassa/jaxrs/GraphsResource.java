@@ -80,7 +80,7 @@ public class GraphsResource extends AbstractGraphResource {
     @HEAD
     public Response getGraphInfo() throws StoreException {
         if (_graph == null) {
-            return makeResponseBuilder(new DefaultGraphInfo(_uriInfo.getAbsolutePath())).build();
+            return makeResponseBuilder(new DefaultGraphInfo(_uriInfo.getAbsolutePath(), getStore().getLastModification())).build();
         }
         return super.getGraphInfo();
     }

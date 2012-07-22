@@ -39,6 +39,15 @@ public interface IStore {
     public static final URI DEFAULT_GRAPH = URI.create("");
 
     /**
+     * Returns the last modification date.
+     * 
+     * In case the modification time is unknown, {@code -1} must be returned.
+     *
+     * @return The last modification time or -1.
+     */
+    public long getLastModification();
+
+    /**
      * Returns all available graphs.
      *
      * @return A (maybe empty) iterable of graphs.

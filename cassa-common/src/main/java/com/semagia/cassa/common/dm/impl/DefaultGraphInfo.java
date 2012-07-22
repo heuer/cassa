@@ -37,6 +37,10 @@ public class DefaultGraphInfo implements IGraphInfo {
         this(uri, (List<MediaType>)null, -1);
     }
 
+    public DefaultGraphInfo(final URI uri, final long lastModification) {
+        this(uri, (List<MediaType>)null, lastModification);
+    }
+
     public DefaultGraphInfo(final URI uri, List<MediaType> mediaTypes) {
         this(uri, mediaTypes, -1);
     }

@@ -68,6 +68,13 @@ public final class GraphClient {
     }
 
     /**
+     * Should be called if the client is no longer needed.
+     */
+    public void close() {
+        _client.getConnectionManager().shutdown();
+    }
+
+    /**
      * Returns the default media type.
      *
      * @return The default media type or {@code null} if the default media type

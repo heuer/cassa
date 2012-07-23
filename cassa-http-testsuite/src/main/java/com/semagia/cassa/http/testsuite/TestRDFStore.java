@@ -298,6 +298,24 @@ public class TestRDFStore extends AbstractHTTPTestCase {
         assertGraphDelete(uri);
     }
 
+    public void testCreateLocalGraphNoMediaType2() throws Exception {
+        final String fileName = "/test.rdf";
+        final URI uri = super.getServiceEndpoint().resolve("/local-graph");
+        assertTrue(createGraph(uri, fileName));
+        assertNotNull("Expected a local graph URI", uri);
+        assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri));
+        assertGraphDelete(uri);
+    }
+
+    public void testCreateLocalGraph2() throws Exception {
+        final String fileName = "/test.rdf";
+        final URI uri = super.getServiceEndpoint().resolve("/local-graph2");
+        assertTrue(createGraph(uri, fileName, MediaType.RDF_XML));
+        assertNotNull("Expected a local graph URI", uri);
+        assertGraphEquality(getRDFXMLGraph(fileName), getGraph(uri));
+        assertGraphDelete(uri);
+    }
+
     public void testCreateLocalGraphIllegal() throws Exception {
         final String fileName = "/test.rdf";
         final URI uri = createGraph(fileName, INVALID_MEDIATYPE);

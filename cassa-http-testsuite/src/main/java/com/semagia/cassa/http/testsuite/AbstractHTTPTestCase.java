@@ -64,10 +64,11 @@ public abstract class AbstractHTTPTestCase extends TestCase {
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
+        _client.close();
         _client = null;
     }
 
-    private static URI getServiceEndpoint() {
+    protected static URI getServiceEndpoint() {
         return URI.create(getSystemProperty(SERVICE_ENDPOINT));
     }
 
@@ -150,15 +151,17 @@ public abstract class AbstractHTTPTestCase extends TestCase {
         assertTrue(deleteGraph(graphURI));
     }
 
-    protected void createGraph(final URI graphURI, final String file) throws Exception {
-        createGraph(graphURI, file, null);
+    protected boolean createGraph(final URI graphURI, final String file) throws Exception {
+        return createGraph(graphURI, file, null);
     }
 
-    protected void createGraph(final URI graphURI, final String file, final MediaType mediaType) throws Exception {
-        if (_client.createGraph(graphURI, getFile(file), mediaType)) {
+    protected boolean createGraph(final URI graphURI, final String file, final MediaType mediaType) throws Exception {
+        final boolean result = _client.createGraph(graphURI, getFile(file), mediaType);
+        if (result) {
             assertGraphExists(graphURI);
             assertGraphGET(graphURI);
         }
+        return result;
     }
 
     protected URI createGraph(final String file) throws Exception {

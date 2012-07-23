@@ -152,7 +152,7 @@ public final class GraphClient {
         final HttpEntity entity = response.getEntity();
         final String encoding = entity.getContentEncoding() != null ? entity.getContentEncoding().getValue() : null;
         final MediaType mt = entity.getContentType() != null ? MediaType.valueOf(entity.getContentType().getValue()) : null;
-        return new Graph(entity.getContent(), mt, encoding);
+        return new Graph(entity.getContent(), mt, encoding, entity.getContentLength());
     }
 
     /**

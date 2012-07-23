@@ -35,14 +35,22 @@ import com.semagia.cassa.common.dm.IWritableRepresentation;
  */
 public final class Graph implements IWritableRepresentation, Closeable {
 
+    private final static int _BUFFER_SIZE = 2048;
+
     private final InputStream _in;
     private final MediaType _mediaType;
     private final String _encoding;
+    private final long _length;
 
     Graph(final InputStream in, final MediaType mediaType, final String encoding) {
+        this(in, mediaType, encoding, -1);
+    }
+
+    Graph(final InputStream in, final MediaType mediaType, final String encoding, final long length) {
         _in = in;
         _mediaType = mediaType;
         _encoding = encoding;
+        _length = length;
     }
 
     /**
@@ -51,9 +59,21 @@ public final class Graph implements IWritableRepresentation, Closeable {
      * The input stream or this Graph instance MUST be closed when done.
      *
      * @return The input stream.
+     * @throws IOException In case of an I/O error.
      */
-    public InputStream getInputStream() {
+    public InputStream getInputStream() throws IOException {
         return _in;
+    }
+
+    /**
+     * Returns the length of the content.
+     * 
+     * Returns {@code -1} if the length is unknown.
+     * 
+     * @return The length of the content or {@code -1}
+     */
+    public long getContentLength() {
+        return _length;
     }
 
     /* (non-Javadoc)
@@ -61,11 +81,24 @@ public final class Graph implements IWritableRepresentation, Closeable {
      */
     @Override
     public void write(OutputStream out) throws IOException {
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[_BUFFER_SIZE];
         int len;
         try {
-            while ((len = _in.read(buffer)) != -1) {
-                out.write(buffer, 0, len);
+            if (_length < 0) {
+                while ((len = _in.read(buffer)) != -1) {
+                    out.write(buffer, 0, len);
+                }
+            }
+            else {
+                long remaining = _length;
+                while (remaining > 0) {
+                    len = _in.read(buffer, 0, (int)Math.min(_BUFFER_SIZE, remaining));
+                    if (len == -1) {
+                        break;
+                    }
+                    out.write(buffer, 0, len);
+                    remaining -= len;
+                }
             }
         }
         finally {

@@ -29,6 +29,16 @@ public final class MediaType {
     private static final List<Parameter> _EMPTY_PARAMS = Collections.emptyList();
 
     /**
+     * Atom feed media type.
+     */
+    public static final MediaType ATOM_XML = MediaType.valueOf("application/atom+xml");
+
+    /**
+     * JSON media type.
+     */
+    public static final MediaType JSON = MediaType.valueOf("application/json");
+
+    /**
      * XTM media type (either XTM 1.0 or 2.x).
      */
     public static final MediaType XTM = MediaType.valueOf("application/x-tm+xtm");

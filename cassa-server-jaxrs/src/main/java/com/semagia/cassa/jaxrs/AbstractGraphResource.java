@@ -63,10 +63,11 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * Writes a graph.
      * 
      * @return A graph serialization.
+     * @throws IOException In case of an I/O error.
      * @throws StorageException In case of an error.
      */
     @GET
-    public Response getGraph() throws StoreException {
+    public Response getGraph() throws IOException, StoreException {
         final URI graphURI = getGraphURI();
         final IStore store = getStore();
         final IGraphInfo graph = store.getGraphInfo(graphURI);
@@ -137,10 +138,11 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * Deletes a graph.
      *
      * @return A response indicating if the graph was removed immediately or deletion is scheduled.
+     * @throws IOException In case of an I/O error.
      * @throws StorageException In case of an error.
      */
     @DELETE
-    public Response deleteGraph() throws StoreException {
+    public Response deleteGraph() throws IOException, StoreException {
         return getStore().deleteGraph(getGraphURI()) == RemovalStatus.DELAYED ? accepted() : noContent();
     }
 

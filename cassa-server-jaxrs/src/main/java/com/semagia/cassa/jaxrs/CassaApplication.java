@@ -29,6 +29,7 @@ import com.semagia.cassa.jaxrs.providers.NullPointerExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.QueryExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.StoreExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.UnsupportedMediaTypeExceptionMapper;
+import com.semagia.cassa.jaxrs.providers.UnsupportedOperationExceptionMapper;
 
 /**
  * The Cassa application.
@@ -63,6 +64,7 @@ public final class CassaApplication extends Application {
         singletons.add(new GraphNotExistsExceptionMapper());
         singletons.add(new GraphMismatchExceptionMapper());
         singletons.add(new QueryExceptionMapper());
+        singletons.add(new UnsupportedOperationExceptionMapper());
         return singletons;
     }
 

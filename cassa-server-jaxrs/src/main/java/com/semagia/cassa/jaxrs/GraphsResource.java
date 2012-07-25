@@ -15,6 +15,7 @@
  */
 package com.semagia.cassa.jaxrs;
 
+import java.io.IOException;
 import java.net.URI;
 
 import javax.ws.rs.GET;
@@ -69,7 +70,7 @@ public class GraphsResource extends AbstractGraphResource {
      */
     @Override
     @GET
-    public Response getGraph() throws StoreException {
+    public Response getGraph() throws IOException, StoreException {
         return _graph == null ? getServiceDescription() : super.getGraph();
     }
 

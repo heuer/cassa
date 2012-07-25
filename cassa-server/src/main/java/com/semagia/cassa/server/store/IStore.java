@@ -45,7 +45,7 @@ public interface IStore {
      *
      * @return The last modification time or -1.
      */
-    public long getLastModification();
+    public long getLastModification() throws StoreException;
 
     /**
      * Returns all available graphs.
@@ -63,9 +63,10 @@ public interface IStore {
      * @return A {@link IWritableRepresentation} that serializes the graph into the provided media type.
      * @throws GraphNotExistsException In case the graph does not exist.
      * @throws UnsupportedMediaTypeException In case the media type is not available.
+     * @throws IOException In case of an I/O error.
      * @throws StoreException In case of an error.
      */
-    public IWritableRepresentation getGraph(URI graphURI, MediaType mediaType) throws GraphNotExistsException, UnsupportedMediaTypeException, StoreException;
+    public IWritableRepresentation getGraph(URI graphURI, MediaType mediaType) throws GraphNotExistsException, UnsupportedMediaTypeException, IOException, StoreException;
 
     /**
      * Returns if the graph is part of this store.
@@ -93,9 +94,10 @@ public interface IStore {
      * @return {@link RemovalStatus#IMMEDIATELY} if the graph was deleted, 
      *          {@link RemovalStatus#DELAYED} if graph removal is scheduled.
      * @throws GraphNotExistsException In case the graph does not exist.
+     * @throws IOException In case of an I/O error.
      * @throws StoreException In case of an error.
      */
-    public RemovalStatus deleteGraph(URI graphURI) throws GraphNotExistsException, StoreException;
+    public RemovalStatus deleteGraph(URI graphURI) throws GraphNotExistsException, IOException, StoreException;
 
     /**
      * Updates a graph.

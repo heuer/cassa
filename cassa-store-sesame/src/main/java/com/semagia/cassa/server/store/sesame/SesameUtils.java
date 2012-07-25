@@ -50,12 +50,12 @@ final class SesameUtils {
         }
         // Sort writable media types (RDF/XML, Turtle preferred)
         int i = _WRITABLE_MEDIATYPES.indexOf(MediaType.RDF_XML);
-        if (i > -1) {
+        if (i > -1 && i != 0) {
             _WRITABLE_MEDIATYPES.remove(i);
             _WRITABLE_MEDIATYPES.add(0, MediaType.RDF_XML);
         }
         i = _WRITABLE_MEDIATYPES.indexOf(MediaType.TURTLE);
-        if (i > -1) {
+        if (i > -1 && i != 1 && _WRITABLE_MEDIATYPES.size() > 1) {
             _WRITABLE_MEDIATYPES.remove(i);
             _WRITABLE_MEDIATYPES.add(1, MediaType.TURTLE);
         }

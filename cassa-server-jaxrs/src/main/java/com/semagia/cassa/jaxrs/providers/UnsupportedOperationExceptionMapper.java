@@ -32,7 +32,7 @@ public class UnsupportedOperationExceptionMapper implements ExceptionMapper<Unsu
      */
     @Override
     public Response toResponse(UnsupportedOperationException ex) {
-        return Response.status(405).header("Allowed", "GET").build();
+        return Response.status(405).header("Allow", "GET").build();
     }
 
 }

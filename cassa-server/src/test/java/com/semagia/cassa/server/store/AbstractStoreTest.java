@@ -17,6 +17,7 @@ package com.semagia.cassa.server.store;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
@@ -60,7 +61,6 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
     private static final InputStream _INVALID_INPUTSTREAM = new ByteArrayInputStream("hello, i'm invalid".getBytes());
 
     private static final MediaType _INVALID_MEDIATYPE = MediaType.valueOf("foo/bar");
-    private static final MediaType _ANY_MEDIATYPE = MediaType.valueOf("*/*");
     
     protected T _store;
 
@@ -264,7 +264,7 @@ public abstract class AbstractStoreTest<T extends IStore> extends TestCase {
         assertTrue(_store.containsGraph(_VALID_GRAPH));
     }
 
-    public void testDeleteInvalid() throws StoreException {
+    public void testDeleteInvalid() throws StoreException, IOException {
         try {
             _store.deleteGraph(_INVALID_GRAPH);
             fail("Expected an exception for a non-existing graph");

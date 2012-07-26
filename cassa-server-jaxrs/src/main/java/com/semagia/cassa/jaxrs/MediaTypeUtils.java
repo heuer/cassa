@@ -15,6 +15,7 @@
  */
 package com.semagia.cassa.jaxrs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.core.Variant;
@@ -27,7 +28,7 @@ import com.semagia.cassa.common.MediaType;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-final class MediaTypeUtils {
+public final class MediaTypeUtils {
 
     private MediaTypeUtils() {
         // noop.
@@ -47,10 +48,24 @@ final class MediaTypeUtils {
      * Returns the equivalent of the provided JAX-RS media type.
      *
      * @param mt The JAX-RS media type.
-     * @return The Atomico media type or {@code null} if the provided media type is null.
+     * @return Instance of {@link MediaType} or {@code null} if the provided media type is null.
      */
     public static MediaType toMediaType(final javax.ws.rs.core.MediaType mt) {
         return mt == null ? null : MediaType.valueOf(mt.toString());
+    }
+
+    /**
+     * Returns the equivalent of the provided JAX-RS media types.
+     *
+     * @param mediaTypes The JAX-RS media types.
+     * @return A list of {@link MediaType} instances.
+     */
+    public static List<MediaType> toMediaTypes(final Iterable<javax.ws.rs.core.MediaType> mediaTypes) {
+        final List<MediaType> result = new ArrayList<MediaType>();
+        for (javax.ws.rs.core.MediaType mt: mediaTypes) {
+            result.add(toMediaType(mt));
+        }
+        return result;
     }
 
     /**

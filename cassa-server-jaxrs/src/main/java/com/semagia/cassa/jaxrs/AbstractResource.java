@@ -36,7 +36,7 @@ import com.semagia.cassa.server.store.IStore;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-abstract class AbstractResource {
+public abstract class AbstractResource {
 
     @Context 
     private Request _request;

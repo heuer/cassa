@@ -29,7 +29,7 @@ import com.semagia.cassa.common.dm.IWritableRepresentation;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-final class ResponseUtils {
+public final class ResponseUtils {
 
     private ResponseUtils() {
         // noop.

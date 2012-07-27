@@ -39,8 +39,12 @@ import javax.ws.rs.core.UriInfo;
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IGraphInfo;
 import com.semagia.cassa.common.dm.RemovalStatus;
+import com.semagia.cassa.server.store.GraphMismatchException;
+import com.semagia.cassa.server.store.GraphNotExistsException;
 import com.semagia.cassa.server.store.IStore;
+import com.semagia.cassa.server.store.QueryException;
 import com.semagia.cassa.server.store.StoreException;
+import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
 
 /**
  * Common graph resource which implements all operations above graphs.
@@ -64,10 +68,11 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * 
      * @return A graph serialization.
      * @throws IOException In case of an I/O error.
+     * @throws GraphNotExistsException In case the graph does not exist. 
      * @throws StorageException In case of an error.
      */
     @GET
-    public Response getGraph() throws IOException, StoreException {
+    public Response getGraph() throws IOException, GraphNotExistsException, StoreException {
         final URI graphURI = getGraphURI();
         final IStore store = getStore();
         final IGraphInfo graph = store.getGraphInfo(graphURI);
@@ -80,11 +85,16 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * Checks if a graph exists.
      *
      * @return A response with graph metadata.
+     * @throws GraphNotExistsException In case the graph does not exist. 
      * @throws StorageException In case of an error.
      */
     @HEAD
-    public Response getGraphInfo() throws StoreException {
-        return makeResponseBuilder(getStore().getGraphInfo(getGraphURI())).build();
+    public Response getGraphInfo() throws GraphNotExistsException, StoreException {
+        final IGraphInfo graph = getStore().getGraphInfo(getGraphURI());
+        // Get media type to provoke a Not Acceptable error
+        @SuppressWarnings("unused")
+        final MediaType mt = getMediaType(graph.getSupportedMediaTypes());
+        return makeResponseBuilder(graph).build();
     }
 
     /**
@@ -92,10 +102,11 @@ public abstract class AbstractGraphResource extends AbstractResource {
      *
      * @return A response indicating if a graph was created or replaced.
      * @throws IOException In case of an I/O error. 
-     * @throws StorageException In case of an error.
+     * @throws UnsupportedMediaTypeException In case the media type could not be read.
+     * @throws StoreException In case of an error.
      */
     @PUT
-    public Response createGraph(InputStream in, @Context HttpHeaders header) throws IOException, StoreException {
+    public Response createGraph(InputStream in, @Context HttpHeaders header) throws IOException, UnsupportedMediaTypeException, StoreException {
         final URI graphURI = getGraphURI();
         final IStore store = getStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
@@ -120,11 +131,12 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * Creates a new graph or updates an existing graph.
      *
      * @return A response indicating if a graph was created or updated.
+     * @throws UnsupportedMediaTypeException In case the media type isn't supported. 
      * @throws IOException In case of an I/O error.
      * @throws StorageException In case of an error.
      */
     @POST
-    public Response createOrUpdateGraph(InputStream in, @Context HttpHeaders header) throws IOException, StoreException {
+    public Response createOrUpdateGraph(InputStream in, @Context HttpHeaders header) throws UnsupportedMediaTypeException, IOException, StoreException {
         final URI graphURI = getGraphURI();
         final IStore store = getStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
@@ -139,10 +151,11 @@ public abstract class AbstractGraphResource extends AbstractResource {
      *
      * @return A response indicating if the graph was removed immediately or deletion is scheduled.
      * @throws IOException In case of an I/O error.
+     * @throws GraphNotExistsException In case the graph does not exist. 
      * @throws StorageException In case of an error.
      */
     @DELETE
-    public Response deleteGraph() throws IOException, StoreException {
+    public Response deleteGraph() throws IOException, GraphNotExistsException, StoreException {
         return getStore().deleteGraph(getGraphURI()) == RemovalStatus.DELAYED ? accepted() : noContent();
     }
 
@@ -150,10 +163,13 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * Modifies a graph.
      *
      * @return A response indicating if the graph was modified successfully.
+     * @throws QueryException In case of a query error, i.e. syntax error.
+     * @throws UnsupportedMediaTypeException In case the media type isn't supported. 
+     * @throws GraphMismatchException In case the query utilizes a different graph as the requested graph.
      * @throws StorageException In case of an error.
      */
     @PATCH
-    public Response modifyGraph(InputStream in, @Context HttpHeaders header) throws IOException, StoreException {
+    public Response modifyGraph(InputStream in, @Context HttpHeaders header) throws IOException, GraphMismatchException, UnsupportedMediaTypeException, QueryException, StoreException {
         final URI graphURI = getGraphURI();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
         return getStore().modifyGraph(graphURI, in, getBaseURI(graphURI), mt) ? noContent()

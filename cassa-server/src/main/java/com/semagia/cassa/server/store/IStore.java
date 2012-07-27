@@ -100,6 +100,19 @@ public interface IStore {
     public RemovalStatus deleteGraph(URI graphURI) throws GraphNotExistsException, IOException, StoreException;
 
     /**
+     * Deletes a subject.
+     *
+     * @param graphURI The URI of the graph ({@link #DEFAULT_GRAPH} indicates the default graph)
+     * @param subejctURI The URI of the subject to delete.
+     * @return {@link RemovalStatus#IMMEDIATELY} if the graph was deleted, 
+     *          {@link RemovalStatus#DELAYED} if graph removal is scheduled.
+     * @throws GraphNotExistsException In case the graph does not exist.
+     * @throws IOException In case of an I/O error.
+     * @throws StoreException In case of an error.
+     */
+    public RemovalStatus deleteSubject(URI graphURI, URI subjectURI) throws GraphNotExistsException, IOException, StoreException;
+
+    /**
      * Updates a graph.
      * 
      * @param graphURI The URI of the graph ({@link #DEFAULT_GRAPH} indicates the default graph)
@@ -109,9 +122,10 @@ public interface IStore {
      * @return Metadata of the created/updated graph.
      * @throws UnsupportedMediaTypeException In case the media type isn't supported.
      * @throws IOException In case of an I/O error.
+     * @throws ParseException In case of a parsing error, i.e. syntax error.
      * @throws StoreException In case of an error.
      */
-    public IGraphInfo updateGraph(URI graphURI, InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, IOException, StoreException;
+    public IGraphInfo updateGraph(URI graphURI, InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, IOException, ParseException, StoreException;
 
     /**
      * Modifies a graph with a query.
@@ -138,9 +152,10 @@ public interface IStore {
      * @return Metadata of the created/updated graph.
      * @throws UnsupportedMediaTypeException
      * @throws IOException In case of an I/O error.
+     * @throws ParseException In case of a parsing error, i.e. syntax error.
      * @throws StoreException In case of an error.
      */
-    public IGraphInfo createGraph(InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, IOException, StoreException;
+    public IGraphInfo createGraph(InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, IOException, ParseException, StoreException;
 
     /**
      * Creates or updates the graph with the specified URI.
@@ -152,8 +167,25 @@ public interface IStore {
      * @return Metadata of the created/replaced graph.
      * @throws UnsupportedMediaTypeException
      * @throws IOException In case of an I/O error.
+     * @throws ParseException In case of a parsing error, i.e. syntax error.
      * @throws StoreException In case of an error.
      */
-    public IGraphInfo createOrReplaceGraph(URI graphURI, InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, IOException, StoreException;
+    public IGraphInfo createOrReplaceGraph(URI graphURI, InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, IOException, ParseException, StoreException;
+
+    /**
+     * Creates or updates a subject within a graph.
+     *
+     * @param graphURI The URI of the graph ({@link #DEFAULT_GRAPH} indicates the default graph)
+     * @param subjectURI The URI of the subject.
+     * @param in The input stream to read the subject from.
+     * @param baseURI The base URI to resolve relative URIs against (in most cases identical to the graph IRI).
+     * @param mediaType The media type of the input stream.
+     * @return Metadata of the created/replaced graph.
+     * @throws UnsupportedMediaTypeException
+     * @throws IOException In case of an I/O error.
+     * @throws ParseException In case of a parsing error, i.e. syntax error.
+     * @throws StoreException In case of an error.
+     */
+    public IGraphInfo createOrReplaceSubject(URI graphURI, URI subjectURI, InputStream in, URI baseURI, MediaType mediaType) throws UnsupportedMediaTypeException, IOException, ParseException, StoreException;
 
 }

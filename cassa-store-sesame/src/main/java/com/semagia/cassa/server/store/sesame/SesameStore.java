@@ -40,6 +40,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryResult;
 import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.Rio;
 
@@ -51,6 +52,7 @@ import com.semagia.cassa.common.dm.impl.DefaultGraphInfo;
 import com.semagia.cassa.server.store.GraphMismatchException;
 import com.semagia.cassa.server.store.GraphNotExistsException;
 import com.semagia.cassa.server.store.IStore;
+import com.semagia.cassa.server.store.ParseException;
 import com.semagia.cassa.server.store.QueryException;
 import com.semagia.cassa.server.store.StoreException;
 import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
@@ -260,7 +262,11 @@ public final class SesameStore implements IStore {
             conn.setAutoCommit(false);
             conn.add(in, baseURI.toString(), SesameUtils.asReadableRDFFormat(mediaType, MediaType.RDF_XML), getContext(graphURI));
             conn.commit();
-        } 
+        }
+        catch (RDFParseException ex) {
+            rollbackConnection(conn);
+            throw new ParseException(ex.getMessage(), ex);
+        }
         catch (OpenRDFException ex) {
             rollbackConnection(conn);
             throw new StoreException(ex);
@@ -284,7 +290,11 @@ public final class SesameStore implements IStore {
             conn.setAutoCommit(false);
             conn.add(in, baseURI.toString(), SesameUtils.asReadableRDFFormat(mediaType, MediaType.RDF_XML), getContext(graphURI));
             conn.commit();
-        } 
+        }
+        catch (RDFParseException ex) {
+            rollbackConnection(conn);
+            throw new ParseException(ex.getMessage(), ex);
+        }
         catch (OpenRDFException ex) {
             rollbackConnection(conn);
             throw new StoreException(ex);
@@ -310,7 +320,11 @@ public final class SesameStore implements IStore {
             conn.clear(contexts);
             conn.add(in, baseURI.toString(), format, contexts);
             conn.commit();
-        } 
+        }
+        catch (RDFParseException ex) {
+            rollbackConnection(conn);
+            throw new ParseException(ex.getMessage(), ex);
+        }
         catch (OpenRDFException ex) {
             rollbackConnection(conn);
             throw new StoreException(ex);
@@ -356,15 +370,68 @@ public final class SesameStore implements IStore {
             throw new StoreException(ex);
         } 
         catch (MalformedQueryException ex) {
-            throw new QueryException(ex.getMessage());
+            throw new QueryException(ex.getMessage(), ex);
         } 
         catch (UpdateExecutionException ex) {
-            throw new QueryException(ex.getMessage());
+            throw new QueryException(ex.getMessage(), ex);
         }
         finally {
             closeConnection(conn);
         }
         return result;
+    }
+
+    /* (non-Javadoc)
+     * @see com.semagia.cassa.server.store.IStore#deleteSubject(java.net.URI, java.net.URI)
+     */
+    @Override
+    public RemovalStatus deleteSubject(final URI graphURI, final URI subjectURI)
+            throws GraphNotExistsException, IOException, StoreException {
+        final RepositoryConnection conn = getConnection();
+        try {
+            ensureGraphExists(conn, graphURI);
+            conn.setAutoCommit(false);
+            conn.remove(asResource(subjectURI), null, null, getContext(graphURI));
+            conn.commit();
+        }
+        catch (OpenRDFException ex) {
+            rollbackConnection(conn);
+            throw new StoreException(ex);
+        }
+        finally {
+            closeConnection(conn);
+        }
+        return RemovalStatus.IMMEDIATELY;
+    }
+
+    /* (non-Javadoc)
+     * @see com.semagia.cassa.server.store.IStore#createOrReplaceSubject(java.net.URI, java.net.URI, java.io.InputStream, java.net.URI, com.semagia.cassa.common.MediaType)
+     */
+    @Override
+    public IGraphInfo createOrReplaceSubject(URI graphURI, URI subjectURI,
+            InputStream in, URI baseURI, MediaType mediaType)
+            throws UnsupportedMediaTypeException, IOException, StoreException {
+        final RDFFormat format = SesameUtils.asReadableRDFFormat(mediaType, MediaType.RDF_XML);
+        final Resource[] contexts = getContext(graphURI);
+        final RepositoryConnection conn = getConnection();
+        try {
+            conn.setAutoCommit(false);
+            conn.remove(asResource(subjectURI), null, null, getContext(graphURI));
+            conn.add(in, baseURI.toString(), format, contexts);
+            conn.commit();
+        }
+        catch (RDFParseException ex) {
+            rollbackConnection(conn);
+            throw new ParseException(ex.getMessage(), ex);
+        }
+        catch (OpenRDFException ex) {
+            rollbackConnection(conn);
+            throw new StoreException(ex);
+        }
+        finally {
+            closeConnection(conn);
+        }
+        return new GraphInfo(graphURI);
     }
 
     /**

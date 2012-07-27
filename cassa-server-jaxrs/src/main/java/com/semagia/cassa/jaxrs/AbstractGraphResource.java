@@ -30,6 +30,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -107,12 +108,13 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * @throws StoreException In case of an error.
      */
     @PUT
-    public Response createGraph(InputStream in, @Context HttpHeaders header) throws IOException, ParseException, StoreException {
+    public Response create(InputStream in, @Context HttpHeaders header, @QueryParam("subject") URI subject) throws IOException, ParseException, StoreException {
         final URI graphURI = getGraphURI();
         final IStore store = getStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
         final boolean wasKnown = graphURI == IStore.DEFAULT_GRAPH || store.containsGraph(graphURI);
-        final IGraphInfo info = store.createOrReplaceGraph(graphURI, in, getBaseURI(graphURI), mt);
+        final IGraphInfo info = subject == null ? store.createOrReplaceGraph(graphURI, in, getBaseURI(graphURI), mt)
+                                                : store.createOrReplaceSubject(graphURI, subject, in, getBaseURI(graphURI), mt);
         if (wasKnown) {
             return noContent();
         }
@@ -149,7 +151,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
     }
 
     /**
-     * Deletes a graph.
+     * Deletes a graph or a subject from a graph.
      *
      * @return A response indicating if the graph was removed immediately or deletion is scheduled.
      * @throws IOException In case of an I/O error.
@@ -157,8 +159,10 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * @throws StorageException In case of an error.
      */
     @DELETE
-    public Response deleteGraph() throws IOException, GraphNotExistsException, StoreException {
-        return getStore().deleteGraph(getGraphURI()) == RemovalStatus.DELAYED ? accepted() : noContent();
+    public Response delete(@QueryParam("subject") URI subject) throws IOException, GraphNotExistsException, StoreException {
+        final RemovalStatus res = subject == null ? getStore().deleteGraph(getGraphURI())
+                                                  : getStore().deleteSubject(getGraphURI(), subject); 
+        return res == RemovalStatus.DELAYED ? accepted() : noContent();
     }
 
     /**

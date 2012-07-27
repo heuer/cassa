@@ -42,6 +42,7 @@ import com.semagia.cassa.common.dm.RemovalStatus;
 import com.semagia.cassa.server.store.GraphMismatchException;
 import com.semagia.cassa.server.store.GraphNotExistsException;
 import com.semagia.cassa.server.store.IStore;
+import com.semagia.cassa.server.store.ParseException;
 import com.semagia.cassa.server.store.QueryException;
 import com.semagia.cassa.server.store.StoreException;
 import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
@@ -102,11 +103,11 @@ public abstract class AbstractGraphResource extends AbstractResource {
      *
      * @return A response indicating if a graph was created or replaced.
      * @throws IOException In case of an I/O error. 
-     * @throws UnsupportedMediaTypeException In case the media type could not be read.
+     * @throws ParseException In case the input could not be read, i.e. syntax error.
      * @throws StoreException In case of an error.
      */
     @PUT
-    public Response createGraph(InputStream in, @Context HttpHeaders header) throws IOException, UnsupportedMediaTypeException, StoreException {
+    public Response createGraph(InputStream in, @Context HttpHeaders header) throws IOException, ParseException, StoreException {
         final URI graphURI = getGraphURI();
         final IStore store = getStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
@@ -133,10 +134,11 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * @return A response indicating if a graph was created or updated.
      * @throws UnsupportedMediaTypeException In case the media type isn't supported. 
      * @throws IOException In case of an I/O error.
+     * @throws ParseException In case the input could not be read, i.e. syntax error.
      * @throws StorageException In case of an error.
      */
     @POST
-    public Response createOrUpdateGraph(InputStream in, @Context HttpHeaders header) throws UnsupportedMediaTypeException, IOException, StoreException {
+    public Response createOrUpdateGraph(InputStream in, @Context HttpHeaders header) throws UnsupportedMediaTypeException, IOException, ParseException, StoreException {
         final URI graphURI = getGraphURI();
         final IStore store = getStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());

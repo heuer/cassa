@@ -219,7 +219,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * @param graphURI Graph URI.
      * @return {@code true} if the graphURI is a local graph, otherwise {@code false}.
      */
-    protected static boolean isLocalGraph(final UriInfo uriInfo, final URI graphURI) {
+    protected final static boolean isLocalGraph(final UriInfo uriInfo, final URI graphURI) {
         return !uriInfo.getAbsolutePath().relativize(graphURI).isAbsolute();
     }
 }

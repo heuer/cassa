@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -59,18 +60,48 @@ public abstract class AbstractResource {
      * resource wasn't modified, a {@link WebApplicationException} with
      * the status <tt>Not modified (304)</tt> is thrown.
      *
+     * @param lastModification Last modification date or {@code -1} to indicate an unknown date
      * @return A response builder.
      * @throws WebApplicationException In case the resource wasn't modified.
      */
     protected final ResponseBuilder makeResponseBuilder(final long lastModification) throws WebApplicationException {
+        return makeResponseBuilder(lastModification, null);
+    }
+
+    /**
+     * Creates a {@link ResponseBuilder} with a last-modified header and ETag.
+     * 
+     * If the request contains a <tt>If-Modified-Since</tt> header and the
+     * resource wasn't modified, a {@link WebApplicationException} with
+     * the status <tt>Not modified (304)</tt> is thrown.
+     *
+     * @param lastModification Last modification date or {@code -1} to indicate an unknown date
+     * @param etag An ETag or {@code null}.
+     * @return A response builder.
+     * @throws WebApplicationException In case the resource wasn't modified.
+     */
+    protected final ResponseBuilder makeResponseBuilder(final long lastModification, final EntityTag etag) throws WebApplicationException {
         final Date lastModificationDate = new Date(lastModification);
-        ResponseBuilder builder = lastModification != -1 ? _request.evaluatePreconditions(lastModificationDate) : null;
+        ResponseBuilder builder = null;
+        if (lastModification != -1) {
+            builder =  etag == null ? _request.evaluatePreconditions(lastModificationDate)
+                                    : _request.evaluatePreconditions(lastModificationDate, etag);
+        }
+        else if (etag != null) {
+            builder = _request.evaluatePreconditions(etag);
+        }
         if (builder != null) {
-            // Preconditions are met, report the status to the client
+            // Client has up to date version; report status to the client
             throw new WebApplicationException(builder.build());
         }
         builder = Response.ok();
-        return lastModification != -1 ? builder.lastModified(lastModificationDate) : builder;
+        if (lastModification != -1) {
+            builder.lastModified(lastModificationDate);
+        }
+        if (etag != null) {
+            builder.tag(etag);
+        }
+        return builder;
     }
 
     /**

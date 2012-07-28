@@ -32,6 +32,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -47,6 +48,7 @@ import com.semagia.cassa.server.store.ParseException;
 import com.semagia.cassa.server.store.QueryException;
 import com.semagia.cassa.server.store.StoreException;
 import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
+import com.semagia.cassa.server.utils.ETagUtils;
 
 /**
  * Common graph resource which implements all operations above graphs.
@@ -80,7 +82,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
         final IGraphInfo graph = store.getGraphInfo(graphURI);
         final MediaType mt = getMediaType(graph.getSupportedMediaTypes());
         return buildStreamingEntity(
-                makeResponseBuilder(graph), store.getGraph(graphURI, mt));
+                makeResponseBuilder(graph, mt), store.getGraph(graphURI, mt));
     }
 
     /**
@@ -93,10 +95,8 @@ public abstract class AbstractGraphResource extends AbstractResource {
     @HEAD
     public Response getGraphInfo() throws GraphNotExistsException, StoreException {
         final IGraphInfo graph = getStore().getGraphInfo(getGraphURI());
-        // Get media type to provoke a Not Acceptable error
-        @SuppressWarnings("unused")
         final MediaType mt = getMediaType(graph.getSupportedMediaTypes());
-        return makeResponseBuilder(graph).build();
+        return makeResponseBuilder(graph, mt).build();
     }
 
     /**
@@ -200,12 +200,18 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * Returns a {@link ResponseBuilder} initialized with the provided graph metadata.
      *
      * @param graphInfo The graph's metadata.
+     * @param mediaType The media type of the response or {@code null}.
      * @return A ResponseBuilder instance.
      */
-    protected ResponseBuilder makeResponseBuilder(final IGraphInfo graphInfo) {
-        final ResponseBuilder builder = super.makeResponseBuilder(graphInfo.getLastModification());
+    protected final ResponseBuilder makeResponseBuilder(final IGraphInfo graphInfo, final MediaType mediaType) {
+        final ResponseBuilder builder = super.makeResponseBuilder(graphInfo.getLastModification(), createETag(graphInfo, mediaType));
         builder.variants(MediaTypeUtils.asVariants(graphInfo.getSupportedMediaTypes()));
         return builder;
+    }
+
+    private static EntityTag createETag(final IGraphInfo graphInfo, final MediaType mediaType) {
+        final String etag = ETagUtils.generateETag(graphInfo, mediaType);
+        return etag == null ? null : new EntityTag(etag);
     }
 
 }

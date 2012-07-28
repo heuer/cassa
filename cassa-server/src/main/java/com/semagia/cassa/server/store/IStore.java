@@ -103,7 +103,7 @@ public interface IStore {
      * Deletes a subject.
      *
      * @param graphURI The URI of the graph ({@link #DEFAULT_GRAPH} indicates the default graph)
-     * @param subejctURI The URI of the subject to delete.
+     * @param subjectURI The URI of the subject to delete.
      * @return {@link RemovalStatus#IMMEDIATELY} if the graph was deleted, 
      *          {@link RemovalStatus#DELAYED} if graph removal is scheduled.
      * @throws GraphNotExistsException In case the graph does not exist.

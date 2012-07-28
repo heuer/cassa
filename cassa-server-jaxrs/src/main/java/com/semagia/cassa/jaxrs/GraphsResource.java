@@ -24,7 +24,9 @@ import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import com.semagia.cassa.common.dm.impl.DefaultGraphInfo;
 import com.semagia.cassa.server.store.IStore;
@@ -46,13 +48,18 @@ public class GraphsResource extends AbstractGraphResource {
     private final URI _graph;
 
 
-    public GraphsResource(@QueryParam("default") String defaultGraph, @QueryParam("graph") URI graph) {
+    public GraphsResource(@Context UriInfo uriInfo, @QueryParam("default") String defaultGraph, @QueryParam("graph") URI graph) {
         final boolean isDefaultGraph = defaultGraph != null;
         if (isDefaultGraph && (!defaultGraph.isEmpty() || graph != null)) {
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
-        if (graph != null && !graph.isAbsolute()) {
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        if (graph != null) {
+            if (!graph.isAbsolute()) {
+                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            }
+            else if (super.isLocalGraph(uriInfo, graph)) {
+                throw new WebApplicationException(ResponseUtils.redirect(graph));
+            }
         }
         _graph = isDefaultGraph ? IStore.DEFAULT_GRAPH : graph;
     }

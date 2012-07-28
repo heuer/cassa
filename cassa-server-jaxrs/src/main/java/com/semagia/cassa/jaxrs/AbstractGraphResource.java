@@ -118,9 +118,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
         if (wasKnown) {
             return noContent();
         }
-        if (!_uriInfo.getBaseUriBuilder()
-                .path(GraphsResource.class).build().relativize(info.getURI()).isAbsolute()) {
-            // Graph is a local graph
+        if (isLocalGraph(_uriInfo, graphURI)) {
             return created(graphURI);
         }
         // Not a local graph -> set the location to the service resource
@@ -214,4 +212,14 @@ public abstract class AbstractGraphResource extends AbstractResource {
         return etag == null ? null : new EntityTag(etag);
     }
 
+    /**
+     * Returns if the provided graph URI is a local graph.
+     * 
+     * @param uriInfo UriInfo instance.
+     * @param graphURI Graph URI.
+     * @return {@code true} if the graphURI is a local graph, otherwise {@code false}.
+     */
+    protected static boolean isLocalGraph(final UriInfo uriInfo, final URI graphURI) {
+        return !uriInfo.getAbsolutePath().relativize(graphURI).isAbsolute();
+    }
 }

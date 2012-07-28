@@ -95,4 +95,13 @@ public final class ResponseUtils {
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
+    /**
+     * Returns a HTTP 301 Moved Permanently response with the provided URI.
+     * 
+     * @param location A URI to redirect to.
+     * @return A Moved Permanently response.
+     */
+    public static Response redirect(URI location) {
+        return Response.status(Response.Status.MOVED_PERMANENTLY).location(location).build();
+    }
 }

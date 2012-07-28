@@ -28,6 +28,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import static com.semagia.cassa.jaxrs.ResponseUtils.badRequest;
+import static com.semagia.cassa.jaxrs.ResponseUtils.redirect;
+
 import com.semagia.cassa.common.dm.impl.DefaultGraphInfo;
 import com.semagia.cassa.server.store.IStore;
 import com.semagia.cassa.server.store.StoreException;
@@ -51,14 +54,14 @@ public class GraphsResource extends AbstractGraphResource {
     public GraphsResource(@Context UriInfo uriInfo, @QueryParam("default") String defaultGraph, @QueryParam("graph") URI graph) {
         final boolean isDefaultGraph = defaultGraph != null;
         if (isDefaultGraph && (!defaultGraph.isEmpty() || graph != null)) {
-            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            throw new WebApplicationException(badRequest());
         }
         if (graph != null) {
             if (!graph.isAbsolute()) {
-                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+                throw new WebApplicationException(badRequest());
             }
             else if (super.isLocalGraph(uriInfo, graph)) {
-                throw new WebApplicationException(ResponseUtils.redirect(graph));
+                throw new WebApplicationException(redirect(graph));
             }
         }
         _graph = isDefaultGraph ? IStore.DEFAULT_GRAPH : graph;
@@ -102,7 +105,7 @@ public class GraphsResource extends AbstractGraphResource {
     @OPTIONS
     public Response getServiceDescription() throws StoreException {
         // Not supported yet.
-        return Response.status(Response.Status.BAD_REQUEST).build();
+        return badRequest();
     }
 
 }

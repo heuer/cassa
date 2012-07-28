@@ -56,9 +56,9 @@ public abstract class AbstractResource {
     /**
      * Creates a {@link ResponseBuilder} with a last-modified header.
      * 
-     * If the request contains a <tt>If-Modified-Since</tt> header and the
+     * If the request contains a {@code If-Modified-Since} header and the
      * resource wasn't modified, a {@link WebApplicationException} with
-     * the status <tt>Not modified (304)</tt> is thrown.
+     * the status {@code Not modified (304)} is thrown.
      *
      * @param lastModification Last modification date or {@code -1} to indicate an unknown date
      * @return A response builder.
@@ -71,9 +71,9 @@ public abstract class AbstractResource {
     /**
      * Creates a {@link ResponseBuilder} with a last-modified header and ETag.
      * 
-     * If the request contains a <tt>If-Modified-Since</tt> header and the
+     * If the request contains a {@code If-Modified-Since} header and the
      * resource wasn't modified, a {@link WebApplicationException} with
-     * the status <tt>Not modified (304)</tt> is thrown.
+     * the status {@code Not modified (304)} is thrown.
      *
      * @param lastModification Last modification date or {@code -1} to indicate an unknown date
      * @param etag An ETag or {@code null}.

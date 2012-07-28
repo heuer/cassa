@@ -18,6 +18,7 @@ package com.semagia.cassa.jaxrs;
 import java.io.IOException;
 import java.net.URI;
 
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.OPTIONS;
@@ -54,11 +55,11 @@ public class GraphsResource extends AbstractGraphResource {
     public GraphsResource(@Context UriInfo uriInfo, @QueryParam("default") String defaultGraph, @QueryParam("graph") URI graph) {
         final boolean isDefaultGraph = defaultGraph != null;
         if (isDefaultGraph && (!defaultGraph.isEmpty() || graph != null)) {
-            throw new WebApplicationException(badRequest());
+            throw new WebApplicationException(BAD_REQUEST);
         }
         if (graph != null) {
             if (!graph.isAbsolute()) {
-                throw new WebApplicationException(badRequest());
+                throw new WebApplicationException(BAD_REQUEST);
             }
             else if (super.isLocalGraph(uriInfo, graph)) {
                 throw new WebApplicationException(redirect(graph));

@@ -160,9 +160,15 @@ public final class SesameStore implements IStore {
         if (mediaType == null) {
             mediaType = MediaType.RDF_XML;
         }
-        return new WritableRepresentation(conn, 
-                SesameUtils.asWritableRDFFormat(mediaType),
-                mediaType, getContext(graphURI));
+        RDFFormat format = null;
+        try {
+            format = SesameUtils.asWritableRDFFormat(mediaType);
+        }
+        catch (UnsupportedMediaTypeException ex) {
+            closeConnection(conn);
+            throw ex;
+        }
+        return new WritableRepresentation(conn, format, mediaType, getContext(graphURI));
     }
 
     /* (non-Javadoc)

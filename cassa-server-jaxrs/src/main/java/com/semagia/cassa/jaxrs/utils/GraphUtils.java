@@ -30,6 +30,10 @@ import com.semagia.cassa.jaxrs.GraphsResource;
  */
 public final class GraphUtils {
 
+    private GraphUtils() {
+        // noop.
+    }
+
     private static UriBuilder pathToGraphsResource(final UriInfo uriInfo) {
         return uriInfo.getBaseUriBuilder().path(GraphsResource.class);
     }

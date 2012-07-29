@@ -41,7 +41,7 @@ public final class ResponseUtils {
      * @param supportedMediaTypes The supported media types.
      * @return A Not Acceptable response. 
      */
-    public static Response notAcceptable(List<MediaType> supportedMediaTypes) {
+    public static Response notAcceptable(final List<MediaType> supportedMediaTypes) {
         return Response.notAcceptable(MediaTypeUtils.asVariants(supportedMediaTypes)).build();
     }
 
@@ -54,9 +54,9 @@ public final class ResponseUtils {
      * @return The reponse.
      */
     public static Response buildStreamingEntity(final ResponseBuilder builder, final IWritableRepresentation writable) {
-        builder.entity(new StreamingWritableOutput(writable));
-        builder.type(MediaTypeUtils.toJaxRSMediaType(writable.getMediaType()));
-        return builder.build();
+        return builder.entity(new StreamingWritableOutput(writable))
+                      .type(MediaTypeUtils.toJaxRSMediaType(writable.getMediaType()))
+                      .build();
     }
 
     /**
@@ -101,7 +101,7 @@ public final class ResponseUtils {
      * @param location A URI to redirect to.
      * @return A Moved Permanently response.
      */
-    public static Response redirect(URI location) {
+    public static Response redirect(final URI location) {
         return Response.status(Response.Status.MOVED_PERMANENTLY).location(location).build();
     }
 }

@@ -79,23 +79,26 @@ public final class GraphUtils {
      * @return An absolute URI to the provided graph.
      */
     public static URI linkToGraph(final UriInfo uriInfo, final URI graphURI) {
-        return _linkToGraph(pathToGraphsResource(uriInfo), graphURI);
+        return linkToGraph(pathToGraphsResource(uriInfo), graphURI);
     }
 
     /**
      * Returns an iterable of URIs which point either to a local graph 
      * (Direct Graph Identification) or to the service with a graph parameter 
-     * (Indirect Graph Identification). 
+     * (Indirect Graph Identification).
+     * 
+     * This function is more effective than calling 
+     * {@link #linkToGraph(UriInfo, IGraphInfo)} multiple times.
      * 
      * @param uriInfo UriInfo instance.
      * @param graphInfos An iterable of {@link IGraphInfo} instances.
      * @return An iterable of absolute URIs (in the same order as the provided graphs) to the provided graphs.
      */
-    public static Iterable<URI> linkToGraphsByInfo(final UriInfo uriInfo, final Iterable<IGraphInfo> graphInfos) {
+    public static Iterable<URI> linkToGraphs(final UriInfo uriInfo, final Iterable<IGraphInfo> graphInfos) {
         final UriBuilder builder = pathToGraphsResource(uriInfo);
         final List<URI> result = new ArrayList<URI>();
         for (IGraphInfo graphInfo: graphInfos) {
-            result.add(_linkToGraph(builder, graphInfo.getURI()));
+            result.add(linkToGraph(builder, graphInfo.getURI()));
         }
         return result;
     }
@@ -104,7 +107,7 @@ public final class GraphUtils {
         return uriInfo.getBaseUriBuilder().path(GraphsResource.class);
     }
 
-    private static URI _linkToGraph(final UriBuilder builder, final URI graphURI) {
+    private static URI linkToGraph(final UriBuilder builder, final URI graphURI) {
         final UriBuilder builder2 = builder.clone();    //TODO: Is a UriBuilder reusable after .build() has been called? Works with Jersey...
         if (builder.build().relativize(graphURI).isAbsolute()) {
             return builder2.queryParam("graph", graphURI).build();

@@ -15,7 +15,7 @@
  */
 package com.semagia.cassa.jaxrs;
 
-import static com.semagia.cassa.jaxrs.ResponseUtils.notAcceptable;
+import static com.semagia.cassa.jaxrs.utils.ResponseUtils.notAcceptable;
 
 import java.util.Date;
 import java.util.List;
@@ -29,6 +29,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Variant;
 
 import com.semagia.cassa.common.MediaType;
+import com.semagia.cassa.jaxrs.utils.MediaTypeUtils;
 import com.semagia.cassa.server.ServerApplicationProvider;
 import com.semagia.cassa.server.store.IStore;
 

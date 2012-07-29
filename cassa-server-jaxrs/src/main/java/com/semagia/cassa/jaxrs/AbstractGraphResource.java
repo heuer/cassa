@@ -15,11 +15,11 @@
  */
 package com.semagia.cassa.jaxrs;
 
-import static com.semagia.cassa.jaxrs.ResponseUtils.accepted;
-import static com.semagia.cassa.jaxrs.ResponseUtils.buildStreamingEntity;
-import static com.semagia.cassa.jaxrs.ResponseUtils.created;
-import static com.semagia.cassa.jaxrs.ResponseUtils.noContent;
-import static com.semagia.cassa.jaxrs.ResponseUtils.badRequest;
+import static com.semagia.cassa.jaxrs.utils.ResponseUtils.accepted;
+import static com.semagia.cassa.jaxrs.utils.ResponseUtils.badRequest;
+import static com.semagia.cassa.jaxrs.utils.ResponseUtils.buildStreamingEntity;
+import static com.semagia.cassa.jaxrs.utils.ResponseUtils.created;
+import static com.semagia.cassa.jaxrs.utils.ResponseUtils.noContent;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,6 +41,7 @@ import javax.ws.rs.core.UriInfo;
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IGraphInfo;
 import com.semagia.cassa.common.dm.RemovalStatus;
+import com.semagia.cassa.jaxrs.utils.MediaTypeUtils;
 import com.semagia.cassa.server.store.GraphMismatchException;
 import com.semagia.cassa.server.store.GraphNotExistsException;
 import com.semagia.cassa.server.store.IStore;

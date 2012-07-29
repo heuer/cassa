@@ -29,8 +29,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import static com.semagia.cassa.jaxrs.ResponseUtils.badRequest;
-import static com.semagia.cassa.jaxrs.ResponseUtils.redirect;
+import static com.semagia.cassa.jaxrs.utils.ResponseUtils.badRequest;
+import static com.semagia.cassa.jaxrs.utils.ResponseUtils.redirect;
 
 import com.semagia.cassa.common.dm.impl.DefaultGraphInfo;
 import com.semagia.cassa.server.store.IStore;

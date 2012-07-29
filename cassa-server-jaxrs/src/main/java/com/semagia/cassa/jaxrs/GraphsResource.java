@@ -33,6 +33,7 @@ import static com.semagia.cassa.jaxrs.utils.ResponseUtils.badRequest;
 import static com.semagia.cassa.jaxrs.utils.ResponseUtils.redirect;
 
 import com.semagia.cassa.common.dm.impl.DefaultGraphInfo;
+import com.semagia.cassa.jaxrs.utils.GraphUtils;
 import com.semagia.cassa.server.store.IStore;
 import com.semagia.cassa.server.store.StoreException;
 
@@ -61,7 +62,7 @@ public class GraphsResource extends AbstractGraphResource {
             if (!graph.isAbsolute()) {
                 throw new WebApplicationException(BAD_REQUEST);
             }
-            else if (super.isLocalGraph(uriInfo, graph)) {
+            else if (GraphUtils.isLocalGraph(uriInfo, graph)) {
                 throw new WebApplicationException(redirect(graph));
             }
         }

@@ -41,6 +41,7 @@ import javax.ws.rs.core.UriInfo;
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IGraphInfo;
 import com.semagia.cassa.common.dm.RemovalStatus;
+import com.semagia.cassa.jaxrs.utils.GraphUtils;
 import com.semagia.cassa.jaxrs.utils.MediaTypeUtils;
 import com.semagia.cassa.server.store.GraphMismatchException;
 import com.semagia.cassa.server.store.GraphNotExistsException;
@@ -119,14 +120,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
         if (wasKnown) {
             return noContent();
         }
-        if (isLocalGraph(_uriInfo, graphURI)) {
-            return created(graphURI);
-        }
-        // Not a local graph -> set the location to the service resource
-        return created(_uriInfo.getBaseUriBuilder()
-                                    .path(GraphsResource.class)
-                                    .queryParam("graph", "{graph}")
-                                    .build(info.getURI()));
+        return created(GraphUtils.linkToGraph(_uriInfo, info));
     }
 
     /**
@@ -213,14 +207,4 @@ public abstract class AbstractGraphResource extends AbstractResource {
         return etag == null ? null : new EntityTag(etag);
     }
 
-    /**
-     * Returns if the provided graph URI is a local graph.
-     * 
-     * @param uriInfo UriInfo instance.
-     * @param graphURI Graph URI.
-     * @return {@code true} if the graphURI is a local graph, otherwise {@code false}.
-     */
-    protected final static boolean isLocalGraph(final UriInfo uriInfo, final URI graphURI) {
-        return !uriInfo.getAbsolutePath().relativize(graphURI).isAbsolute();
-    }
 }

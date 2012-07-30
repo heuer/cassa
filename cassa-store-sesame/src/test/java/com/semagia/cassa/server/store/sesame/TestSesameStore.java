@@ -23,14 +23,14 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 
-import com.semagia.cassa.server.store.AbstractModifiableStoreTest;
+import com.semagia.cassa.server.store.AbstractStoreTest;
 
 /**
  * Tests against the {@link SesameStore}.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public class TestSesameStore extends AbstractModifiableStoreTest<SesameStore> {
+public class TestSesameStore extends AbstractStoreTest<SesameStore> {
 
     private Repository _repository;
 

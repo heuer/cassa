@@ -19,7 +19,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import com.semagia.cassa.common.dm.IGraphInfo;
@@ -55,7 +54,7 @@ public final class GraphUtils {
      * @return {@code true} if the graph is a local graph, otherwise {@code false}.
      */
     public static boolean isLocalGraph(final UriInfo uriInfo, final URI graphURI) {
-        return !pathToGraphsResource(uriInfo).build().relativize(graphURI).isAbsolute();
+        return !pathToGraphsResource(uriInfo).relativize(graphURI).isAbsolute();
     }
 
     /**
@@ -95,22 +94,21 @@ public final class GraphUtils {
      * @return An iterable of absolute URIs (in the same order as the provided graphs) to the provided graphs.
      */
     public static Iterable<URI> linkToGraphs(final UriInfo uriInfo, final Iterable<IGraphInfo> graphInfos) {
-        final UriBuilder builder = pathToGraphsResource(uriInfo);
+        final URI baseURI = pathToGraphsResource(uriInfo);
         final List<URI> result = new ArrayList<URI>();
         for (IGraphInfo graphInfo: graphInfos) {
-            result.add(linkToGraph(builder, graphInfo.getURI()));
+            result.add(linkToGraph(baseURI, graphInfo.getURI()));
         }
         return result;
     }
 
-    private static UriBuilder pathToGraphsResource(final UriInfo uriInfo) {
-        return uriInfo.getBaseUriBuilder().path(GraphsResource.class);
+    private static URI pathToGraphsResource(final UriInfo uriInfo) {
+        return uriInfo.getBaseUriBuilder().path(GraphsResource.class).build();
     }
 
-    private static URI linkToGraph(final UriBuilder builder, final URI graphURI) {
-        final UriBuilder builder2 = builder.clone();    //TODO: Is a UriBuilder reusable after .build() has been called? Works with Jersey...
-        if (builder.build().relativize(graphURI).isAbsolute()) {
-            return builder2.queryParam("graph", graphURI).build();
+    private static URI linkToGraph(final URI baseURI, final URI graphURI) {
+        if (baseURI.relativize(graphURI).isAbsolute()) {
+            return baseURI.resolve("?graph=" + graphURI); //TODO: encode graphURI
         }
         else {
             // local graph

@@ -15,7 +15,9 @@
  */
 package com.semagia.cassa.jaxrs.utils;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,8 +66,9 @@ public final class GraphUtils {
      * @param uriInfo UriInfo instance.
      * @param graphInfo {@link IGraphInfo} instance.
      * @return An absolute URI to the provided graph.
+     * @throws UnsupportedEncodingException In case the UTF-8 encoding is not supported.
      */
-    public static URI linkToGraph(final UriInfo uriInfo, final IGraphInfo graphInfo) {
+    public static URI linkToGraph(final UriInfo uriInfo, final IGraphInfo graphInfo) throws UnsupportedEncodingException {
         return linkToGraph(uriInfo, graphInfo.getURI());
     }
 
@@ -76,8 +79,9 @@ public final class GraphUtils {
      * @param uriInfo UriInfo instance.
      * @param graphURI Graph URI.
      * @return An absolute URI to the provided graph.
+     * @throws UnsupportedEncodingException In case the UTF-8 encoding is not supported.
      */
-    public static URI linkToGraph(final UriInfo uriInfo, final URI graphURI) {
+    public static URI linkToGraph(final UriInfo uriInfo, final URI graphURI) throws UnsupportedEncodingException {
         return linkToGraph(pathToGraphsResource(uriInfo), graphURI);
     }
 
@@ -92,8 +96,9 @@ public final class GraphUtils {
      * @param uriInfo UriInfo instance.
      * @param graphInfos An iterable of {@link IGraphInfo} instances.
      * @return An iterable of absolute URIs (in the same order as the provided graphs) to the provided graphs.
+     * @throws UnsupportedEncodingException In case the UTF-8 encoding is not supported.
      */
-    public static Iterable<URI> linkToGraphs(final UriInfo uriInfo, final Iterable<IGraphInfo> graphInfos) {
+    public static Iterable<URI> linkToGraphs(final UriInfo uriInfo, final Iterable<IGraphInfo> graphInfos) throws UnsupportedEncodingException {
         final URI baseURI = pathToGraphsResource(uriInfo);
         final List<URI> result = new ArrayList<URI>();
         for (IGraphInfo graphInfo: graphInfos) {
@@ -106,9 +111,9 @@ public final class GraphUtils {
         return uriInfo.getBaseUriBuilder().path(GraphsResource.class).build();
     }
 
-    private static URI linkToGraph(final URI baseURI, final URI graphURI) {
+    private static URI linkToGraph(final URI baseURI, final URI graphURI) throws UnsupportedEncodingException {
         if (baseURI.relativize(graphURI).isAbsolute()) {
-            return baseURI.resolve("?graph=" + graphURI); //TODO: encode graphURI
+            return baseURI.resolve("?graph=" + URLEncoder.encode(graphURI.toString(), "UTF-8"));
         }
         else {
             // local graph

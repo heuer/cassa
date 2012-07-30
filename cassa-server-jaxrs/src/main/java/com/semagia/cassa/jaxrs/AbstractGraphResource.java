@@ -40,6 +40,7 @@ import javax.ws.rs.core.UriInfo;
 
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IGraphInfo;
+import com.semagia.cassa.common.dm.IWritableRepresentation;
 import com.semagia.cassa.common.dm.RemovalStatus;
 import com.semagia.cassa.jaxrs.utils.GraphUtils;
 import com.semagia.cassa.jaxrs.utils.MediaTypeUtils;
@@ -95,8 +96,9 @@ public abstract class AbstractGraphResource extends AbstractResource {
         final IStore store = getStore();
         final IGraphInfo graph = store.getGraphInfo(graphURI);
         final MediaType mt = getMediaType(graph.getSupportedMediaTypes());
+        final IWritableRepresentation writable = store.getGraph(graphURI, mt);
         return buildStreamingEntity(
-                makeResponseBuilder(graph, mt), store.getGraph(graphURI, mt));
+                makeResponseBuilder(graph, writable.getMediaType()), writable);
     }
 
     /**

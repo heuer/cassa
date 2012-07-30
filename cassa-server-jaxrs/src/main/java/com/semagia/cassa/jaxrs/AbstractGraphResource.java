@@ -43,6 +43,7 @@ import com.semagia.cassa.common.dm.IGraphInfo;
 import com.semagia.cassa.common.dm.RemovalStatus;
 import com.semagia.cassa.jaxrs.utils.GraphUtils;
 import com.semagia.cassa.jaxrs.utils.MediaTypeUtils;
+import com.semagia.cassa.server.ServerApplicationProvider;
 import com.semagia.cassa.server.store.GraphMismatchException;
 import com.semagia.cassa.server.store.GraphNotExistsException;
 import com.semagia.cassa.server.store.IStore;
@@ -59,6 +60,8 @@ import com.semagia.cassa.server.utils.ETagUtils;
  */
 public abstract class AbstractGraphResource extends AbstractResource {
 
+    private final IStore _store = ServerApplicationProvider.getServerApplication().getStore();
+
     @Context
     protected UriInfo _uriInfo;
 
@@ -68,6 +71,15 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * @return The graph IRI to operate on. {@code null} indicates the default graph.
      */
     protected abstract URI getGraphURI();
+
+    /**
+     * Returns the store.
+     *
+     * @return The store to operate on.
+     */
+    protected IStore getStore() {
+        return _store;
+    }
 
     /**
      * Writes a graph.
@@ -202,6 +214,14 @@ public abstract class AbstractGraphResource extends AbstractResource {
         return builder;
     }
 
+    /**
+     * Creates an ETag for the provided {@link IGraphInfo} if reasonable, returns
+     * {@code null} otherwise.
+     * 
+     * @param graphInfo The graph to create the ETag for.
+     * @param mediaType The media type of the response or {@code null}.
+     * @return An ETag or {@code null}.
+     */
     private static EntityTag createETag(final IGraphInfo graphInfo, final MediaType mediaType) {
         final String etag = ETagUtils.generateETag(graphInfo, mediaType);
         return etag == null ? null : new EntityTag(etag);

@@ -51,6 +51,7 @@ import com.semagia.cassa.common.dm.RemovalStatus;
 import com.semagia.cassa.common.dm.impl.DefaultGraphInfo;
 import com.semagia.cassa.server.store.GraphMismatchException;
 import com.semagia.cassa.server.store.GraphNotExistsException;
+import com.semagia.cassa.server.store.IModifiableStore;
 import com.semagia.cassa.server.store.IStore;
 import com.semagia.cassa.server.store.ParseException;
 import com.semagia.cassa.server.store.QueryException;
@@ -62,7 +63,7 @@ import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public final class SesameStore implements IStore {
+public final class SesameStore implements IModifiableStore {
 
     private static Resource[] _ALL_CONTEXTS = new Resource[0];
     private static MediaType _TEXT_PLAIN = MediaType.valueOf("text/plain");

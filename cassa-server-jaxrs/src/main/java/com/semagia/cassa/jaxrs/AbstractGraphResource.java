@@ -47,6 +47,7 @@ import com.semagia.cassa.jaxrs.utils.MediaTypeUtils;
 import com.semagia.cassa.server.ServerApplicationProvider;
 import com.semagia.cassa.server.store.GraphMismatchException;
 import com.semagia.cassa.server.store.GraphNotExistsException;
+import com.semagia.cassa.server.store.IModifiableStore;
 import com.semagia.cassa.server.store.IStore;
 import com.semagia.cassa.server.store.ParseException;
 import com.semagia.cassa.server.store.QueryException;
@@ -80,6 +81,13 @@ public abstract class AbstractGraphResource extends AbstractResource {
      */
     protected IStore getStore() {
         return _store;
+    }
+
+    protected IModifiableStore getModifiableStore() {
+        if (_store instanceof IModifiableStore) {
+            return (IModifiableStore) _store;
+        }
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -126,7 +134,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
     @PUT
     public Response create(InputStream in, @Context HttpHeaders header, @QueryParam("subject") URI subject) throws IOException, ParseException, StoreException {
         final URI graphURI = getGraphURI();
-        final IStore store = getStore();
+        final IModifiableStore store = getModifiableStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
         final boolean wasKnown = graphURI == IStore.DEFAULT_GRAPH || store.containsGraph(graphURI);
         final IGraphInfo info = subject == null ? store.createOrReplaceGraph(graphURI, in, getBaseURI(graphURI), mt)
@@ -149,7 +157,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
     @POST
     public Response createOrUpdateGraph(InputStream in, @Context HttpHeaders header) throws UnsupportedMediaTypeException, IOException, ParseException, StoreException {
         final URI graphURI = getGraphURI();
-        final IStore store = getStore();
+        final IModifiableStore store = getModifiableStore();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
         final URI base = getBaseURI(graphURI);
         final IGraphInfo info = graphURI == null ? store.createGraph(in, base, mt)
@@ -167,8 +175,9 @@ public abstract class AbstractGraphResource extends AbstractResource {
      */
     @DELETE
     public Response delete(@QueryParam("subject") URI subject) throws IOException, GraphNotExistsException, StoreException {
-        final RemovalStatus res = subject == null ? getStore().deleteGraph(getGraphURI())
-                                                  : getStore().deleteSubject(getGraphURI(), subject); 
+        final IModifiableStore store = getModifiableStore();
+        final RemovalStatus res = subject == null ? store.deleteGraph(getGraphURI())
+                                                  : store.deleteSubject(getGraphURI(), subject); 
         return res == RemovalStatus.DELAYED ? accepted() : noContent();
     }
 
@@ -185,7 +194,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
     public Response modifyGraph(InputStream in, @Context HttpHeaders header) throws IOException, GraphMismatchException, UnsupportedMediaTypeException, QueryException, StoreException {
         final URI graphURI = getGraphURI();
         final MediaType mt = MediaTypeUtils.toMediaType(header.getMediaType());
-        return getStore().modifyGraph(graphURI, in, getBaseURI(graphURI), mt) ? noContent()
+        return getModifiableStore().modifyGraph(graphURI, in, getBaseURI(graphURI), mt) ? noContent()
                                                                               : badRequest();
     }
 

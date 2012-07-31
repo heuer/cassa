@@ -31,6 +31,10 @@ import com.semagia.cassa.common.dm.IGraphInfo;
  */
 public final class ETagUtils {
 
+    private ETagUtils() {
+        // noop.
+    }
+
     /**
      * Returns a string which could be used as ETag for the provided graph 
      * and media type combination.

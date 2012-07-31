@@ -50,7 +50,7 @@ public final class ResponseUtils {
      * serialize the body of the response.
      *
      * @param builder The builder used to build the response.
-     * @param writable A {@link IWritable} instance which is reposible to serialize the response body.
+     * @param writable A {@link IWritableRepresentation} instance which is reposible to serialize the response body.
      * @return The reponse.
      */
     public static Response buildStreamingEntity(final ResponseBuilder builder, final IWritableRepresentation writable) {

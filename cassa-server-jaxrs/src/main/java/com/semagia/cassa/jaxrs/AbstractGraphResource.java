@@ -76,7 +76,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * @return A graph serialization.
      * @throws IOException In case of an I/O error.
      * @throws GraphNotExistsException In case the graph does not exist. 
-     * @throws StorageException In case of an error.
+     * @throws StoreException In case of an error.
      */
     @GET
     public Response getGraph() throws IOException, GraphNotExistsException, StoreException {
@@ -94,7 +94,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
      *
      * @return A response with graph metadata.
      * @throws GraphNotExistsException In case the graph does not exist. 
-     * @throws StorageException In case of an error.
+     * @throws StoreException In case of an error.
      */
     @HEAD
     public Response getGraphInfo() throws GraphNotExistsException, StoreException {
@@ -132,7 +132,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * @throws UnsupportedMediaTypeException In case the media type isn't supported. 
      * @throws IOException In case of an I/O error.
      * @throws ParseException In case the input could not be read, i.e. syntax error.
-     * @throws StorageException In case of an error.
+     * @throws StoreException In case of an error.
      */
     @POST
     public Response createOrUpdateGraph(InputStream in, @Context HttpHeaders header) throws UnsupportedMediaTypeException, IOException, ParseException, StoreException {
@@ -151,7 +151,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * @return A response indicating if the graph was removed immediately or deletion is scheduled.
      * @throws IOException In case of an I/O error.
      * @throws GraphNotExistsException In case the graph does not exist. 
-     * @throws StorageException In case of an error.
+     * @throws StoreException In case of an error.
      */
     @DELETE
     public Response delete(@QueryParam("subject") URI subject) throws IOException, GraphNotExistsException, StoreException {
@@ -168,7 +168,7 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * @throws QueryException In case of a query error, i.e. syntax error.
      * @throws UnsupportedMediaTypeException In case the media type isn't supported. 
      * @throws GraphMismatchException In case the query utilizes a different graph as the requested graph.
-     * @throws StorageException In case of an error.
+     * @throws StoreException In case of an error.
      */
     @PATCH
     public Response modifyGraph(InputStream in, @Context HttpHeaders header) throws IOException, GraphMismatchException, UnsupportedMediaTypeException, QueryException, StoreException {

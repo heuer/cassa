@@ -65,7 +65,7 @@ public abstract class AbstractResource {
      * @return A response builder.
      * @throws WebApplicationException In case the resource wasn't modified.
      */
-    protected ResponseBuilder makeResponseBuilder(final long lastModification) throws WebApplicationException {
+    protected final ResponseBuilder makeResponseBuilder(final long lastModification) throws WebApplicationException {
         return makeResponseBuilder(lastModification, null);
     }
 

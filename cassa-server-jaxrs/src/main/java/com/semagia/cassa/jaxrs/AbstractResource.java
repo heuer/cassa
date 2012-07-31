@@ -30,6 +30,8 @@ import javax.ws.rs.core.Variant;
 
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.jaxrs.utils.MediaTypeUtils;
+import com.semagia.cassa.server.ServerApplicationProvider;
+import com.semagia.cassa.server.store.IStore;
 
 /**
  * Common resource which provides some utility functions.
@@ -38,8 +40,19 @@ import com.semagia.cassa.jaxrs.utils.MediaTypeUtils;
  */
 public abstract class AbstractResource {
 
+    private final IStore _store = ServerApplicationProvider.getServerApplication().getStore();
+
     @Context 
     private Request _request;
+
+    /**
+     * Returns the store.
+     *
+     * @return The store to operate on.
+     */
+    protected final IStore getStore() {
+        return _store;
+    }
 
     /**
      * Creates a {@link ResponseBuilder} with a last-modified header.
@@ -52,7 +65,7 @@ public abstract class AbstractResource {
      * @return A response builder.
      * @throws WebApplicationException In case the resource wasn't modified.
      */
-    protected final ResponseBuilder makeResponseBuilder(final long lastModification) throws WebApplicationException {
+    protected ResponseBuilder makeResponseBuilder(final long lastModification) throws WebApplicationException {
         return makeResponseBuilder(lastModification, null);
     }
 

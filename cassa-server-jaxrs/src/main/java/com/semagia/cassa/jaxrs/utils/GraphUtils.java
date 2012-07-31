@@ -95,10 +95,10 @@ public final class GraphUtils {
      * 
      * @param uriInfo UriInfo instance.
      * @param graphInfos An iterable of {@link IGraphInfo} instances.
-     * @return An iterable of absolute URIs (in the same order as the provided graphs) to the provided graphs.
+     * @return A list of absolute URIs (in the same order as the provided graphs) to the provided graphs.
      * @throws UnsupportedEncodingException In case the UTF-8 encoding is not supported.
      */
-    public static Iterable<URI> linkToGraphs(final UriInfo uriInfo, final Iterable<IGraphInfo> graphInfos) throws UnsupportedEncodingException {
+    public static List<URI> linkToGraphs(final UriInfo uriInfo, final Iterable<IGraphInfo> graphInfos) throws UnsupportedEncodingException {
         final URI baseURI = pathToGraphsResource(uriInfo);
         final List<URI> result = new ArrayList<URI>();
         for (IGraphInfo graphInfo: graphInfos) {

@@ -44,7 +44,6 @@ import com.semagia.cassa.common.dm.IWritableRepresentation;
 import com.semagia.cassa.common.dm.RemovalStatus;
 import com.semagia.cassa.jaxrs.utils.GraphUtils;
 import com.semagia.cassa.jaxrs.utils.MediaTypeUtils;
-import com.semagia.cassa.server.ServerApplicationProvider;
 import com.semagia.cassa.server.store.GraphMismatchException;
 import com.semagia.cassa.server.store.GraphNotExistsException;
 import com.semagia.cassa.server.store.IStore;
@@ -61,8 +60,6 @@ import com.semagia.cassa.server.utils.ETagUtils;
  */
 public abstract class AbstractGraphResource extends AbstractResource {
 
-    private final IStore _store = ServerApplicationProvider.getServerApplication().getStore();
-
     @Context
     protected UriInfo _uriInfo;
 
@@ -72,15 +69,6 @@ public abstract class AbstractGraphResource extends AbstractResource {
      * @return The graph IRI to operate on. {@code null} indicates the default graph.
      */
     protected abstract URI getGraphURI();
-
-    /**
-     * Returns the store.
-     *
-     * @return The store to operate on.
-     */
-    protected IStore getStore() {
-        return _store;
-    }
 
     /**
      * Writes a graph.

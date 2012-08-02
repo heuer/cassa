@@ -18,8 +18,6 @@ package com.semagia.cassa.jaxrs.utils;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.ws.rs.core.UriInfo;
 

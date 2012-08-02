@@ -114,10 +114,8 @@ public final class Graph implements IWritableRepresentation, Closeable {
         return _mediaType;
     }
 
-    /**
-     * Returns the encoding, like "utf-8".
-     *
-     * @return The encoding or {@code null} if it is unknown.
+    /* (non-Javadoc)
+     * @see com.semagia.cassa.common.dm.IWritableRepresentation#getEncoding()
      */
     public String getEncoding() {
         return _encoding;

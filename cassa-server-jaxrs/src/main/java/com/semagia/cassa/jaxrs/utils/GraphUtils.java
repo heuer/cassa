@@ -27,7 +27,7 @@ import com.semagia.cassa.common.dm.IGraphInfo;
 import com.semagia.cassa.jaxrs.GraphsResource;
 
 /**
- * Utility functions related to graphs.
+ * Internal utility functions related to graphs.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
@@ -56,7 +56,7 @@ public final class GraphUtils {
      * @return {@code true} if the graph is a local graph, otherwise {@code false}.
      */
     public static boolean isLocalGraph(final UriInfo uriInfo, final URI graphURI) {
-        return !pathToGraphsResource(uriInfo).relativize(graphURI).isAbsolute();
+        return !uriToGraphResource(uriInfo).relativize(graphURI).isAbsolute();
     }
 
     /**
@@ -82,38 +82,33 @@ public final class GraphUtils {
      * @throws UnsupportedEncodingException In case the UTF-8 encoding is not supported.
      */
     public static URI linkToGraph(final UriInfo uriInfo, final URI graphURI) throws UnsupportedEncodingException {
-        return linkToGraph(pathToGraphsResource(uriInfo), graphURI);
+        return linkToGraph(uriToGraphResource(uriInfo), graphURI);
     }
 
     /**
-     * Returns an iterable of URIs which point either to a local graph 
-     * (Direct Graph Identification) or to the service with a graph parameter 
-     * (Indirect Graph Identification).
+     * Returns an absolute URI which references the graphs resource.
      * 
-     * This function is more effective than calling 
-     * {@link #linkToGraph(UriInfo, IGraphInfo)} multiple times.
-     * 
-     * @param uriInfo UriInfo instance.
-     * @param graphInfos An iterable of {@link IGraphInfo} instances.
-     * @return A list of absolute URIs (in the same order as the provided graphs) to the provided graphs.
-     * @throws UnsupportedEncodingException In case the UTF-8 encoding is not supported.
+     * @param uriInfo A {@link UriInfo} instance used to build the absolute URI.
+     * @return An absolute URI pointing to the graphs resource.
      */
-    public static List<URI> linkToGraphs(final UriInfo uriInfo, final Iterable<IGraphInfo> graphInfos) throws UnsupportedEncodingException {
-        final URI baseURI = pathToGraphsResource(uriInfo);
-        final List<URI> result = new ArrayList<URI>();
-        for (IGraphInfo graphInfo: graphInfos) {
-            result.add(linkToGraph(baseURI, graphInfo.getURI()));
-        }
-        return result;
-    }
-
-    private static URI pathToGraphsResource(final UriInfo uriInfo) {
+    public static URI uriToGraphResource(final UriInfo uriInfo) {
         return uriInfo.getBaseUriBuilder().path(GraphsResource.class).build();
     }
 
-    private static URI linkToGraph(final URI baseURI, final URI graphURI) throws UnsupportedEncodingException {
-        if (baseURI.relativize(graphURI).isAbsolute()) {
-            return baseURI.resolve("?graph=" + URLEncoder.encode(graphURI.toString(), "UTF-8"));
+    /**
+     * Returns an absolute URI which is used to retrieve the provided graph.
+     * 
+     * Returns either a local graph URI or a URI which uses Indirect Graph Identification:
+     * {@code http://www.example.org/store/graph-A} or {@code http://www.example.org/store/?graph=http://www.example.net/graph-B}
+     * 
+     * @param graphResourceURI An absolute URI pointing to the graphs resource.
+     * @param graphURI The graph URI.
+     * @return An absolute URI which can be used to retrieve the graph specified by {@code graphURI}.
+     * @throws UnsupportedEncodingException If case UTF-8 encoding is not supported.
+     */
+    public static URI linkToGraph(final URI graphResourceURI, final URI graphURI) throws UnsupportedEncodingException {
+        if (graphResourceURI.relativize(graphURI).isAbsolute()) {
+            return graphResourceURI.resolve("?graph=" + URLEncoder.encode(graphURI.toString(), "UTF-8"));
         }
         else {
             // local graph

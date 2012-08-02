@@ -23,8 +23,8 @@ import javax.ws.rs.core.Variant;
 import com.semagia.cassa.common.MediaType;
 
 /**
- * Utility functions to convert media types from {@link MediaType} to JAX-RS and 
- * vice-versa.
+ * Internal utility functions to convert media types from {@link MediaType} 
+ * to JAX-RS and vice-versa.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
@@ -41,7 +41,11 @@ public final class MediaTypeUtils {
      * @return The JAX-RS media type or {@code null} if the provided media type is null.
      */
     public static javax.ws.rs.core.MediaType toJaxRSMediaType(final MediaType mt) {
-        return mt == null ? null : javax.ws.rs.core.MediaType.valueOf(mt.toString());
+        return mt == null ? null : toJaxRSMediaType(mt.toString());
+    }
+
+    private static javax.ws.rs.core.MediaType toJaxRSMediaType(String mt) {
+        return javax.ws.rs.core.MediaType.valueOf(mt);
     }
 
     /**
@@ -77,6 +81,21 @@ public final class MediaTypeUtils {
     public static List<Variant> asVariants(final List<MediaType> mediaTypes) {
         final Variant.VariantListBuilder builder = Variant.VariantListBuilder.newInstance();
         for (MediaType mt: mediaTypes) {
+            builder.mediaTypes(toJaxRSMediaType(mt));
+            builder.add();
+        }
+        return builder.build();
+    }
+
+    /**
+     * Returns a list of variants which represent the provided {@code mediaTypes}.
+     *
+     * @param mediaTypes The media types to convert.
+     * @return A list of variants representing the provided media types.
+     */
+    public static List<Variant> mediaTypeNamesAsVariants(final List<String> mediaTypes) {
+        final Variant.VariantListBuilder builder = Variant.VariantListBuilder.newInstance();
+        for (String mt: mediaTypes) {
             builder.mediaTypes(toJaxRSMediaType(mt));
             builder.add();
         }

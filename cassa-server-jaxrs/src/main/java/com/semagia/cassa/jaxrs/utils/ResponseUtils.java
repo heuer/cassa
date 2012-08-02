@@ -18,6 +18,7 @@ package com.semagia.cassa.jaxrs.utils;
 import java.net.URI;
 import java.util.List;
 
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
@@ -54,8 +55,10 @@ public final class ResponseUtils {
      * @return The reponse.
      */
     public static Response buildStreamingEntity(final ResponseBuilder builder, final IWritableRepresentation writable) {
+        final String contentType = writable.getEncoding() == null ? writable.getMediaType().toString() 
+                                                                  : writable.getMediaType().toString() + "; charset=" + writable.getEncoding();
         return builder.entity(new StreamingWritableOutput(writable))
-                      .type(MediaTypeUtils.toJaxRSMediaType(writable.getMediaType()))
+                      .header(HttpHeaders.CONTENT_TYPE, contentType)
                       .build();
     }
 

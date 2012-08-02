@@ -35,16 +35,24 @@ public class DefaultGraphInfo implements IGraphInfo {
     private final String _title;
     private final String _description;
 
-    public DefaultGraphInfo(final URI uri, List<MediaType> mediaTypes) {
+    public DefaultGraphInfo(final URI uri, final List<MediaType> mediaTypes) {
         this(uri, mediaTypes, -1);
     }
 
     public DefaultGraphInfo(final URI uri, final MediaType mediaType) {
-        this(uri, mediaType != null ? Collections.singletonList(mediaType) : null, -1);
+        this(uri, mediaType, -1);
     }
 
     public DefaultGraphInfo(final URI uri, final MediaType mediaType, final long lastModification) {
-        this(uri, mediaType != null ? Collections.singletonList(mediaType) : null, lastModification);
+        this(uri, mediaType, lastModification, null);
+    }
+
+    public DefaultGraphInfo(final URI uri, final MediaType mediaType, final long lastModification, final String title) {
+        this(uri, mediaType, lastModification, title, null);
+    }
+
+    public DefaultGraphInfo(final URI uri, final MediaType mediaType, final long lastModification, final String title, final String description) {
+        this(uri, mediaType != null ? Collections.singletonList(mediaType) : (List<MediaType>)null, lastModification, title, description);
     }
 
     public DefaultGraphInfo(final URI uri, final List<MediaType> mediaTypes, final long lastModification) {

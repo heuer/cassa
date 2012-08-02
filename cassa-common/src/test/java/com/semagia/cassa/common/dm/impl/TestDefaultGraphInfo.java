@@ -35,15 +35,6 @@ public class TestDefaultGraphInfo extends TestCase {
 
     private static final URI _DEFAULT_URI = URI.create("http://www.example.org/test");
 
-    public void testIllegal() {
-        try {
-            new DefaultGraphInfo(_DEFAULT_URI, (List<MediaType>)null);
-            fail("Graph accepts null as media types argument");
-        }
-        catch (IllegalArgumentException ex) {
-            // noop.
-        }
-    }
 
     public void testMediaTypeSingleton() {
         final IGraphInfo info = new DefaultGraphInfo(_DEFAULT_URI, MediaType.XTM);
@@ -51,6 +42,42 @@ public class TestDefaultGraphInfo extends TestCase {
         assertEquals(-1, info.getLastModification());
         assertEquals(1, info.getSupportedMediaTypes().size());
         assertEquals(MediaType.XTM, info.getSupportedMediaTypes().get(0));
+        assertNull(info.getTitle());
+        assertNull(info.getDescription());
+    }
+
+    public void testMediaTypeSingletonTitle() {
+        final String title = "Graph";
+        final IGraphInfo info = new DefaultGraphInfo(_DEFAULT_URI, MediaType.XTM, -1, title);
+        assertEquals(_DEFAULT_URI, info.getURI());
+        assertEquals(-1, info.getLastModification());
+        assertEquals(1, info.getSupportedMediaTypes().size());
+        assertEquals(MediaType.XTM, info.getSupportedMediaTypes().get(0));
+        assertEquals(title, info.getTitle());
+        assertNull(info.getDescription());
+    }
+
+    public void testMediaTypeSingletonTitleAndDescription() {
+        final String title = "Graph";
+        final String descr = "Hi I'm a graph";
+        final IGraphInfo info = new DefaultGraphInfo(_DEFAULT_URI, MediaType.XTM, -1, title, descr);
+        assertEquals(_DEFAULT_URI, info.getURI());
+        assertEquals(-1, info.getLastModification());
+        assertEquals(1, info.getSupportedMediaTypes().size());
+        assertEquals(MediaType.XTM, info.getSupportedMediaTypes().get(0));
+        assertEquals(title, info.getTitle());
+        assertEquals(descr, info.getDescription());
+    }
+
+    public void testMediaTypeSingletonDescription() {
+        final String descr = "Hi I'm a graph";
+        final IGraphInfo info = new DefaultGraphInfo(_DEFAULT_URI, MediaType.XTM, -1, null, descr);
+        assertEquals(_DEFAULT_URI, info.getURI());
+        assertEquals(-1, info.getLastModification());
+        assertEquals(1, info.getSupportedMediaTypes().size());
+        assertEquals(MediaType.XTM, info.getSupportedMediaTypes().get(0));
+        assertNull(info.getTitle());
+        assertEquals(descr, info.getDescription());
     }
 
     public void testMediaTypeList() {
@@ -63,6 +90,54 @@ public class TestDefaultGraphInfo extends TestCase {
         assertEquals(2, info.getSupportedMediaTypes().size());
         assertTrue(info.getSupportedMediaTypes().contains(MediaType.XTM));
         assertTrue(info.getSupportedMediaTypes().contains(MediaType.RDF_XML));
+        assertNull(info.getTitle());
+        assertNull(info.getDescription());
+    }
+
+    public void testMediaTypeListTitle() {
+        final String title = "Graph";
+        final List<MediaType> mediaTypes = new ArrayList<MediaType>();
+        mediaTypes.add(MediaType.XTM);
+        mediaTypes.add(MediaType.RDF_XML);
+        final IGraphInfo info = new DefaultGraphInfo(_DEFAULT_URI, mediaTypes, -1, title);
+        assertEquals(_DEFAULT_URI, info.getURI());
+        assertEquals(-1, info.getLastModification());
+        assertEquals(2, info.getSupportedMediaTypes().size());
+        assertTrue(info.getSupportedMediaTypes().contains(MediaType.XTM));
+        assertTrue(info.getSupportedMediaTypes().contains(MediaType.RDF_XML));
+        assertEquals(title, info.getTitle());
+        assertNull(info.getDescription());
+    }
+
+    public void testMediaTypeListTitleAndDescription() {
+        final String title = "Graph";
+        final String descr = "Hi I'm a graph";
+        final List<MediaType> mediaTypes = new ArrayList<MediaType>();
+        mediaTypes.add(MediaType.XTM);
+        mediaTypes.add(MediaType.RDF_XML);
+        final IGraphInfo info = new DefaultGraphInfo(_DEFAULT_URI, mediaTypes, -1, title, descr);
+        assertEquals(_DEFAULT_URI, info.getURI());
+        assertEquals(-1, info.getLastModification());
+        assertEquals(2, info.getSupportedMediaTypes().size());
+        assertTrue(info.getSupportedMediaTypes().contains(MediaType.XTM));
+        assertTrue(info.getSupportedMediaTypes().contains(MediaType.RDF_XML));
+        assertEquals(title, info.getTitle());
+        assertEquals(descr, info.getDescription());
+    }
+
+    public void testMediaTypeListDescription() {
+        final String descr = "Hi I'm a graph";
+        final List<MediaType> mediaTypes = new ArrayList<MediaType>();
+        mediaTypes.add(MediaType.XTM);
+        mediaTypes.add(MediaType.RDF_XML);
+        final IGraphInfo info = new DefaultGraphInfo(_DEFAULT_URI, mediaTypes, -1, null, descr);
+        assertEquals(_DEFAULT_URI, info.getURI());
+        assertEquals(-1, info.getLastModification());
+        assertEquals(2, info.getSupportedMediaTypes().size());
+        assertTrue(info.getSupportedMediaTypes().contains(MediaType.XTM));
+        assertTrue(info.getSupportedMediaTypes().contains(MediaType.RDF_XML));
+        assertNull(info.getTitle());
+        assertEquals(descr, info.getDescription());
     }
 
     public void testMediaTypeListNull() {
@@ -93,6 +168,8 @@ public class TestDefaultGraphInfo extends TestCase {
         assertEquals(_DEFAULT_URI, info.getURI());
         assertEquals(date, info.getLastModification());
         assertEquals(1, info.getSupportedMediaTypes().size());
+        assertNull(info.getTitle());
+        assertNull(info.getDescription());
     }
 
     public void testURIIllegal() {

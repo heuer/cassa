@@ -18,7 +18,7 @@ package com.semagia.cassa.common.dm;
 import com.semagia.cassa.common.MediaType;
 
 /**
- * A representation of a graph which can be serialized.
+ * A representation which can be serialized.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
@@ -30,5 +30,12 @@ public interface IWritableRepresentation extends IWritable {
      * @return The media type, never {@code null}.
      */
     public MediaType getMediaType();
+
+    /**
+     * Returns the encoding or {@code null} if the encoding is unknown.
+     * 
+     * @return The encoding (i.e ."UTF-8") or {@code null}.
+     */
+    public String getEncoding();
 
 }

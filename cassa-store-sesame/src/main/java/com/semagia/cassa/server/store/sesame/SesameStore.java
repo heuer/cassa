@@ -478,15 +478,7 @@ public final class SesameStore implements IStore {
     private static class GraphInfo extends DefaultGraphInfo {
        
         public GraphInfo(final URI uri) {
-            super(uri);
-        }
-
-        /* (non-Javadoc)
-         * @see com.semagia.cassa.common.dm.impl.DefaultGraphInfo#getSupportedMediaTypes()
-         */
-        @Override
-        public List<MediaType> getSupportedMediaTypes() {
-            return SesameUtils.getWritableMediaTypes();
+            super(uri, SesameUtils.getWritableMediaTypes());
         }
     }
 
@@ -540,6 +532,15 @@ public final class SesameStore implements IStore {
         public MediaType getMediaType() {
             return _mediaType;
         }
+
+        /* (non-Javadoc)
+         * @see com.semagia.cassa.common.dm.IWritableRepresentation#getEncoding()
+         */
+        @Override
+        public String getEncoding() {
+            return null;
+        }
+
     }
 
 }

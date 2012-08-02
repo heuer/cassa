@@ -26,6 +26,7 @@ import com.semagia.cassa.jaxrs.providers.IOExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.IllegalArgumentExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.IllegalStateExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.NullPointerExceptionMapper;
+import com.semagia.cassa.jaxrs.providers.ParseExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.QueryExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.StoreExceptionMapper;
 import com.semagia.cassa.jaxrs.providers.UnsupportedMediaTypeExceptionMapper;
@@ -55,15 +56,16 @@ public final class CassaApplication extends Application {
     @Override
     public Set<Object> getSingletons() {
         Set<Object> singletons = new HashSet<Object>();
-        singletons.add(new NullPointerExceptionMapper());
+        singletons.add(new GraphMismatchExceptionMapper());
+        singletons.add(new GraphNotExistsExceptionMapper());
         singletons.add(new IllegalArgumentExceptionMapper());
         singletons.add(new IllegalStateExceptionMapper());
+        singletons.add(new IOExceptionMapper());
+        singletons.add(new NullPointerExceptionMapper());
+        singletons.add(new ParseExceptionMapper());
+        singletons.add(new QueryExceptionMapper());
         singletons.add(new StoreExceptionMapper());
         singletons.add(new UnsupportedMediaTypeExceptionMapper());
-        singletons.add(new IOExceptionMapper());
-        singletons.add(new GraphNotExistsExceptionMapper());
-        singletons.add(new GraphMismatchExceptionMapper());
-        singletons.add(new QueryExceptionMapper());
         singletons.add(new UnsupportedOperationExceptionMapper());
         return singletons;
     }

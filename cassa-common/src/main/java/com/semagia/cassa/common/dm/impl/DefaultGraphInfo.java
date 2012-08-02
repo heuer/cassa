@@ -32,6 +32,8 @@ public class DefaultGraphInfo implements IGraphInfo {
     private final URI _uri;
     private final List<MediaType> _mediaTypes;
     private final long _lastModification;
+    private final String _title;
+    private final String _description;
 
     public DefaultGraphInfo(final URI uri) {
         this(uri, (List<MediaType>)null, -1);
@@ -54,6 +56,14 @@ public class DefaultGraphInfo implements IGraphInfo {
     }
 
     public DefaultGraphInfo(final URI uri, final List<MediaType> mediaTypes, final long lastModification) {
+        this(uri, mediaTypes, lastModification, null);
+    }
+
+    public DefaultGraphInfo(final URI uri, final List<MediaType> mediaTypes, final long lastModification, final String title) {
+        this(uri, mediaTypes, lastModification, title, null);
+    }
+
+    public DefaultGraphInfo(final URI uri, final List<MediaType> mediaTypes, final long lastModification, final String title, final String description) {
         if (uri == null) {
             throw new IllegalArgumentException("The URI must not be null");
         }
@@ -61,6 +71,8 @@ public class DefaultGraphInfo implements IGraphInfo {
         _mediaTypes = mediaTypes == null ? Collections.<MediaType>emptyList() 
                                          : Collections.unmodifiableList(mediaTypes);
         _lastModification = lastModification;
+        _title = title;
+        _description = description;
     }
 
     /* (non-Javadoc)
@@ -85,6 +97,22 @@ public class DefaultGraphInfo implements IGraphInfo {
     @Override
     public URI getURI() {
         return _uri;
+    }
+
+    /* (non-Javadoc)
+     * @see com.semagia.cassa.common.dm.IGraphInfo#getTitle()
+     */
+    @Override
+    public String getTitle() {
+        return _title;
+    }
+
+    /* (non-Javadoc)
+     * @see com.semagia.cassa.common.dm.IGraphInfo#getDescription()
+     */
+    @Override
+    public String getDescription() {
+        return _description;
     }
 
 }

@@ -53,4 +53,18 @@ public interface IGraphInfo {
      */
     public URI getURI();
 
+    /**
+     * Returns the (optional) title of the graph.
+     * 
+     * @return The graph's title or {@code null} if no title is provided.
+     */
+    public String getTitle();
+
+   /**
+    * Returns an (optional) description of the graph.
+    * 
+    * @return The graph's description or {@code null} if no description is provided.
+    */
+    public String getDescription();
+
 }

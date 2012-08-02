@@ -32,7 +32,6 @@ import javax.ws.rs.core.UriInfo;
 import static com.semagia.cassa.jaxrs.utils.ResponseUtils.badRequest;
 import static com.semagia.cassa.jaxrs.utils.ResponseUtils.redirect;
 
-import com.semagia.cassa.common.dm.impl.DefaultGraphInfo;
 import com.semagia.cassa.jaxrs.utils.GraphUtils;
 import com.semagia.cassa.server.store.IStore;
 import com.semagia.cassa.server.store.StoreException;
@@ -93,7 +92,7 @@ public class GraphsResource extends AbstractGraphResource {
     @HEAD
     public Response getGraphInfo() throws StoreException {
         if (_graph == null) {
-            return makeResponseBuilder(new DefaultGraphInfo(_uriInfo.getAbsolutePath(), getStore().getLastModification()), null).build();
+            return badRequest();
         }
         return super.getGraphInfo();
     }

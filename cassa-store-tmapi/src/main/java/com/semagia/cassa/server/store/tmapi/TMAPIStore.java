@@ -36,6 +36,7 @@ import com.semagia.cassa.common.dm.impl.DefaultGraphInfo;
 import com.semagia.cassa.server.store.GraphMismatchException;
 import com.semagia.cassa.server.store.GraphNotExistsException;
 import com.semagia.cassa.server.store.IStore;
+import com.semagia.cassa.server.store.ParseException;
 import com.semagia.cassa.server.store.QueryException;
 import com.semagia.cassa.server.store.StoreException;
 import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
@@ -204,6 +205,22 @@ public final class TMAPIStore extends AbstractStore {
         return false;
     }
 
+    @Override
+    public RemovalStatus deleteSubject(URI graphURI, URI subjectURI)
+            throws GraphNotExistsException, IOException, StoreException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public IGraphInfo createOrReplaceSubject(URI graphURI, URI subjectURI,
+            InputStream in, URI baseURI, MediaType mediaType)
+            throws UnsupportedMediaTypeException, IOException, ParseException,
+            StoreException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Converts the URI into a Locator.
      * 
@@ -228,20 +245,13 @@ public final class TMAPIStore extends AbstractStore {
     private static class GraphInfo extends DefaultGraphInfo {
 
         public GraphInfo(final Locator loc) {
-            super(URI.create(loc.toExternalForm()));
+            this(URI.create(loc.toExternalForm()));
         }
 
         public GraphInfo(final URI uri) {
-            super(uri);
+            super(uri, TMAPIUtils.getWritableMediaTypes());
         }
 
-        /* (non-Javadoc)
-         * @see com.semagia.cassa.common.dm.impl.DefaultGraphInfo#getSupportedMediaTypes()
-         */
-        @Override
-        public List<MediaType> getSupportedMediaTypes() {
-            return TMAPIUtils.getWritableMediaTypes();
-        }
     }
 
 
@@ -269,6 +279,14 @@ public final class TMAPIStore extends AbstractStore {
         @Override
         public MediaType getMediaType() {
             return _mediaType;
+        }
+
+        /* (non-Javadoc)
+         * @see com.semagia.cassa.common.dm.IWritableRepresentation#getEncoding()
+         */
+        @Override
+        public String getEncoding() {
+            return null;
         }
 
     }

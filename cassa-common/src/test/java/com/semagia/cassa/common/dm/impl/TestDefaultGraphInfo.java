@@ -35,11 +35,14 @@ public class TestDefaultGraphInfo extends TestCase {
 
     private static final URI _DEFAULT_URI = URI.create("http://www.example.org/test");
 
-    public void testURI() {
-        final IGraphInfo info = new DefaultGraphInfo(_DEFAULT_URI);
-        assertEquals(_DEFAULT_URI, info.getURI());
-        assertEquals(-1, info.getLastModification());
-        assertEquals(0, info.getSupportedMediaTypes().size());
+    public void testIllegal() {
+        try {
+            new DefaultGraphInfo(_DEFAULT_URI, (List<MediaType>)null);
+            fail("Graph accepts null as media types argument");
+        }
+        catch (IllegalArgumentException ex) {
+            // noop.
+        }
     }
 
     public void testMediaTypeSingleton() {
@@ -64,18 +67,24 @@ public class TestDefaultGraphInfo extends TestCase {
 
     public void testMediaTypeListNull() {
         final List<MediaType> mediaTypes = null;
-        final IGraphInfo info = new DefaultGraphInfo(_DEFAULT_URI, mediaTypes);
-        assertEquals(_DEFAULT_URI, info.getURI());
-        assertEquals(-1, info.getLastModification());
-        assertEquals(0, info.getSupportedMediaTypes().size());
+        try {
+            new DefaultGraphInfo(_DEFAULT_URI, mediaTypes);
+            fail("Graph accepts null as media types argument");
+        }
+        catch (IllegalArgumentException ex) {
+            // noop.
+        }
     }
 
     public void testMediaTypeNull() {
         final MediaType mediaType = null;
-        final IGraphInfo info = new DefaultGraphInfo(_DEFAULT_URI, mediaType);
-        assertEquals(_DEFAULT_URI, info.getURI());
-        assertEquals(-1, info.getLastModification());
-        assertEquals(0, info.getSupportedMediaTypes().size());
+        try {
+            new DefaultGraphInfo(_DEFAULT_URI, mediaType);
+            fail("Graph accepts null as media type argument");
+        }
+        catch (IllegalArgumentException ex) {
+            // noop.
+        }
     }
 
     public void testDate() {
@@ -87,13 +96,6 @@ public class TestDefaultGraphInfo extends TestCase {
     }
 
     public void testURIIllegal() {
-        try {
-            new DefaultGraphInfo(null);
-            fail("Expected an exception for URI == null");
-        }
-        catch (IllegalArgumentException ex) {
-            // noop.
-        }
         try {
             new DefaultGraphInfo(null, MediaType.XTM);
             fail("Expected an exception for URI == null");

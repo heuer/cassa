@@ -35,14 +35,6 @@ public class DefaultGraphInfo implements IGraphInfo {
     private final String _title;
     private final String _description;
 
-    public DefaultGraphInfo(final URI uri) {
-        this(uri, (List<MediaType>)null, -1);
-    }
-
-    public DefaultGraphInfo(final URI uri, final long lastModification) {
-        this(uri, (List<MediaType>)null, lastModification);
-    }
-
     public DefaultGraphInfo(final URI uri, List<MediaType> mediaTypes) {
         this(uri, mediaTypes, -1);
     }
@@ -68,8 +60,10 @@ public class DefaultGraphInfo implements IGraphInfo {
             throw new IllegalArgumentException("The URI must not be null");
         }
         _uri = uri;
-        _mediaTypes = mediaTypes == null ? Collections.<MediaType>emptyList() 
-                                         : Collections.unmodifiableList(mediaTypes);
+        if (mediaTypes == null) {
+            throw new IllegalArgumentException("The media types must not be null; at least one media type is required");
+        }
+        _mediaTypes = Collections.unmodifiableList(mediaTypes);
         _lastModification = lastModification;
         _title = title;
         _description = description;

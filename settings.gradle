@@ -5,4 +5,6 @@ include 'cassa-common',
         'cassa-store-sesame',
         'cassa-store-tmapi',
         'cassa-http-testsuite',
-        'cassa-sesame-testserver'
+        'cassa-sesame-testserver',
+        'cassa-server-sdshare-json',
+        'shapi'

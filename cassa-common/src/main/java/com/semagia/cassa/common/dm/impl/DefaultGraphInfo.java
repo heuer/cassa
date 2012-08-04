@@ -35,34 +35,102 @@ public class DefaultGraphInfo implements IGraphInfo {
     private final String _title;
     private final String _description;
 
+    /**
+     * Creates an instance with a URI and a list of media types; last modification
+     * will be set to {@code -1} and the title and description will be {@code null}.
+     * 
+     * @param uri The graph URI.
+     * @param mediaTypes The media types.
+     */
     public DefaultGraphInfo(final URI uri, final List<MediaType> mediaTypes) {
         this(uri, mediaTypes, -1);
     }
 
+    /**
+     * Creates an instance with a URI and one media type; last modification
+     * will be set to {@code -1} and the title and description will be {@code null}.
+     * 
+     * @param uri The graph URI.
+     * @param mediaType The media type.
+     */
     public DefaultGraphInfo(final URI uri, final MediaType mediaType) {
         this(uri, mediaType, -1);
     }
 
+    /**
+     * Creates an instance with a URI and one media type and the provided
+     * last modification time stamp; the title and description will be {@code null}.
+     * 
+     * @param uri The graph URI.
+     * @param mediaType The media type.
+     * @param lastModification The time stamp of the last modification or {@code -1}.
+     */
     public DefaultGraphInfo(final URI uri, final MediaType mediaType, final long lastModification) {
         this(uri, mediaType, lastModification, null);
     }
 
+    /**
+     * Creates an instance with a URI and one media type and the provided
+     * last modification time stamp and title; the description will be {@code null}.
+     *
+     * @param uri The graph URI.
+     * @param mediaType The media type.
+     * @param lastModification The time stamp of the last modification or {@code -1}.
+     * @param title The graph title or {@code null}.
+     */
     public DefaultGraphInfo(final URI uri, final MediaType mediaType, final long lastModification, final String title) {
         this(uri, mediaType, lastModification, title, null);
     }
 
+    /**
+     * Creates an instance with a URI and one media type and the provided
+     * last modification time stamp, title and description.
+     * 
+     * @param uri The graph URI.
+     * @param mediaType The media type.
+     * @param lastModification The time stamp of the last modification or {@code -1}.
+     * @param title The graph title or {@code null}.
+     * @param description A description of the graph or {@code null}.
+     */
     public DefaultGraphInfo(final URI uri, final MediaType mediaType, final long lastModification, final String title, final String description) {
         this(uri, mediaType != null ? Collections.singletonList(mediaType) : (List<MediaType>)null, lastModification, title, description);
     }
 
+    /**
+     * Creates an instance with a URI and supported media types and the provided
+     * last modification time stamp; the title and description will be {@code null}.
+     * 
+     * @param uri The graph URI.
+     * @param mediaTypes The media types.
+     * @param lastModification The time stamp of the last modification or {@code -1}.
+     */
     public DefaultGraphInfo(final URI uri, final List<MediaType> mediaTypes, final long lastModification) {
         this(uri, mediaTypes, lastModification, null);
     }
 
+    /**
+     * Creates an instance with a URI and supported media types and the provided
+     * last modification time stamp and title; the description will be {@code null}.
+     * 
+     * @param uri The graph URI.
+     * @param mediaTypes The media types.
+     * @param lastModification The time stamp of the last modification or {@code -1}.
+     * @param title The graph title or {@code null}.
+     */
     public DefaultGraphInfo(final URI uri, final List<MediaType> mediaTypes, final long lastModification, final String title) {
         this(uri, mediaTypes, lastModification, title, null);
     }
 
+    /**
+     * Creates an instance with a URI and supported media types and the provided
+     * last modification time stamp, title and description.
+     * 
+     * @param uri The graph URI.
+     * @param mediaTypes The media types.
+     * @param lastModification The time stamp of the last modification or {@code -1}.
+     * @param title The graph title or {@code null}.
+     * @param description A description of the graph or {@code null}.
+     */
     public DefaultGraphInfo(final URI uri, final List<MediaType> mediaTypes, final long lastModification, final String title, final String description) {
         if (uri == null) {
             throw new IllegalArgumentException("The URI must not be null");

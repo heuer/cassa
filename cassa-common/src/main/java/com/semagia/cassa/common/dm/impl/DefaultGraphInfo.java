@@ -193,15 +193,17 @@ public class DefaultGraphInfo implements IGraphInfo {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof IGraphInfo)) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        final IGraphInfo other = (IGraphInfo) obj;
+        final DefaultGraphInfo other = (DefaultGraphInfo) obj;
         return _lastModification == other.getLastModification()
-                && _uri.equals(other.getURI())
-                && _mediaTypes.equals(other.getSupportedMediaTypes())
-                && _title == null ? other.getTitle() == null : _title.equals(other.getTitle())
-                && _description == null ? other.getDescription() == null : _description.equals(other.getDescription());
+                && _uri.equals(other._uri)
+                && _mediaTypes.equals(other._mediaTypes)
+                && _title == null ? other._title == null 
+                                  : other._title != null && _title.equals(other._title)
+                && _description == null ? other._description == null 
+                                        : other._description != null && _description.equals(other._description);
     }
 
     /* (non-Javadoc)

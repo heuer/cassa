@@ -162,6 +162,25 @@ public class TestDefaultGraphInfo extends TestCase {
         }
     }
 
+    public void testEquals() {
+        IGraphInfo info1 = new DefaultGraphInfo(_DEFAULT_URI, MediaType.CTM);
+        IGraphInfo info2 = new DefaultGraphInfo(_DEFAULT_URI, MediaType.CTM);
+        assertEquals(info1, info1);
+        assertEquals(info1, info2);
+        assertEquals(info1.hashCode(), info2.hashCode());
+        info2 = new DefaultGraphInfo(_DEFAULT_URI, MediaType.RDF_XML);
+        assertFalse(info1.equals(info2));
+        assertFalse(info1.hashCode() == info2.hashCode());
+    }
+
+    public void testNotEquals() {
+        IGraphInfo info1 = new DefaultGraphInfo(_DEFAULT_URI, MediaType.CTM);
+        IGraphInfo info2 = new DefaultFragmentInfo(_DEFAULT_URI, new DefaultResource(URI.create("http://www.example.org/resource")), MediaType.CTM);
+        assertFalse(info1.equals(info2));
+        assertFalse(info2.equals(info1));
+        assertFalse(info1.hashCode() == info2.hashCode());
+    }
+
     public void testDate() {
         final long date = new Date().getTime();
         final IGraphInfo info = new DefaultGraphInfo(_DEFAULT_URI, MediaType.XTM, date);

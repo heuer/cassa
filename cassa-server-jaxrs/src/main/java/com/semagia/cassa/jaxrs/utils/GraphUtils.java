@@ -21,8 +21,8 @@ import java.net.URLEncoder;
 
 import javax.ws.rs.core.UriInfo;
 
-import com.semagia.cassa.common.dm.IGraphInfo;
 import com.semagia.cassa.jaxrs.GraphsResource;
+import com.semagia.cassa.server.store.IGraphInfo;
 
 /**
  * Internal utility functions related to graphs.

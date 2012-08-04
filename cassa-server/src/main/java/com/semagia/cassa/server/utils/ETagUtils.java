@@ -22,7 +22,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import com.semagia.cassa.common.MediaType;
-import com.semagia.cassa.common.dm.IGraphInfo;
+import com.semagia.cassa.server.store.IGraphInfo;
 
 /**
  * Utility functions to create ETags.

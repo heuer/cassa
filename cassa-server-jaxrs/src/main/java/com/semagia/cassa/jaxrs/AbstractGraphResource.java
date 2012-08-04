@@ -39,13 +39,13 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import com.semagia.cassa.common.MediaType;
-import com.semagia.cassa.common.dm.IGraphInfo;
 import com.semagia.cassa.common.dm.IWritableRepresentation;
 import com.semagia.cassa.common.dm.RemovalStatus;
 import com.semagia.cassa.jaxrs.utils.GraphUtils;
 import com.semagia.cassa.jaxrs.utils.MediaTypeUtils;
 import com.semagia.cassa.server.store.GraphMismatchException;
 import com.semagia.cassa.server.store.GraphNotExistsException;
+import com.semagia.cassa.server.store.IGraphInfo;
 import com.semagia.cassa.server.store.IStore;
 import com.semagia.cassa.server.store.ParseException;
 import com.semagia.cassa.server.store.QueryException;

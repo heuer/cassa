@@ -17,8 +17,6 @@ package com.semagia.cassa.server.store;
 
 import java.net.URI;
 
-import com.semagia.cassa.common.dm.IFragmentInfo;
-import com.semagia.cassa.common.dm.IGraphInfo;
 
 /**
  * SDShare store.

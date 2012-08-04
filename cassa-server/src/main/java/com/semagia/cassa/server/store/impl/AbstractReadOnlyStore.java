@@ -20,10 +20,10 @@ import java.io.InputStream;
 import java.net.URI;
 
 import com.semagia.cassa.common.MediaType;
-import com.semagia.cassa.common.dm.IGraphInfo;
 import com.semagia.cassa.common.dm.RemovalStatus;
 import com.semagia.cassa.server.store.GraphMismatchException;
 import com.semagia.cassa.server.store.GraphNotExistsException;
+import com.semagia.cassa.server.store.IGraphInfo;
 import com.semagia.cassa.server.store.ParseException;
 import com.semagia.cassa.server.store.QueryException;
 import com.semagia.cassa.server.store.StoreException;

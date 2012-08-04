@@ -38,7 +38,6 @@ import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystemFactory;
 
 import com.semagia.cassa.common.MediaType;
-import com.semagia.cassa.common.dm.IGraphInfo;
 import com.semagia.cassa.common.dm.IWritableRepresentation;
 import com.semagia.mio.DeserializerRegistry;
 import com.semagia.mio.IDeserializer;

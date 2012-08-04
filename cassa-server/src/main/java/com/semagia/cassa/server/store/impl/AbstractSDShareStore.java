@@ -19,8 +19,8 @@ import java.net.URI;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import com.semagia.cassa.common.dm.IFragmentInfo;
 import com.semagia.cassa.server.store.GraphNotExistsException;
+import com.semagia.cassa.server.store.IFragmentInfo;
 import com.semagia.cassa.server.store.ISDShareStore;
 import com.semagia.cassa.server.store.StoreException;
 

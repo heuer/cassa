@@ -197,7 +197,7 @@ public class DefaultGraphInfo implements IGraphInfo {
             return false;
         }
         final DefaultGraphInfo other = (DefaultGraphInfo) obj;
-        return _lastModification == other.getLastModification()
+        return _lastModification == other._lastModification
                 && _uri.equals(other._uri)
                 && _mediaTypes.equals(other._mediaTypes)
                 && _title == null ? other._title == null 

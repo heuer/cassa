@@ -22,7 +22,7 @@ import java.io.IOException;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public interface IFeedHandler {
+interface IFeedHandler {
 
     /**
      * Notification about a feed.

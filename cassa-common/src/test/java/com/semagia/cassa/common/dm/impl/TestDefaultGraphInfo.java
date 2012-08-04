@@ -163,10 +163,11 @@ public class TestDefaultGraphInfo extends TestCase {
     }
 
     public void testEquals() {
-        IGraphInfo info1 = new DefaultGraphInfo(_DEFAULT_URI, MediaType.CTM);
+        final IGraphInfo info1 = new DefaultGraphInfo(_DEFAULT_URI, MediaType.CTM);
         IGraphInfo info2 = new DefaultGraphInfo(_DEFAULT_URI, MediaType.CTM);
         assertEquals(info1, info1);
         assertEquals(info1, info2);
+        assertEquals(info2, info1);
         assertEquals(info1.hashCode(), info2.hashCode());
         info2 = new DefaultGraphInfo(_DEFAULT_URI, MediaType.RDF_XML);
         assertFalse(info1.equals(info2));
@@ -174,8 +175,8 @@ public class TestDefaultGraphInfo extends TestCase {
     }
 
     public void testNotEquals() {
-        IGraphInfo info1 = new DefaultGraphInfo(_DEFAULT_URI, MediaType.CTM);
-        IGraphInfo info2 = new DefaultFragmentInfo(_DEFAULT_URI, new DefaultResource(URI.create("http://www.example.org/resource")), MediaType.CTM);
+        final IGraphInfo info1 = new DefaultGraphInfo(_DEFAULT_URI, MediaType.CTM);
+        final IGraphInfo info2 = new DefaultFragmentInfo(_DEFAULT_URI, new DefaultResource(URI.create("http://www.example.org/resource")), MediaType.CTM);
         assertFalse(info1.equals(info2));
         assertFalse(info2.equals(info1));
         assertFalse(info1.hashCode() == info2.hashCode());

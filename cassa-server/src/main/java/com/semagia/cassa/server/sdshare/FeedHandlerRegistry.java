@@ -31,7 +31,7 @@ import com.semagia.cassa.server.sdshare.spi.IFeedHandlerFactory;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-final class FeedHandlerRegistry {
+public final class FeedHandlerRegistry {
 
     private final static FeedHandlerRegistry _INSTANCE = new FeedHandlerRegistry();
 

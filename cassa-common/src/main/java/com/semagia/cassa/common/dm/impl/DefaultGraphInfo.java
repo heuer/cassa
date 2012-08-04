@@ -209,11 +209,17 @@ public class DefaultGraphInfo implements IGraphInfo {
      */
     @Override
     public int hashCode() {
-        return _uri.hashCode() 
-                + (int) (_lastModification ^ (_lastModification >>> 32))
-                + _title == null ? 0 : _title.hashCode()
-                + _description == null ? 0 : _description.hashCode()
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((_description == null) ? 0 : _description.hashCode());
+        result = prime * result
+                + (int) (_lastModification ^ (_lastModification >>> 32));
+        result = prime * result
                 + _mediaTypes.hashCode();
+        result = prime * result + ((_title == null) ? 0 : _title.hashCode());
+        result = prime * result + _uri.hashCode();
+        return result;
     }
 
 }

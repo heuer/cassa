@@ -185,4 +185,35 @@ public class DefaultGraphInfo implements IGraphInfo {
         return _description;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof IGraphInfo)) {
+            return false;
+        }
+        final IGraphInfo other = (IGraphInfo) obj;
+        return _lastModification == other.getLastModification()
+                && _uri.equals(other.getURI())
+                && _mediaTypes.equals(other.getSupportedMediaTypes())
+                && _title == null ? other.getTitle() == null : _title.equals(other.getTitle())
+                && _description == null ? other.getDescription() == null : _description.equals(other.getDescription());
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return _uri.hashCode() 
+                + (int) (_lastModification ^ (_lastModification >>> 32))
+                + _title == null ? 0 : _title.hashCode()
+                + _description == null ? 0 : _description.hashCode()
+                + _mediaTypes.hashCode();
+    }
+
 }

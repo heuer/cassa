@@ -28,12 +28,8 @@ import com.semagia.cassa.server.sdshare.spi.IFeedHandlerFactory;
 /**
  * Registry to create {@link IOutputAwareFeedHandler}s and to look up available 
  * media types.
- * <p>
- * This class is thread-safe.
- * </p>
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
- * @version $Rev: 121 $ - $Date: 2010-11-06 15:56:03 +0100 (Sat, 06 Nov 2010) $
  */
 final class FeedHandlerRegistry {
 

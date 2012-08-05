@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.semagia.cassa.server.store.utils;
+package com.semagia.cassa.server.utils;
 
 import java.net.URI;
 import java.util.Date;
@@ -21,7 +21,6 @@ import java.util.Date;
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.server.store.IGraphInfo;
 import com.semagia.cassa.server.store.impl.DefaultGraphInfo;
-import com.semagia.cassa.server.utils.ETagUtils;
 
 import junit.framework.TestCase;
 

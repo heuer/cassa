@@ -51,7 +51,7 @@ public final class GraphClient {
     private static final URI _DEFAULT_GRAPH = URI.create("");
 
     private final URI _endpoint;
-    private MediaType _mediaType;
+    private MediaType[] _preferredMediaTypes;
     private final HttpClient _client;
 
     /**
@@ -80,8 +80,8 @@ public final class GraphClient {
      * @return The default media type or {@code null} if the default media type
      *          isn't specified.
      */
-    public MediaType getDefaultMediaType() {
-        return _mediaType;
+    public MediaType[] getPreferredMediaTypes() {
+        return _preferredMediaTypes;
     }
 
     /**
@@ -89,8 +89,8 @@ public final class GraphClient {
      *
      * @param mediaType A {@link MediaType} instance or {@code null}.
      */
-    public void setDefaultMediaType(final MediaType mediaType) {
-        _mediaType = mediaType;
+    public void setPreferredMediaTypes(final MediaType... mediaTypes) {
+        _preferredMediaTypes = mediaTypes;
     }
 
     /**
@@ -101,19 +101,19 @@ public final class GraphClient {
      * @throws IOException In case of an error.
      */
     public Graph getGraph() throws IOException {
-        return getGraph(_mediaType);
+        return getGraph(_preferredMediaTypes);
     }
 
     /**
      * Returns the default graph using the provided media type.
      *
-     * @param mediaType The requested media type.
+     * @param mediaTypes The requested media types.
      * @return A graph or {@code null} if the graph does not exist (Note: graph
      *          stores are required to have always a default graph).
      * @throws IOException In case of an error.
      */
-    public Graph getGraph(final MediaType mediaType) throws IOException {
-        return _getGraph(_DEFAULT_GRAPH, mediaType);
+    public Graph getGraph(final MediaType... mediaTypes) throws IOException {
+        return _getGraph(_DEFAULT_GRAPH, mediaTypes);
     }
 
     /**
@@ -124,25 +124,34 @@ public final class GraphClient {
      * @throws IOException In case of an error.
      */
     public Graph getGraph(final URI graphURI) throws IOException {
-        return getGraph(graphURI, _mediaType);
+        return getGraph(graphURI, _preferredMediaTypes);
     }
 
     /**
      * Returns the graph with the provided URI using the provided media type.
      *
      * @param graphURI The graph URI.
-     * @param mediaType The requested media type.
+     * @param mediaTypes The requested media types.
      * @return A graph or {@code null} if the graph does not exist.
      * @throws IOException In case of an error.
      */
-    public Graph getGraph(final URI graphURI, final MediaType mediaType) throws IOException {
-        return _getGraph(graphURI, mediaType);
+    public Graph getGraph(final URI graphURI, final MediaType... mediaTypes) throws IOException {
+        return _getGraph(graphURI, mediaTypes);
     }
 
-    private Graph _getGraph(URI graphURI, MediaType mediaType) throws IOException {
+    private Graph _getGraph(URI graphURI, MediaType... mediaTypes) throws IOException {
         final HttpGet request = new HttpGet(getGraphURI(graphURI));
-        if (mediaType != null) {
-            request.setHeader("Accept", mediaType.toString());
+        if (mediaTypes != null) {
+            final StringBuilder buff = new StringBuilder();
+            for (int i=0; i < mediaTypes.length; i++) {
+                if (i > 0) {
+                    buff.append(',');
+                }
+                if (mediaTypes[i] != null) {
+                    buff.append(mediaTypes[i].toString());
+                }
+            }
+            request.setHeader("Accept", buff.toString());
         }
         final HttpResponse response = _client.execute(request);
         if (response.getStatusLine().getStatusCode() != 200) {
@@ -200,7 +209,7 @@ public final class GraphClient {
      * @throws IOException In case of an error.
      */
     public boolean createGraph(final URI graphURI, final InputStream in) throws IOException {
-        return createGraph(graphURI, in, _mediaType);
+        return createGraph(graphURI, in, _preferredMediaTypes != null ? _preferredMediaTypes[0] : null);
     }
 
     /**
@@ -301,7 +310,7 @@ public final class GraphClient {
      * @throws IOException In case of an error.
      */
     public URI createGraph(final InputStream in) throws IOException {
-        return createGraph(in, _mediaType);
+        return createGraph(in, _preferredMediaTypes != null ? _preferredMediaTypes[0] : null);
     }
 
     /**
@@ -404,7 +413,7 @@ public final class GraphClient {
      * @throws IOException In case of an error.
      */
     public boolean updateGraph(final InputStream in) throws IOException {
-        return updateGraph(in, _mediaType);
+        return updateGraph(in, _preferredMediaTypes != null ? _preferredMediaTypes[0] : null);
     }
 
     /**
@@ -465,7 +474,7 @@ public final class GraphClient {
      * @throws IOException In case of an error.
      */
     public boolean updateGraph(final URI graphURI, final InputStream in) throws IOException {
-        return updateGraph(graphURI, in, _mediaType);
+        return updateGraph(graphURI, in, _preferredMediaTypes != null ? _preferredMediaTypes[0] : null);
     }
 
     /**

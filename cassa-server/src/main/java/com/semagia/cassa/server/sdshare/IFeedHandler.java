@@ -105,6 +105,18 @@ interface IFeedHandler {
 
     /**
      * Notification that may appear after a
+     * {@link #startFeed(String, String, long)} or
+     * {@link #startEntry(String, String, long)} event.
+     * 
+     * @param iri
+     *            Graph IRI.
+     * @throws IOException
+     *            In case of an error.
+     */
+    public void graph(String iri) throws IOException;
+
+    /**
+     * Notification that may appear after a
      * {@link #startFeed(String, String, long)} event.
      * 
      * @param iri

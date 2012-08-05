@@ -206,6 +206,15 @@ final class JSONFeedHandler implements IOutputAwareFeedHandler {
         _writer.endObject();
     }
 
+    /* (non-Javadoc)
+     * @see com.semagia.cassa.server.sdshare.IFeedHandler#graph(java.lang.String)
+     */
+    @Override
+    public void graph(final String iri) throws IOException {
+        _finishPendingArray();
+        _writer.keyValue("[sd:graph]", iri);
+    }
+
     private void _writeCommons(final String id, final String title, final long updated) throws IOException {
         _writer.keyValue("id", id);
         _writer.keyValue("title", title);

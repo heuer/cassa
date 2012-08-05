@@ -147,6 +147,14 @@ final class AtomFeedHandler implements IOutputAwareFeedHandler {
     }
 
     /* (non-Javadoc)
+     * @see com.semagia.cassa.server.sdshare.IFeedHandler#graph(java.lang.String)
+     */
+    @Override
+    public void graph(final String iri) throws IOException {
+        _writer.dataElement(_PREFIX_SDSHARE + ":graph", iri);
+    }
+
+    /* (non-Javadoc)
      * @see com.semagia.cassa.server.sdshare.IFeedHandler#resource(java.lang.String, java.lang.String)
      */
     @Override

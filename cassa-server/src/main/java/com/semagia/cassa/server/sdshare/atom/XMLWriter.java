@@ -94,8 +94,6 @@ final class XMLWriter {
         comment(ch, 0, ch.length);
     }
 
-    
-
     /**
      * @see org.xml.sax.ext LexicalHandler#comment(char[] ch, int start, int length) 
      *

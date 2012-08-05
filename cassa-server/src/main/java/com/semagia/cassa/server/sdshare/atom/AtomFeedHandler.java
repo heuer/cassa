@@ -31,7 +31,6 @@ import com.semagia.cassa.server.sdshare.IOutputAwareFeedHandler;
  */
 final class AtomFeedHandler implements IOutputAwareFeedHandler {
 
-    private static final String _PREFIX_SDSHARE = "sd";
     private XMLWriter _writer;
     private final AttributesImpl _attrs;
 
@@ -55,7 +54,7 @@ final class AtomFeedHandler implements IOutputAwareFeedHandler {
         _writer.startDocument();
         _attrs.clear();
         _attrs.addAttribute("", "xmlns", "", "CDATA", IConstants.NS_ATOM);
-        _attrs.addAttribute("", "xmlns:" + _PREFIX_SDSHARE, "", "CDATA", IConstants.NS_SDSHARE);
+        _attrs.addAttribute("", "xmlns:sd", "", "CDATA", IConstants.NS_SDSHARE);
         _writer.startElement("feed", _attrs);
         _writeCommons(id, title, updated);
     }
@@ -151,7 +150,7 @@ final class AtomFeedHandler implements IOutputAwareFeedHandler {
      */
     @Override
     public void graph(final String iri) throws IOException {
-        _writer.dataElement(_PREFIX_SDSHARE + ":graph", iri);
+        _writer.dataElement("sd:graph", iri);
     }
 
     /* (non-Javadoc)
@@ -163,7 +162,7 @@ final class AtomFeedHandler implements IOutputAwareFeedHandler {
         if (role != null) {
             _attrs.addAttribute("", "role", "", "CDATA", role);
         }
-        _writer.dataElement(_PREFIX_SDSHARE + ":resource", _attrs, iri);
+        _writer.dataElement("sd:resource", _attrs, iri);
     }
 
     private void _writeCommons(final String id, final String title, final long updated) throws IOException {

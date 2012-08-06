@@ -119,6 +119,13 @@ abstract class AbstractClient {
         return new Graph(entity.getContent(), mt, encoding, entity.getContentLength());
     }
 
+    /**
+     * Returns if the provided graph URI returns a HTTP 200 - Ok status.
+     * 
+     * @param graphURI The graph URI.
+     * @return {@code true} if the graph URI exists, otherwise {@code false}.
+     * @throws IOException In case of an error.
+     */
     protected boolean existsGraph(final URI graphURI) throws IOException {
         final HttpHead head = new HttpHead(graphURI);
         return getStatusCode(head) == 200;
@@ -137,4 +144,5 @@ abstract class AbstractClient {
         request.abort();
         return status;
     }
+
 }

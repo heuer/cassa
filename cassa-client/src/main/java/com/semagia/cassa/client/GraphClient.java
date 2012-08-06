@@ -23,19 +23,13 @@ import java.io.InputStream;
 import java.net.URI;
 
 import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.Syntax;
@@ -46,13 +40,9 @@ import com.semagia.cassa.common.dm.RemovalStatus;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public final class GraphClient {
+public final class GraphClient extends AbstractClient {
 
     private static final URI _DEFAULT_GRAPH = URI.create("");
-
-    private final URI _endpoint;
-    private MediaType[] _preferredMediaTypes;
-    private final HttpClient _client;
 
     /**
      * Creates a client which connects to the provided service endpoint.
@@ -60,37 +50,7 @@ public final class GraphClient {
      * @param endpoint The service endpoint.
      */
     public GraphClient(final URI endpoint) {
-        if (endpoint == null) {
-            throw new IllegalArgumentException("The endpoint URI must not be null");
-        }
-        _endpoint = endpoint;
-        _client = new DefaultHttpClient();
-    }
-
-    /**
-     * Should be called if the client is no longer needed.
-     */
-    public void close() {
-        _client.getConnectionManager().shutdown();
-    }
-
-    /**
-     * Returns the default media type.
-     *
-     * @return The default media type or {@code null} if the default media type
-     *          isn't specified.
-     */
-    public MediaType[] getPreferredMediaTypes() {
-        return _preferredMediaTypes;
-    }
-
-    /**
-     * Sets the default media type.
-     *
-     * @param mediaType A {@link MediaType} instance or {@code null}.
-     */
-    public void setPreferredMediaTypes(final MediaType... mediaTypes) {
-        _preferredMediaTypes = mediaTypes;
+        super(endpoint);
     }
 
     /**
@@ -105,7 +65,7 @@ public final class GraphClient {
     }
 
     /**
-     * Returns the default graph using the provided media type.
+     * Returns the default graph using the provided media type(s).
      *
      * @param mediaTypes The requested media types.
      * @return A graph or {@code null} if the graph does not exist (Note: graph
@@ -140,28 +100,7 @@ public final class GraphClient {
     }
 
     private Graph _getGraph(URI graphURI, MediaType... mediaTypes) throws IOException {
-        final HttpGet request = new HttpGet(getGraphURI(graphURI));
-        if (mediaTypes != null) {
-            final StringBuilder buff = new StringBuilder();
-            for (int i=0; i < mediaTypes.length; i++) {
-                if (i > 0) {
-                    buff.append(',');
-                }
-                if (mediaTypes[i] != null) {
-                    buff.append(mediaTypes[i].toString());
-                }
-            }
-            request.setHeader("Accept", buff.toString());
-        }
-        final HttpResponse response = _client.execute(request);
-        if (response.getStatusLine().getStatusCode() != 200) {
-            request.abort();
-            return null;
-        }
-        final HttpEntity entity = response.getEntity();
-        final String encoding = entity.getContentEncoding() != null ? entity.getContentEncoding().getValue() : null;
-        final MediaType mt = entity.getContentType() != null ? MediaType.valueOf(entity.getContentType().getValue()) : null;
-        return new Graph(entity.getContent(), mt, encoding, entity.getContentLength());
+        return super.getGraph(getGraphURI(graphURI), mediaTypes);
     }
 
     /**
@@ -354,8 +293,7 @@ public final class GraphClient {
     }
 
     private boolean _existsGraph(final URI graphURI) throws IOException {
-        final HttpHead head = new HttpHead(getGraphURI(graphURI));
-        return getStatusCode(head) == 200;
+        return super.existsGraph(getGraphURI(graphURI));
     }
 
     /**
@@ -617,20 +555,6 @@ public final class GraphClient {
             return graphURI;
         }
         return _endpoint.resolve("?graph=" + graphURI.toASCIIString());
-    }
-
-    /**
-     * Executes the request and returns the status code.
-     * 
-     * @param request The request to execute.
-     * @return The status code.
-     * @throws IOException In case of an error.
-     */
-    private int getStatusCode(final HttpUriRequest request) throws IOException {
-        final HttpResponse response = _client.execute(request);
-        final int status = response.getStatusLine().getStatusCode();
-        request.abort();
-        return status;
     }
 
     private static MediaType guessMediaType(final File file) {

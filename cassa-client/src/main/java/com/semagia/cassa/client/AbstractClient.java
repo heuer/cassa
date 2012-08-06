@@ -74,6 +74,14 @@ abstract class AbstractClient {
         _preferredMediaTypes = mediaTypes;
     }
 
+    /**
+     * Returns a graph from the provided graph URI using the {@link #getPreferredGraphMediaTypes()}
+     * (if any).
+     * 
+     * @param graphURI The URI to retrieve the graph from.
+     * @return A graph.
+     * @throws IOException In case of an I/O error.
+     */
     protected Graph getGraph(URI graphURI) throws IOException {
         return getGraph(graphURI, _preferredMediaTypes);
     }

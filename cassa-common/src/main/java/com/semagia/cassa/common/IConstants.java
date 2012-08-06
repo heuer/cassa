@@ -43,16 +43,6 @@ public interface IConstants {
     public final static String SD_GRAPH = "graph";
 
     /**
-     * Attribute value for the link type "alternate"
-     */
-    public static final String REL_ALTERNATE = "alternate";
-
-    /**
-     * Attribute value for the link type "self" 
-     */
-    public static final String REL_SELF = "self";
-
-    /**
      * Attribute value for the link type "collectionfeed"
      */
     public static final String REL_COLLECTION_FEED = NS_SDSHARE + "collectionfeed";

@@ -80,7 +80,7 @@ interface IFeedHandler {
      * @param href
      *            The link, an absolute IRI.
      * @param relation
-     *            The link kind, the relation or {@code null}.
+     *            The relation or {@code null}.
      * @throws IOException
      *            In case of an error.
      */
@@ -94,7 +94,7 @@ interface IFeedHandler {
      * @param href
      *            The link, an absolute IRI.
      * @param relation
-     *            The link kind, the relation or {@code null}.
+     *            The link relation or {@code null}.
      * @param mediaType
      *            The associated media type of the link or {@code null}.
      * @throws IOException

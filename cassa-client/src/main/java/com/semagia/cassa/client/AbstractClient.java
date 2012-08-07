@@ -24,28 +24,36 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.params.AllClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.semagia.cassa.common.MediaType;
 
 /**
- * EXPERIMENTAL: Abstract common HTTP client which provides common
- * methods useful for concrete implementations.
+ * Abstract common HTTP client which provides common methods useful for 
+ * concrete implementations.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 abstract class AbstractClient {
 
+    private static String _USER_AGENT = "Semagia Cassa Client";
+    
     protected final URI _endpoint;
     protected MediaType[] _preferredMediaTypes;
-    protected final HttpClient _client;
+    private final HttpClient _client;
 
     AbstractClient(final URI endpoint) {
+        this(endpoint, new DefaultHttpClient());
+    }
+
+    AbstractClient(final URI endpoint, HttpClient client) {
         if (endpoint == null) {
             throw new IllegalArgumentException("The endpoint URI must not be null");
         }
         _endpoint = endpoint;
-        _client = new DefaultHttpClient();
+        _client = client;
+        _client.getParams().setParameter(AllClientPNames.USER_AGENT, _USER_AGENT);
     }
 
     /**
@@ -139,10 +147,14 @@ abstract class AbstractClient {
      * @throws IOException In case of an error.
      */
     protected int getStatusCode(final HttpUriRequest request) throws IOException {
-        final HttpResponse response = _client.execute(request);
+        final HttpResponse response = execute(request);
         final int status = response.getStatusLine().getStatusCode();
         request.abort();
         return status;
+    }
+
+    protected HttpResponse execute(final HttpUriRequest request) throws IOException {
+        return _client.execute(request);
     }
 
 }

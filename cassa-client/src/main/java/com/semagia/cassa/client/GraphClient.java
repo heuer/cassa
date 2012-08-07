@@ -228,7 +228,7 @@ public final class GraphClient extends AbstractClient {
         final InputStreamEntity entity = new InputStreamEntity(in, -1);
         entity.setContentType(mediaType != null ? mediaType.toString() : null);
         request.setEntity(entity);
-        final HttpResponse response = _client.execute(request);
+        final HttpResponse response = execute(request);
         URI graphURI = null;
         if (response.getStatusLine().getStatusCode() == 201) {
             final Header location = response.getFirstHeader("location");

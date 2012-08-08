@@ -66,8 +66,7 @@ abstract class AbstractClient {
     /**
      * Returns the default media types.
      *
-     * @return The default media types or {@code null} if the default media types
-     *          isn't specified.
+     * @return The preferred media types or {@code null} if undefined.
      */
     public MediaType[] getPreferredGraphMediaTypes() {
         return _preferredMediaTypes;
@@ -76,15 +75,15 @@ abstract class AbstractClient {
     /**
      * Sets the default media types.
      *
-     * @param mediaTypes A {@link MediaType} instance or {@code null}.
+     * @param mediaTypes A {@link MediaType} instance(s) or {@code null}.
      */
     public void setPreferredGraphMediaTypes(final MediaType... mediaTypes) {
         _preferredMediaTypes = mediaTypes;
     }
 
     /**
-     * Returns a graph from the provided graph URI using the {@link #getPreferredGraphMediaTypes()}
-     * (if any).
+     * Returns a graph from the provided graph URI using the 
+     * {@link #getPreferredGraphMediaTypes()} (if any).
      * 
      * @param graphURI The URI to retrieve the graph from.
      * @return A graph.

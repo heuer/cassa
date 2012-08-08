@@ -17,6 +17,7 @@ package com.semagia.cassa.common.dm.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -83,10 +84,12 @@ public class TestInputStreamWritableRepresentation extends TestCase {
     @SuppressWarnings("resource")
     public void testWrite() throws Exception {
         final byte[] data = "hello".getBytes();
-        final InputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStreamRememberClose stream = new ByteArrayInputStreamRememberClose(data);
         final IWritableRepresentation rep = new InputStreamWritableRepresentation(stream, MediaType.CTM);
+        assertFalse(stream.isClosed);
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         rep.write(out);
+        assertTrue(stream.isClosed);
         final byte[] written = out.toByteArray();
         assertEquals(data.length, written.length);
         assertTrue(Arrays.equals(data, written));
@@ -95,10 +98,12 @@ public class TestInputStreamWritableRepresentation extends TestCase {
     @SuppressWarnings("resource")
     public void testWriteContentLength() throws Exception {
         final byte[] data = "hello".getBytes();
-        final InputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStreamRememberClose stream = new ByteArrayInputStreamRememberClose(data);
         final IWritableRepresentation rep = new InputStreamWritableRepresentation(stream, MediaType.CTM, null, data.length);
+        assertFalse(stream.isClosed);
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         rep.write(out);
+        assertTrue(stream.isClosed);
         final byte[] written = out.toByteArray();
         assertEquals(data.length, written.length);
         assertTrue(Arrays.equals(data, written));
@@ -107,10 +112,12 @@ public class TestInputStreamWritableRepresentation extends TestCase {
     @SuppressWarnings("resource")
     public void testWriteContentLength2() throws Exception {
         final byte[] data = "hello".getBytes();
-        final InputStream stream = new ByteArrayInputStream(data);
+        final ByteArrayInputStreamRememberClose stream = new ByteArrayInputStreamRememberClose(data);
         final IWritableRepresentation rep = new InputStreamWritableRepresentation(stream, MediaType.CTM, null, data.length-1);
+        assertFalse(stream.isClosed);
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         rep.write(out);
+        assertTrue(stream.isClosed);
         final byte[] written = out.toByteArray();
         assertEquals(data.length-1, written.length);
         final byte[] expectedData = Arrays.copyOf(data, data.length-1);
@@ -121,9 +128,35 @@ public class TestInputStreamWritableRepresentation extends TestCase {
     public void testInputStream() throws Exception {
         final byte[] data = "hello".getBytes();
         final InputStream stream = new ByteArrayInputStream(data);
-        InputStreamWritableRepresentation rep = new InputStreamWritableRepresentation(stream, MediaType.CTM);
+        final InputStreamWritableRepresentation rep = new InputStreamWritableRepresentation(stream, MediaType.CTM);
         final InputStream in = rep.getInputStream();
         assertSame(stream, in);
+    }
+
+    @SuppressWarnings("resource")
+    public void testClose() throws Exception {
+        final byte[] data = "hello".getBytes();
+        final ByteArrayInputStreamRememberClose stream = new ByteArrayInputStreamRememberClose(data);
+        final InputStreamWritableRepresentation rep = new InputStreamWritableRepresentation(stream, MediaType.CTM, null, data.length-1);
+        assertFalse(stream.isClosed);
+        rep.close();
+        assertTrue(stream.isClosed);
+    }
+
+
+    private static class ByteArrayInputStreamRememberClose extends ByteArrayInputStream {
+
+        public boolean isClosed;
+
+        public ByteArrayInputStreamRememberClose(byte[] arg0) {
+            super(arg0);
+        }
+
+        @Override
+        public void close() throws IOException {
+            super.close();
+            isClosed = true;
+        }
     }
 
 }

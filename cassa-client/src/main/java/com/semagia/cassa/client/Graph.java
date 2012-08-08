@@ -16,12 +16,12 @@
 package com.semagia.cassa.client;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IWritableRepresentation;
+import com.semagia.cassa.common.dm.impl.InputStreamWritableRepresentation;
 
 /**
  * Wraps a {@link InputStream} providing some convenient methods.
@@ -33,100 +33,30 @@ import com.semagia.cassa.common.dm.IWritableRepresentation;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public final class Graph implements IWritableRepresentation, Closeable {
+public final class Graph extends InputStreamWritableRepresentation implements IWritableRepresentation, Closeable {
 
-    private final static int _BUFFER_SIZE = 2048;
-
-    private final InputStream _in;
-    private final MediaType _mediaType;
-    private final String _encoding;
-    private final long _length;
-
+    /**
+     * Creates an instance with content length = -1.
+     * 
+     * @param in The input stream.
+     * @param mediaType The media type.
+     * @param encoding The encoding or {@code null}.
+     */
     Graph(final InputStream in, final MediaType mediaType, final String encoding) {
         this(in, mediaType, encoding, -1);
     }
 
+    /**
+     * Creates an instance with the provided inputstream, a mediatype, and 
+     * an optional encoding and content length.
+     * 
+     * @param in The input stream.
+     * @param mediaType The media type.
+     * @param encoding The encoding or {@code null}.
+     * @param length The content length or {@code -1} if the content length is unknown.
+     */
     Graph(final InputStream in, final MediaType mediaType, final String encoding, final long length) {
-        _in = in;
-        _mediaType = mediaType;
-        _encoding = encoding;
-        _length = length;
-    }
-
-    /**
-     * Returns the input stream.
-     * 
-     * The input stream or this Graph instance MUST be closed when done.
-     *
-     * @return The input stream.
-     * @throws IOException In case of an I/O error.
-     */
-    public InputStream getInputStream() throws IOException {
-        return _in;
-    }
-
-    /**
-     * Returns the length of the content.
-     * 
-     * Returns {@code -1} if the length is unknown.
-     * 
-     * @return The length of the content or {@code -1}
-     */
-    public long getContentLength() {
-        return _length;
-    }
-
-    /* (non-Javadoc)
-     * @see com.semagia.cassa.common.dm.IWritable#write(java.io.OutputStream)
-     */
-    @Override
-    public void write(OutputStream out) throws IOException {
-        byte[] buffer = new byte[_BUFFER_SIZE];
-        int len;
-        try {
-            if (_length < 0) {
-                while ((len = _in.read(buffer)) != -1) {
-                    out.write(buffer, 0, len);
-                }
-            }
-            else {
-                long remaining = _length;
-                while (remaining > 0) {
-                    len = _in.read(buffer, 0, (int)Math.min(_BUFFER_SIZE, remaining));
-                    if (len == -1) {
-                        break;
-                    }
-                    out.write(buffer, 0, len);
-                    remaining -= len;
-                }
-            }
-        }
-        finally {
-            _in.close();
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see com.semagia.cassa.common.dm.IWritableRepresentation#getMediaType()
-     */
-    @Override
-    public MediaType getMediaType() {
-        return _mediaType;
-    }
-
-    /* (non-Javadoc)
-     * @see com.semagia.cassa.common.dm.IWritableRepresentation#getEncoding()
-     */
-    public String getEncoding() {
-        return _encoding;
-    }
-
-    /* (non-Javadoc)
-     * @see java.io.Closeable#close()
-     */
-    @Override
-    public void close() throws IOException {
-        _in.close();
+        super(in, mediaType, encoding, length);
     }
 
 }

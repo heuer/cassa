@@ -77,7 +77,8 @@ public final class GraphClient extends AbstractClient {
     }
 
     /**
-     * Returns the graph with the provided URI using the preferred media types (if any).
+     * Returns the graph with the provided URI using one of the preferred 
+     * media types (if any).
      *
      * @param graphURI The graph URI.
      * @return A graph or {@code null} if the graph does not exist.
@@ -88,7 +89,8 @@ public final class GraphClient extends AbstractClient {
     }
 
     /**
-     * Returns the graph with the provided URI using the provided media type.
+     * Returns the graph with the provided URI using one of the provided 
+     * media types (if any).
      *
      * @param graphURI The graph URI.
      * @param mediaTypes The requested media types.

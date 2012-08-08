@@ -77,6 +77,12 @@ public class InputStreamWritableRepresentation implements
      */
     public InputStreamWritableRepresentation(final InputStream stream,
             final MediaType mediaType, final String encoding, final long length) {
+        if (stream == null) {
+            throw new IllegalArgumentException("The input stream must not be null");
+        }
+        if (mediaType == null) {
+            throw new IllegalArgumentException("The media type must not be null");
+        }
         _stream = stream;
         _mediaType = mediaType;
         _encoding = encoding;

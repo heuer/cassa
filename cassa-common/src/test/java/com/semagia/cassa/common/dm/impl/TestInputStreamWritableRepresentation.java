@@ -133,7 +133,6 @@ public class TestInputStreamWritableRepresentation extends TestCase {
         assertSame(stream, in);
     }
 
-    @SuppressWarnings("resource")
     public void testClose() throws Exception {
         final byte[] data = "hello".getBytes();
         final ByteArrayInputStreamRememberClose stream = new ByteArrayInputStreamRememberClose(data);

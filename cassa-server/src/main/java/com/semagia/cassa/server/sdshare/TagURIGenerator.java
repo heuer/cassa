@@ -25,8 +25,6 @@ import com.semagia.cassa.common.DateTimeUtils;
  * The generator uses the "tag" scheme 
  * (<a href="http://tools.ietf.org/html/rfc4151">RFC 4151</a>) and must be 
  * initialized with a domain name. 
- * The generator is thread-safe and may be utilized by {@link IStorage}
- * implementations.
  * </p>
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>

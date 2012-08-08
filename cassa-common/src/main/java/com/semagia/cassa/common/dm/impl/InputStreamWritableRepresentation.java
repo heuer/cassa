@@ -30,7 +30,7 @@ import com.semagia.cassa.common.dm.IWritableRepresentation;
  * Note: The caller which receives an instance MUST call {@link #close()}
  * or {@code getInputStream().close()} unless the input stream is written to an
  * output stream via {@link #write(OutputStream)} (closing the instance after it 
- * has been written to an output stream is simply ignored).
+ * has been written to an output stream is ignored).
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */

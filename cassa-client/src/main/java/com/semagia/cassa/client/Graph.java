@@ -29,7 +29,7 @@ import com.semagia.cassa.common.dm.impl.InputStreamWritableRepresentation;
  * Note: The caller which receives a Graph instance MUST call {@link #close()}
  * or {@code getInputStream().close()} unless the input stream is written to an
  * output stream via {@link #write(OutputStream)} (closing the graph after it has
- * been written to an output stream is simply ignored).
+ * been written to an output stream is ignored).
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */

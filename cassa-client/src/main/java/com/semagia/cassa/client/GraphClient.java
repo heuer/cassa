@@ -54,7 +54,7 @@ public final class GraphClient extends AbstractClient {
     }
 
     /**
-     * Returns the default graph using the {@link #getDefaultMediaType()}.
+     * Returns the default graph using the {@link #getPreferredGraphMediaTypes()}.
      *
      * @return A graph or {@code null} if the graph does not exist (Note: graph
      *          stores are required to have always a default graph).
@@ -77,7 +77,7 @@ public final class GraphClient extends AbstractClient {
     }
 
     /**
-     * Returns the graph with the provided URI using the {@link #getDefaultMediaType()}.
+     * Returns the graph with the provided URI using the {@link #getPreferredGraphMediaTypes()}.
      *
      * @param graphURI The graph URI.
      * @return A graph or {@code null} if the graph does not exist.
@@ -340,7 +340,7 @@ public final class GraphClient extends AbstractClient {
 
     /**
      * Updates the default graph by reading the provided stream, assuming
-     * the {@link #getDefaultMediaType()}.
+     * the {@link #getPreferredGraphMediaTypes()}.
      *
      * Note: This method does not close the input stream. The caller should
      * close it.
@@ -356,7 +356,7 @@ public final class GraphClient extends AbstractClient {
 
     /**
      * Updates the default graph by reading the provided file, assuming
-     * the {@link #getDefaultMediaType()}.
+     * the {@link #getPreferredGraphMediaTypes()}.
      *
      * @param file The file to read the graph from.
      * @return {@code true} indicating that the graph was updated sucessfully,
@@ -400,7 +400,7 @@ public final class GraphClient extends AbstractClient {
 
     /**
      * Updates the provided graph by reading the provided stream, using the 
-     * default media type {@link #getDefaultMediaType()}.
+     * default media types {@link #getPreferredGraphMediaTypes()}.
      * 
      * Note: This method does not close the input stream. The caller should
      * close it.
@@ -417,7 +417,7 @@ public final class GraphClient extends AbstractClient {
 
     /**
      * Updates the provided graph by reading the provided file, using the 
-     * default media type {@link #getDefaultMediaType()}.
+     * default media types {@link #getPreferredGraphMediaTypes()}.
      * 
      * @param graphURI The graph URI.
      * @param file The file to read the graph from.

@@ -47,7 +47,7 @@ public final class ResponseUtils {
     }
 
     /**
-     * Returns a response using the provided {@link IWritablRepresentation} instance to 
+     * Returns a response using the provided {@link IWritableRepresentation} instance to 
      * serialize the body of the response.
      *
      * @param builder The builder used to build the response.

@@ -120,6 +120,13 @@ public class TestSDShareStoreAdapter extends TestCase {
         assertTrue(snapshots.contains(DummyReadOnlyStore.GRAPH_INFO_2));
     }
 
+    public void testGetGraphInfo() throws Exception {
+        IGraphInfo info = _sdstore.getGraphInfo(DummyReadOnlyStore.GRAPH_INFO_1_URI);
+        assertEquals(DummyReadOnlyStore.GRAPH_INFO_1, info);
+        info = _sdstore.getGraphInfo(DummyReadOnlyStore.GRAPH_INFO_2_URI);
+        assertEquals(DummyReadOnlyStore.GRAPH_INFO_2, info);
+    }
+
     public void testGetGraphInfos() throws Exception {
         final List<IGraphInfo> infos = new ArrayList<IGraphInfo>();
         for (IGraphInfo info: _sdstore.getGraphInfos()) {

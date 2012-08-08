@@ -15,6 +15,7 @@
  */
 package com.semagia.cassa.server.store.impl;
 
+import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,4 +116,33 @@ public class TestAbstractReadOnlyStore extends TestCase {
         }
     }
 
+    public void testCreateOrReplaceSubject() throws Exception {
+        try {
+            _store.createOrReplaceSubject(DummyReadOnlyStore.GRAPH_INFO_1_URI, URI.create("http://www.example.org/a-subject"), TestAbstractReadOnlyStore.class.getResourceAsStream("/test.rdf"), URI.create("http://www.example.org/a-graph"), MediaType.RDF_XML);
+            fail("Expected an error for create or replace");
+        }
+        catch (UnsupportedOperationException ex) {
+            // noop.
+        }
+    }
+
+    public void testModifyGraph() throws Exception {
+        try {
+            _store.modifyGraph(DummyReadOnlyStore.GRAPH_INFO_1_URI, new ByteArrayInputStream("boo".getBytes()), URI.create("http://www.example.org/a-graph"), MediaType.SPARQL_UPDATE);
+            fail("Expected an error for create or replace");
+        }
+        catch (UnsupportedOperationException ex) {
+            // noop.
+        }
+    }
+
+    public void testUpdateGraph() throws Exception {
+        try {
+            _store.updateGraph(DummyReadOnlyStore.GRAPH_INFO_1_URI, TestAbstractReadOnlyStore.class.getResourceAsStream("/test.rdf"), URI.create("http://www.example.org/a-graph"), MediaType.RDF_XML);
+            fail("Expected an error for create or replace");
+        }
+        catch (UnsupportedOperationException ex) {
+            // noop.
+        }
+    }
 }

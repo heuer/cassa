@@ -24,6 +24,7 @@ import com.semagia.cassa.common.dm.RemovalStatus;
 import com.semagia.cassa.server.store.GraphMismatchException;
 import com.semagia.cassa.server.store.GraphNotExistsException;
 import com.semagia.cassa.server.store.IGraphInfo;
+import com.semagia.cassa.server.store.IStore;
 import com.semagia.cassa.server.store.ParseException;
 import com.semagia.cassa.server.store.QueryException;
 import com.semagia.cassa.server.store.StoreException;
@@ -36,7 +37,7 @@ import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public abstract class AbstractReadOnlyStore extends AbstractStore {
+public abstract class AbstractReadOnlyStore extends AbstractStore implements IStore {
 
     /* (non-Javadoc)
      * @see com.semagia.cassa.server.store.IStore#deleteGraph(java.net.URI)

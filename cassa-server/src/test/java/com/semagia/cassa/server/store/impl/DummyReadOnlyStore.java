@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.common.dm.IWritableRepresentation;
+import com.semagia.cassa.common.dm.impl.InputStreamWritableRepresentation;
 import com.semagia.cassa.server.store.GraphNotExistsException;
 import com.semagia.cassa.server.store.IGraphInfo;
 import com.semagia.cassa.server.store.StoreException;
@@ -35,7 +36,8 @@ import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
  */
 public class DummyReadOnlyStore extends AbstractReadOnlyStore {
     
-    public static List<MediaType> GRAPH_INFO_2_MEDIATYPES = Arrays.asList(MediaType.TURTLE, MediaType.RDF_XML);
+    public static MediaType GRAPH_INFO_1_MEDIATYPE = MediaType.RDF_XML;
+    public static List<MediaType> GRAPH_INFO_2_MEDIATYPES = Arrays.asList(MediaType.RDF_XML, MediaType.TURTLE);
     public static URI GRAPH_INFO_1_URI = URI.create("http://www.example.org/graph-A");
     public static URI GRAPH_INFO_2_URI = URI.create("http://www.example.org/graph-B");
     public static IGraphInfo GRAPH_INFO_1 = new DefaultGraphInfo(GRAPH_INFO_1_URI, MediaType.RDF_XML, new Date().getTime());
@@ -56,8 +58,16 @@ public class DummyReadOnlyStore extends AbstractReadOnlyStore {
     public IWritableRepresentation getGraph(URI graphURI, MediaType mediaType)
             throws GraphNotExistsException, UnsupportedMediaTypeException,
             IOException, StoreException {
-        // TODO Auto-generated method stub
-        return null;
+        if (!MediaType.RDF_XML.equals(mediaType)) {
+            throw new UnsupportedMediaTypeException(mediaType, MediaType.RDF_XML);
+        }
+        if (GRAPH_INFO_1_URI.equals(graphURI)) {
+            return new InputStreamWritableRepresentation(DummyReadOnlyStore.class.getResourceAsStream("/test.rdf"), MediaType.RDF_XML);
+        }
+        else if (GRAPH_INFO_2_URI.equals(graphURI)) {
+            return new InputStreamWritableRepresentation(DummyReadOnlyStore.class.getResourceAsStream("/test2.rdf"), MediaType.RDF_XML);
+        }
+        throw new GraphNotExistsException(graphURI);
     }
 
     @Override

@@ -18,9 +18,11 @@ package com.semagia.cassa.server.store.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.semagia.cassa.common.MediaType;
 import com.semagia.cassa.server.store.IFragmentInfo;
 import com.semagia.cassa.server.store.IGraphInfo;
 import com.semagia.cassa.server.store.ISDShareStore;
+import com.semagia.cassa.server.store.UnsupportedMediaTypeException;
 
 import junit.framework.TestCase;
 
@@ -39,6 +41,23 @@ public class TestSDShareStoreAdapter extends TestCase {
         super.setUp();
         _store = new DummyReadOnlyStore();
         _sdstore = new SDShareStoreAdapter(_store);
+    }
+
+    public void testSnapshots() throws Exception {
+        assertNotNull(_sdstore.getGraph(DummyReadOnlyStore.GRAPH_INFO_1_URI, DummyReadOnlyStore.GRAPH_INFO_1_MEDIATYPE));
+        assertNotNull(_sdstore.getGraph(DummyReadOnlyStore.GRAPH_INFO_2_URI, DummyReadOnlyStore.GRAPH_INFO_2_MEDIATYPES.get(0)));
+    }
+
+    public void testSnapshotIllegalMediaType() throws Exception {
+        final MediaType mediaType = MediaType.CTM;
+        assertFalse(DummyReadOnlyStore.GRAPH_INFO_1_MEDIATYPE.equals(mediaType));
+        try {
+            _sdstore.getGraph(DummyReadOnlyStore.GRAPH_INFO_1_URI, mediaType);
+            fail("Expected an unsupported media type exception");
+        }
+        catch (UnsupportedMediaTypeException ex) {
+            // noop.
+        }
     }
 
     public void testLastModificationFragments() throws Exception {

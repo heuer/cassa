@@ -24,7 +24,18 @@ import java.net.URI;
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 public interface ISDShareStore extends IStore {
-    
+
+    /**
+     * Returns all available graphs.
+     * 
+     * NOTE: The returned iterable MUST neither contain snapshots nor
+     * fragments.
+     *
+     * @return A (maybe empty) iterable of graphs.
+     * @throws StoreException In case of an error.
+     */
+    public Iterable<IGraphInfo> getGraphInfos() throws StoreException;
+
     /**
      * Returns the last modification time of the fragments of the provided graphURI.
      * 

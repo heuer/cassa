@@ -15,6 +15,9 @@
  */
 package com.semagia.cassa.common.dm;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 import com.semagia.cassa.common.MediaType;
 
 /**
@@ -22,7 +25,15 @@ import com.semagia.cassa.common.MediaType;
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public interface IWritableRepresentation extends IWritable {
+public interface IWritableRepresentation {
+
+    /**
+     * Writes this instance to the specified {@link OutputStream}.
+     *
+     * @param out The stream to write to.
+     * @throws IOException In case of an error.
+     */
+    public void write(OutputStream out) throws IOException;
 
     /**
      * Returns the media type of this representation.

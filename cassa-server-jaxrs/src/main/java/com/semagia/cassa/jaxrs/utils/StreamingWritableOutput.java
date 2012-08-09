@@ -21,19 +21,19 @@ import java.io.OutputStream;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 
-import com.semagia.cassa.common.dm.IWritable;
+import com.semagia.cassa.common.dm.IWritableRepresentation;
 
 /**
- * {@link StreamingOutput} implementation that wraps a {@link IWritable}
+ * {@link StreamingOutput} implementation that wraps a {@link IWritableRepresentation}
  * instance.
  * 
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
 final class StreamingWritableOutput implements StreamingOutput {
 
-    private final IWritable _writable;
+    private final IWritableRepresentation _writable;
 
-    public StreamingWritableOutput(final IWritable writable) {
+    public StreamingWritableOutput(final IWritableRepresentation writable) {
         if (writable == null) {
             throw new IllegalArgumentException("The writable must not be null");
         }
